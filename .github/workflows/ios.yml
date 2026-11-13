@@ -54,8 +54,12 @@ jobs:
           if [ $status -ne 0 ]; then
             echo "== Failure context =="
             grep -n -E "error|Stack dump|Segmentation|signal [0-9]|Assertion|PLEASE|fatal|unable to type-check|Command .* failed" build.log | cut -c1-600 | head -80
-            line=$(grep -n "^SwiftCompile normal arm64 Compiling" build.log | tail -1 | cut -d: -f1)
-            [ -n "$line" ] && sed -n "${line},$((line+80))p" build.log | cut -c1-600
+            line=$(grep -n "Stack dump" build.log | head -1 | cut -d: -f1)
+            if [ -n "$line" ]; then
+              echo "== Compiler crash =="
+              sed -n "$((line-25)),$((line+12))p" build.log | cut -c1-900
+              grep -n -i -E "while |LLVM ERROR|in function|SIL|IRGen|emitting" build.log | cut -c1-900 | head -40
+            fi
           fi
           echo "Warnings in project sources: $(grep -E '/Relato(Tests|UITests)?/.*warning:' build.log | sort -u | wc -l)"
           tail -15 build.log
