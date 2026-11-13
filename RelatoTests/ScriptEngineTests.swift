@@ -73,7 +73,8 @@ struct HookAnalyzerTests {
     @Test func positiveInsightsComeFirst() {
         let report = HookAnalyzer.analyze("Perdí 3.000 € por no hacer una pregunta.", wordsPerMinute: 150)
         let firstNegative = report.insights.firstIndex { !$0.isPositive } ?? report.insights.count
-        #expect(report.insights[..<firstNegative].allSatisfy(\.isPositive))
+        let leading = report.insights[..<firstNegative].map(\.isPositive)
+        #expect(!leading.contains(false))
         #expect(report.insights.contains { $0.id == "number" })
     }
 

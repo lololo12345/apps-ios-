@@ -121,7 +121,7 @@ final class RelatoUITests: XCTestCase {
             options.iterationCount = 3
             return options
         }()) {
-            launch()
+            _ = launch()
         }
     }
 }
