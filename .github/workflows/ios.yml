@@ -37,6 +37,12 @@ jobs:
           echo "::group::Diagnostics"
           grep -E "(error|warning):" build.log | grep -v "^ld: warning" | sort -u | head -150
           echo "::endgroup::"
+          if [ $status -ne 0 ]; then
+            echo "== Failure context =="
+            grep -n -E "error|Stack dump|Segmentation|signal [0-9]|Assertion|PLEASE|fatal|unable to type-check|Command .* failed" build.log | cut -c1-600 | head -80
+            line=$(grep -n "^SwiftCompile normal arm64 Compiling" build.log | tail -1 | cut -d: -f1)
+            [ -n "$line" ] && sed -n "${line},$((line+80))p" build.log | cut -c1-600
+          fi
           echo "Warnings in project sources: $(grep -E '/Relato(Tests|UITests)?/.*warning:' build.log | sort -u | wc -l)"
           tail -15 build.log
           exit $status
@@ -87,6 +93,13 @@ jobs:
                       subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "72", "-Z", "1100", src, "--out", dst], capture_output=True)
           print("\n".join(sorted(os.listdir("screenshots"))))
           PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
 
       - uses: actions/upload-artifact@v4
         if: always()
