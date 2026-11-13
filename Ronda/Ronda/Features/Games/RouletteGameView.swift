@@ -123,11 +123,14 @@ private struct WheelView: View {
                             WedgeShape(start: .degrees(Double(index) * slice - 90), end: .degrees(Double(index + 1) * slice - 90))
                                 .stroke(Neon.ink, lineWidth: 2)
                         }
+                    // Radial label confined to the outer part of its slice so neighbours never overlap.
                     Text(segment.title)
                         .font(.system(size: 13, weight: .heavy, design: .rounded))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                         .foregroundStyle(Neon.ink)
-                        .rotationEffect(.degrees(90))
-                        .offset(x: radius * 0.62)
+                        .frame(width: radius * 0.56, alignment: .trailing)
+                        .offset(x: radius * 0.6)
                         .rotationEffect(.degrees((Double(index) + 0.5) * slice - 90))
                 }
                 Circle()

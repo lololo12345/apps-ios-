@@ -5,6 +5,20 @@
 Un solo móvil en la mesa: metéis los nombres una vez y saltáis de un juego a otro durante la noche.
 Sin internet, sin cuentas y sin anuncios.
 
+<p align="center">
+  <img src="docs/screenshots/home.jpg" width="190" alt="Inicio, apartado Normal">
+  <img src="docs/screenshots/home-hot.jpg" width="190" alt="Inicio, apartado Hot">
+  <img src="docs/screenshots/yo-nunca.jpg" width="190" alt="Yo nunca">
+  <img src="docs/screenshots/retos.jpg" width="190" alt="Retos Hot">
+</p>
+<p align="center">
+  <img src="docs/screenshots/mayor-menor.jpg" width="190" alt="Mayor o menor">
+  <img src="docs/screenshots/circulo.jpg" width="190" alt="El Círculo">
+  <img src="docs/screenshots/duelo.jpg" width="190" alt="Duelo cara a cara">
+  <img src="docs/screenshots/marcador.jpg" width="190" alt="Marcador con podio">
+</p>
+<p align="center"><sub>Capturas reales del simulador (iPhone 17 Pro, iOS 26.5), generadas por los tests de interfaz.</sub></p>
+
 ## Dos apartados
 
 **Normal** (niveles Suave y Fiesta)
@@ -41,6 +55,12 @@ duelos, ruleta con pesos, marcador) está separada de la interfaz y tiene tests.
 
 La app es solo en modo oscuro a propósito: se juega de noche y una pantalla blanca en mitad de la mesa
 rompería el ambiente.
+
+## Tests
+| Suite | Qué cubre |
+|---|---|
+| `RondaTests` | Barajas sin repetición, nombres y orden en la mesa, marcador con empates, rondas de agua, textos con jugadores, modo sin alcohol, Mayor o menor, El Círculo (el cuarto Rey), mecha de la bomba, duelos, ruleta (cae donde debe y respeta los pesos), contenido suficiente y sin duplicados, cartas propias y persistencia de la sesión. |
+| `RondaUITests` | Primer arranque (edad), los 8 juegos del apartado Normal con el marcador, el apartado Hot con el consentimiento, los ajustes con el modo sin alcohol y la lista de jugadores. |
 
 ## Ejecutar
 Abre `Ronda.xcodeproj`, elige tu equipo y un *Bundle Identifier* propio en *Signing & Capabilities* y pulsa ⌘R.
