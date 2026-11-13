@@ -101,7 +101,7 @@ struct Chip: View {
 }
 
 /// Small tinted label, e.g. genre or status.
-struct Tag: View {
+struct Pill: View {
     let title: String
     let symbol: String
     let tint: Color

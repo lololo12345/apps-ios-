@@ -263,7 +263,7 @@ struct StoryCard: View {
 
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Tag(title: story.genre.title, symbol: story.genre.symbol, tint: story.genre.tint)
+                Pill(title: story.genre.title, symbol: story.genre.symbol, tint: story.genre.tint)
                 if story.isPinned {
                     Image(systemName: "pin.fill")
                         .font(.caption2)

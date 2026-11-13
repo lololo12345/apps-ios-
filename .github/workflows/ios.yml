@@ -26,6 +26,7 @@ jobs:
           xcodebuild -version
 
       - name: Build (app + tests)
+        id: build
         run: |
           set +e
           xcodebuild build-for-testing \
@@ -50,7 +51,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test (Case|Suite|run)|✔|✘|passed|failed|error:|Executed" | tail -150
 
       - name: UI tests (with screenshots)
-        if: always()
+        if: always() && steps.build.outcome == 'success'
         run: |
           set -o pipefail
           xcodebuild test-without-building \
