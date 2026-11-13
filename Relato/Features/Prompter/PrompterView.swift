@@ -52,8 +52,12 @@ struct PrompterView: View {
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 8)
 
-                scriptArea(pacing: pacing)
-                    .padding(.top, 10)
+                if LaunchOptions.has("-pNoScript") {
+                    Color.clear.frame(maxHeight: .infinity)
+                } else {
+                    scriptArea(pacing: pacing)
+                        .padding(.top, 10)
+                }
 
                 Spacer(minLength: 12)
 
@@ -78,9 +82,11 @@ struct PrompterView: View {
                         .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
 
-                controls
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.bottom, 10)
+                if !LaunchOptions.has("-pNoControls") {
+                    controls
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.bottom, 10)
+                }
             }
 
             if let countdownValue {
@@ -101,7 +107,7 @@ struct PrompterView: View {
         .persistentSystemOverlays(.hidden)
         .animation(.smooth(duration: 0.25), value: engine.didReachEnd)
         .animation(reduceMotion ? nil : .spring(duration: 0.35, bounce: 0.3), value: countdownValue)
-        .onAppear { setUp() }
+        .onAppear { if !LaunchOptions.has("-pNoSetup") { setUp() } }
         .onDisappear { tearDown() }
         .onChange(of: speed) { engine.setSpeed(speed) }
         .onChange(of: scenePhase) { _, phase in handleScenePhase(phase) }
@@ -122,7 +128,9 @@ struct PrompterView: View {
 
     @ViewBuilder
     private var background: some View {
-        if mode == .record, let camera = recorder.camera,
+        if LaunchOptions.has("-pNoBackground") {
+            Color.black.ignoresSafeArea()
+        } else if mode == .record, let camera = recorder.camera,
            recorder.phase == .ready || recorder.phase == .recording || recorder.phase == .finishing {
             CameraPreview(session: camera.session)
                 .ignoresSafeArea()
@@ -168,8 +176,12 @@ struct PrompterView: View {
             Spacer()
 
             // Ticks only while reading or recording: zero work (and battery) while paused.
-            TimelineView(.animation(minimumInterval: 0.25, paused: !engine.isRunning && !recorder.isRecording)) { context in
-                hud(at: context.date)
+            if LaunchOptions.has("-pNoHUD") {
+                Text("HUD")
+            } else {
+                TimelineView(.animation(minimumInterval: 0.25, paused: !engine.isRunning && !recorder.isRecording)) { context in
+                    hud(at: context.date)
+                }
             }
 
             Spacer()
@@ -547,7 +559,7 @@ private struct PrompterColumn: View, Equatable {
                 .onGeometryChange(for: CGFloat.self) { proxy in
                     proxy.frame(in: .named("prompterColumn")).minY
                 } action: { minY in
-                    onMeasure(index, minY)
+                    if !LaunchOptions.has("-pNoMeasure") { onMeasure(index, minY) }
                 }
             }
             // Room so the last line can scroll past the reading line.
@@ -557,7 +569,7 @@ private struct PrompterColumn: View, Equatable {
         .onGeometryChange(for: CGFloat.self) { proxy in
             proxy.size.height - 40
         } action: { height in
-            onHeight(height)
+            if !LaunchOptions.has("-pNoMeasure") { onHeight(height) }
         }
     }
 }

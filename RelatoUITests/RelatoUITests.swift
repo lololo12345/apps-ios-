@@ -144,4 +144,23 @@ final class RelatoUITests: XCTestCase {
             _ = launch()
         }
     }
+
+    // MARK: - Temporary bisection of the prompter presentation hang
+
+    @MainActor
+    private func diagnosePrompter(_ flag: String) {
+        let app = launch([flag])
+        openSampleStory(app)
+        app.buttons["editor.rehearse"].tap()
+        sleep(3)
+        screenCapture("diag\(flag)")
+        XCTAssertTrue(app.buttons["Cerrar teleprompter"].waitForExistence(timeout: 5), "Prompter did not appear with \(flag)")
+    }
+
+    @MainActor func testDiagNoScript() { diagnosePrompter("-pNoScript") }
+    @MainActor func testDiagNoHUD() { diagnosePrompter("-pNoHUD") }
+    @MainActor func testDiagNoControls() { diagnosePrompter("-pNoControls") }
+    @MainActor func testDiagNoSetup() { diagnosePrompter("-pNoSetup") }
+    @MainActor func testDiagNoMeasure() { diagnosePrompter("-pNoMeasure") }
+    @MainActor func testDiagNoBackground() { diagnosePrompter("-pNoBackground") }
 }

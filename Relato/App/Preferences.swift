@@ -34,4 +34,5 @@ enum LaunchOptions {
     static var isUITesting: Bool { arguments.contains("-uiTesting") }
     static var forceOnboarding: Bool { arguments.contains("-showOnboarding") }
     static var forceDark: Bool { arguments.contains("-forceDark") }
+    static func has(_ flag: String) -> Bool { arguments.contains(flag) }
 }
