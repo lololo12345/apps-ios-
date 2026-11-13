@@ -10,6 +10,20 @@ deciden si una historia funciona:
 2. **El tiempo.** Escribes por bloques narrativos y ves la duración hablada real, segundo a segundo.
 3. **La grabación.** Un teleprompter junto a la cámara frontal que avanza **al ritmo al que hablas**.
 
+<p align="center">
+  <img src="docs/screenshots/library.jpg" width="200" alt="Biblioteca">
+  <img src="docs/screenshots/editor.jpg" width="200" alt="Editor con coach de gancho">
+  <img src="docs/screenshots/parts.jpg" width="200" alt="Dividir en partes">
+  <img src="docs/screenshots/prompter.jpg" width="200" alt="Teleprompter">
+</p>
+<p align="center">
+  <img src="docs/screenshots/templates.jpg" width="200" alt="Plantillas">
+  <img src="docs/screenshots/ideas.jpg" width="200" alt="Ideas">
+  <img src="docs/screenshots/library-dark.jpg" width="200" alt="Biblioteca en modo oscuro">
+  <img src="docs/screenshots/editor-dark.jpg" width="200" alt="Editor en modo oscuro">
+</p>
+<p align="center"><sub>Capturas reales del simulador (iPhone 17 Pro, iOS 26.5), generadas automáticamente por los tests de interfaz.</sub></p>
+
 ## Funcionalidades
 
 | Área | Qué hace |
@@ -88,6 +102,21 @@ No necesitas claves de API, backend ni servicios externos: todo funciona sin con
   ```
 - **CI:** `.github/workflows/ios.yml` compila y pasa todos los tests en macOS 26 con Xcode 26.6 en cada push,
   y publica las capturas de los tests de interfaz como *artifact*.
+
+| Suite | Qué cubre | Resultado (Xcode 26.6 · iPhone 17 Pro · iOS 26.5) |
+|---|---|---|
+| `RelatoTests` (Swift Testing) | Duración hablada, coach de gancho, divisor en partes y *cliffhangers*, ritmo del teleprompter (interpolación e inversa), racha, exportación, plantillas, mover y borrar bloques, duplicar, idea → historia, borrado en cascada, valores corruptos | ✅ 39/39 |
+| `RelatoUITests` | Onboarding; flujo de escritura completo en claro y oscuro (biblioteca → editor → partes → plantilla → escribir → ideas → ajustes); teleprompter (ensayo, reproducir, pausar) y modo grabación sin cámara | ✅ 5/5 |
+| Rendimiento | Tiempo de arranque (`XCTApplicationLaunchMetric`) | ≈ 2,9 s en el simulador de CI (en un iPhone real es bastante menor) |
+
+Compila con **Swift 6 en modo estricto de concurrencia** y **0 advertencias** en el código del proyecto.
+
+### Limitaciones conocidas
+- **Grabación con cámara:** el simulador no tiene cámara, así que la captura real (AVFoundation), guardar en Fotos
+  y reproducir tomas solo se han verificado en compilación y en el camino alternativo «sin cámara». Pruébalos en un iPhone.
+- **Notificaciones:** el recordatorio diario está implementado con la API oficial, pero su entrega no se puede automatizar en los tests.
+- **Compilador:** Swift 6.3 (Xcode 26.6) tiene un fallo al generar el código que adapta un método pasado directamente
+  a un `Binding(get:set:)`. El código lo evita usando *closures* explícitas.
 
 ## Permisos que pide la app
 | Permiso | Cuándo | Para qué |
