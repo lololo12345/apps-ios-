@@ -77,6 +77,8 @@ struct StoryEditorView: View {
         .scrollDismissesKeyboard(.interactively)
         .background { AuroraBackground(intensity: 0.6) }
         .navigationBarTitleDisplayMode(.inline)
+        // The editor owns the bottom edge (Ensayar / Grabar), so the tab bar steps aside.
+        .toolbar(.hidden, for: .tabBar)
         .safeAreaInset(edge: .bottom) {
             if focusedBeat == nil {
                 EditorActionBar(
