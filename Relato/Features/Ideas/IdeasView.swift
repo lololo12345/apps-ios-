@@ -83,7 +83,7 @@ struct IdeasView: View {
 
     private var captureField: some View {
         HStack(alignment: .bottom, spacing: 10) {
-            TextField("Apunta una idea antes de que se escape…", text: $draft, axis: .vertical)
+            TextField("Apunta una idea rápida…", text: $draft, axis: .vertical)
                 .lineLimit(1...5)
                 .focused($captureFocused)
                 .submitLabel(.send)
