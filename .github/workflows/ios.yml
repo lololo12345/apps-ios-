@@ -1,0 +1,95 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ "main", "claude/**" ]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DESTINATION: "platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5"
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26.6
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.6.app
+          xcodebuild -version
+
+      - name: Build (app + tests)
+        run: |
+          set +e
+          xcodebuild build-for-testing \
+            -project Relato.xcodeproj -scheme Relato \
+            -destination "$DESTINATION" -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO > build.log 2>&1
+          status=$?
+          echo "::group::Diagnostics"
+          grep -E "(error|warning):" build.log | grep -v "^ld: warning" | sort -u | head -150
+          echo "::endgroup::"
+          echo "Warnings in project sources: $(grep -E '/Relato(Tests|UITests)?/.*warning:' build.log | sort -u | wc -l)"
+          tail -15 build.log
+          exit $status
+
+      - name: Unit tests
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building \
+            -project Relato.xcodeproj -scheme Relato \
+            -destination "$DESTINATION" -derivedDataPath DerivedData \
+            -only-testing:RelatoTests -resultBundlePath Unit.xcresult \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test (Case|Suite|run)|✔|✘|passed|failed|error:|Executed" | tail -150
+
+      - name: UI tests (with screenshots)
+        if: always()
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building \
+            -project Relato.xcodeproj -scheme Relato \
+            -destination "$DESTINATION" -derivedDataPath DerivedData \
+            -only-testing:RelatoUITests -resultBundlePath UI.xcresult \
+            CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Case|passed|failed|error:|Executed|measured|XCTAssert" | tail -120
+
+      - name: Test summaries
+        if: always()
+        run: |
+          for bundle in Unit.xcresult UI.xcresult; do
+            [ -d "$bundle" ] || continue
+            echo "== $bundle =="
+            xcrun xcresulttool get test-results summary --path "$bundle" --compact | head -c 4000; echo
+          done
+
+      - name: Export screenshots
+        if: always()
+        run: |
+          mkdir -p raw screenshots
+          if [ -d UI.xcresult ]; then xcrun xcresulttool export attachments --path UI.xcresult --output-path raw || true; fi
+          python3 - <<'PY'
+          import json, os, subprocess
+          manifest = os.path.join("raw", "manifest.json")
+          if os.path.exists(manifest):
+              for test in json.load(open(manifest)):
+                  for item in test.get("attachments", []):
+                      name = item.get("suggestedHumanReadableName") or item["exportedFileName"]
+                      src = os.path.join("raw", item["exportedFileName"])
+                      base = name.split("_")[0].replace(" ", "-")
+                      dst = os.path.join("screenshots", base + ".jpg")
+                      subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "72", "-Z", "1100", src, "--out", dst], capture_output=True)
+          print("\n".join(sorted(os.listdir("screenshots"))))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+          retention-days: 14
