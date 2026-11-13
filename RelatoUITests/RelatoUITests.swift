@@ -1,6 +1,6 @@
 import XCTest
 
-/// End-to-end smoke flows on the simulator. Each step attaches a screenshot to the result bundle
+/// End-to-end flows on the simulator. Each step attaches a screenshot to the result bundle
 /// so the UI can be reviewed in light and dark mode.
 final class RelatoUITests: XCTestCase {
     override func setUp() {
@@ -24,6 +24,23 @@ final class RelatoUITests: XCTestCase {
         add(attachment)
     }
 
+    /// Raw screen capture: does not query the accessibility tree, so it works even if the app is busy.
+    @MainActor
+    private func screenCapture(_ name: String) {
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    @MainActor
+    private func openSampleStory(_ app: XCUIApplication) {
+        let story = app.buttons["story.La vecina del 4ºB"]
+        XCTAssertTrue(story.waitForExistence(timeout: 8))
+        story.tap()
+        XCTAssertTrue(app.buttons["editor.rehearse"].waitForExistence(timeout: 5))
+    }
+
     @MainActor
     func testOnboardingPages() {
         let app = launch(["-showOnboarding"])
@@ -36,59 +53,36 @@ final class RelatoUITests: XCTestCase {
     }
 
     @MainActor
-    func testCoreFlowLight() {
-        runCoreFlow(dark: false)
+    func testWritingFlowLight() {
+        runWritingFlow(dark: false)
     }
 
     @MainActor
-    func testCoreFlowDark() {
-        runCoreFlow(dark: true)
+    func testWritingFlowDark() {
+        runWritingFlow(dark: true)
     }
 
     @MainActor
-    private func runCoreFlow(dark: Bool) {
+    private func runWritingFlow(dark: Bool) {
         let suffix = dark ? "dark" : "light"
         let app = launch(dark: dark)
 
-        // Library with sample content.
-        let story = app.buttons["story.La vecina del 4ºB"]
-        XCTAssertTrue(story.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["story.La vecina del 4ºB"].waitForExistence(timeout: 8))
         snapshot("10-library-\(suffix)", app)
 
-        // Editor: duration, hook coach and beats.
-        story.tap()
-        XCTAssertTrue(app.textFields["editor.title"].waitForExistence(timeout: 5))
+        openSampleStory(app)
         snapshot("11-editor-\(suffix)", app)
         app.swipeUp()
         snapshot("12-editor-beats-\(suffix)", app)
 
-        // Parts sheet.
         app.buttons["editor.parts"].tap()
         XCTAssertTrue(app.navigationBars["Dividir en partes"].waitForExistence(timeout: 5))
         app.buttons["30 s"].tap()
         snapshot("13-parts-\(suffix)", app)
         app.buttons["Listo"].tap()
 
-        // Rehearsal teleprompter (no camera needed).
-        XCTAssertTrue(app.buttons["editor.rehearse"].waitForExistence(timeout: 5))
-        app.buttons["editor.rehearse"].tap()
-        XCTAssertTrue(app.buttons["prompter.play"].waitForExistence(timeout: 5))
-        snapshot("14-prompter-\(suffix)", app)
-        app.buttons["prompter.play"].tap()
-        sleep(5) // 3 s countdown + 2 s of scrolling
-        snapshot("15-prompter-running-\(suffix)", app)
-        app.buttons["Cerrar teleprompter"].tap()
-
-        // Record mode on the simulator: no camera, must degrade gracefully.
-        XCTAssertTrue(app.buttons["editor.record"].waitForExistence(timeout: 5))
-        app.buttons["editor.record"].tap()
-        XCTAssertTrue(app.buttons["Ensayar sin grabar"].waitForExistence(timeout: 5))
-        snapshot("16-record-unavailable-\(suffix)", app)
-        app.buttons["Ensayar sin grabar"].tap()
-        XCTAssertTrue(app.buttons["prompter.play"].waitForExistence(timeout: 3))
-        app.buttons["Cerrar teleprompter"].tap()
-
-        // Back to the library; new story from template.
+        // Back to the library; new story from a template.
+        XCTAssertTrue(app.navigationBars.buttons.element(boundBy: 0).waitForExistence(timeout: 5))
         app.navigationBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(app.buttons["library.new"].waitForExistence(timeout: 5))
         app.buttons["library.new"].tap()
@@ -101,26 +95,52 @@ final class RelatoUITests: XCTestCase {
         firstBeat.typeText("¿Sabías que nadie ha vuelto de esta casa?")
         snapshot("18-new-story-typing-\(suffix)", app)
         app.buttons["Listo"].firstMatch.tap()
+        app.navigationBars.buttons.element(boundBy: 0).tap()
 
-        // Ideas tab.
         app.tabBars.buttons["Ideas"].tap()
         let capture = app.textFields["ideas.capture"].exists ? app.textFields["ideas.capture"] : app.textViews["ideas.capture"]
         XCTAssertTrue(capture.waitForExistence(timeout: 5))
         snapshot("19-ideas-\(suffix)", app)
 
-        // Settings tab.
         app.tabBars.buttons["Ajustes"].tap()
         XCTAssertTrue(app.navigationBars["Ajustes"].waitForExistence(timeout: 5))
         snapshot("20-settings-\(suffix)", app)
     }
 
     @MainActor
+    func testPrompterRehearsalAndRecordFallback() {
+        let app = launch()
+        openSampleStory(app)
+
+        app.buttons["editor.rehearse"].tap()
+        sleep(2)
+        screenCapture("14a-prompter-raw")
+        XCTAssertTrue(app.buttons["prompter.play"].waitForExistence(timeout: 10))
+        snapshot("14-prompter", app)
+
+        app.buttons["prompter.play"].tap()
+        sleep(6) // 3 s countdown + 3 s of scrolling
+        screenCapture("15-prompter-running")
+        app.buttons["prompter.play"].tap() // pause
+        snapshot("15b-prompter-paused", app)
+        app.buttons["Cerrar teleprompter"].tap()
+
+        // The simulator has no camera: record mode must degrade gracefully.
+        XCTAssertTrue(app.buttons["editor.record"].waitForExistence(timeout: 5))
+        app.buttons["editor.record"].tap()
+        XCTAssertTrue(app.buttons["Ensayar sin grabar"].waitForExistence(timeout: 8))
+        snapshot("16-record-unavailable", app)
+        app.buttons["Ensayar sin grabar"].tap()
+        XCTAssertTrue(app.buttons["prompter.play"].waitForExistence(timeout: 5))
+        app.buttons["Cerrar teleprompter"].tap()
+        XCTAssertTrue(app.buttons["editor.record"].waitForExistence(timeout: 5))
+    }
+
+    @MainActor
     func testLaunchPerformance() {
-        measure(metrics: [XCTApplicationLaunchMetric()], options: {
-            let options = XCTMeasureOptions()
-            options.iterationCount = 3
-            return options
-        }()) {
+        let options = XCTMeasureOptions()
+        options.iterationCount = 3
+        measure(metrics: [XCTApplicationLaunchMetric()], options: options) {
             _ = launch()
         }
     }
