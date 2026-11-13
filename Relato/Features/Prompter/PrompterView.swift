@@ -164,7 +164,8 @@ struct PrompterView: View {
 
             Spacer()
 
-            TimelineView(.periodic(from: .now, by: 0.25)) { context in
+            // Ticks only while reading or recording: zero work (and battery) while paused.
+            TimelineView(.animation(minimumInterval: 0.25, paused: !engine.isRunning && !recorder.isRecording)) { context in
                 hud(at: context.date)
             }
 
