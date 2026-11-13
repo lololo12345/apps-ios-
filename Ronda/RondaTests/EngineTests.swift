@@ -238,7 +238,7 @@ struct PartyMechanicsTests {
             var generator = SeededGenerator(seed: seed)
             let rounds = Duel.colorRounds(using: &generator)
             #expect(rounds.count == 12)
-            #expect(rounds.prefix(7).contains(where: \.matches))
+            #expect(rounds.prefix(7).contains { $0.matches })
             #expect(rounds.allSatisfy { (0..<4).contains($0.word) && (0..<4).contains($0.ink) })
         }
     }
