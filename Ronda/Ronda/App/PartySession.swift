@@ -47,26 +47,31 @@ final class PartySession {
 
     init(defaults: UserDefaults = .standard, uiTesting: Bool = LaunchOptions.isUITesting) {
         self.defaults = defaults
+        // Resolve everything into locals first: stored properties cannot be read before all are set.
+        let initialPlayers: [Player]
+        let initialWater: Int
         if uiTesting {
             let fresh = ProcessInfo.processInfo.arguments.contains("-freshInstall")
-            players = fresh ? [] : ["Ana", "Leo", "Sara", "Dani"].map { Player(name: $0) }
+            initialPlayers = fresh ? [] : ["Ana", "Leo", "Sara", "Dani"].map { Player(name: $0) }
+            initialWater = 0
             ledger = SipLedger()
             ageStatus = fresh ? nil : .adult
             soberPreference = false
-            waterEvery = 0
             intensity = .party
             setupDone = !fresh
         } else {
-            players = Self.decode([Player].self, from: defaults, key: Key.players) ?? []
+            initialPlayers = Self.decode([Player].self, from: defaults, key: Key.players) ?? []
+            initialWater = defaults.object(forKey: Key.water) as? Int ?? 10
             ledger = Self.decode(SipLedger.self, from: defaults, key: Key.ledger) ?? SipLedger()
             ageStatus = defaults.string(forKey: Key.age).flatMap(AgeStatus.init(rawValue:))
             soberPreference = defaults.bool(forKey: Key.sober)
-            waterEvery = defaults.object(forKey: Key.water) as? Int ?? 10
             intensity = defaults.string(forKey: Key.intensity).flatMap(Intensity.init(rawValue:)) ?? .party
             setupDone = defaults.bool(forKey: Key.setup)
         }
-        turn = TurnOrder(count: players.count)
-        water = WaterBreakSchedule(every: waterEvery)
+        players = initialPlayers
+        waterEvery = initialWater
+        turn = TurnOrder(count: initialPlayers.count)
+        water = WaterBreakSchedule(every: initialWater)
     }
 
     // MARK: Derived
