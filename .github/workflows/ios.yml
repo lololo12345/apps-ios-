@@ -99,7 +99,7 @@ jobs:
           mkdir -p raw screenshots
           if [ -d UI.xcresult ]; then xcrun xcresulttool export attachments --path UI.xcresult --output-path raw || true; fi
           python3 - <<'PY'
-          import json, os, subprocess
+          import json, os, shutil, subprocess
           manifest = os.path.join("raw", "manifest.json")
           if os.path.exists(manifest):
               for test in json.load(open(manifest)):
@@ -108,7 +108,10 @@ jobs:
                       src = os.path.join("raw", item["exportedFileName"])
                       base = name.split("_")[0].replace(" ", "-")
                       dst = os.path.join("screenshots", base + ".jpg")
-                      subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "72", "-Z", "1100", src, "--out", dst], capture_output=True)
+                      if src.endswith(".txt"):
+                          shutil.copy(src, os.path.join("screenshots", base.replace("`", "").replace('"', "") + ".txt"))
+                      elif src.endswith(".png"):
+                          subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "72", "-Z", "1100", src, "--out", dst], capture_output=True)
           print("\n".join(sorted(os.listdir("screenshots"))))
           PY
 
