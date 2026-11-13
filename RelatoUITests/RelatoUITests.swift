@@ -105,6 +105,17 @@ final class RelatoUITests: XCTestCase {
         app.tabBars.buttons["Ajustes"].tap()
         XCTAssertTrue(app.navigationBars["Ajustes"].waitForExistence(timeout: 5))
         snapshot("20-settings-\(suffix)", app)
+
+        // Speaking-rate calibration: start, stop too early, see the guidance, close.
+        app.buttons["settings.calibrate"].tap()
+        XCTAssertTrue(app.buttons["calibration.start"].waitForExistence(timeout: 5))
+        snapshot("21-calibration-\(suffix)", app)
+        app.buttons["calibration.start"].tap()
+        XCTAssertTrue(app.buttons["calibration.stop"].waitForExistence(timeout: 3))
+        app.buttons["calibration.stop"].tap()
+        XCTAssertTrue(app.buttons["Repetir"].waitForExistence(timeout: 3))
+        app.buttons["Cerrar"].tap()
+        XCTAssertTrue(app.navigationBars["Ajustes"].waitForExistence(timeout: 5))
     }
 
     @MainActor

@@ -20,6 +20,7 @@ struct SettingsView: View {
     @State private var showNotificationsDenied = false
     @State private var showDeleteAll = false
     @State private var samplesAdded = false
+    @State private var showCalibration = false
 
     var body: some View {
         NavigationStack {
@@ -33,6 +34,9 @@ struct SettingsView: View {
             .scrollContentBackground(.hidden)
             .background { AuroraBackground(intensity: 0.5) }
             .navigationTitle("Ajustes")
+            .sheet(isPresented: $showCalibration) {
+                CalibrationView()
+            }
             .alert("Notificaciones desactivadas", isPresented: $showNotificationsDenied) {
                 Button("Abrir Ajustes") {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
@@ -78,6 +82,13 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
             .padding(.vertical, 4)
+
+            Button {
+                showCalibration = true
+            } label: {
+                Label("Medir mi velocidad leyendo en voz alta", systemImage: "stopwatch")
+            }
+            .accessibilityIdentifier("settings.calibrate")
 
             Picker("Duración por defecto", selection: $defaultTarget) {
                 ForEach(TargetDuration.presets, id: \.self) { Text(TargetDuration.label($0)).tag($0) }

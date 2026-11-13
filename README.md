@@ -36,6 +36,8 @@ deciden si una historia funciona:
 | **Teleprompter** | Modo ensayo y modo grabación. La velocidad se calcula a partir de tus palabras por minuto y se reparte por bloque; puedes ajustarla de 0,5× a 2×. Muestra el bloque que estás leyendo, marca la línea de lectura y permite arrastrar para moverte por el texto, tocar para pausar, cuenta atrás de 3 s y texto en espejo. La pantalla no se apaga mientras lo usas. |
 | **Grabación** | Cámara frontal a 1080p en vertical, con micrófono si das permiso. Cada toma queda guardada con su historia, con miniatura y duración. Desde la revisión puedes reproducirla, guardarla en Fotos, compartirla o eliminarla. |
 | **Ideas** | Captura rápida. Desliza para convertir una idea en historia: la idea pasa a ser el gancho y se sugiere un título. |
+| **Mide tu velocidad** | Lees en voz alta un párrafo de longitud conocida mientras corre un cronómetro, y Relato calcula tus palabras por minuto reales. Sin micrófono; descarta las mediciones imposibles. Afina la duración estimada y la velocidad del teleprompter. |
+| **Siri, Atajos y botón de Acción** | «Apuntar idea en Relato» guarda una idea sin abrir la app (App Intents). También aparece en Spotlight y se puede asignar al botón de Acción del iPhone. |
 | **Ajustes** | Velocidad al hablar (110–210 ppm), duración por defecto, tamaño de texto, cuenta atrás, espejo, vibraciones, recordatorio diario con notificación local, ejemplos, volver a ver la introducción y borrar todo. |
 
 ## Tecnología
@@ -44,7 +46,7 @@ deciden si una historia funciona:
 - **iOS 26+** con **Liquid Glass** nativo (`glassEffect`, `GlassEffectContainer`, `.glass` / `.glassProminent`).
   El cristal se usa solo en la capa de controles flotantes; el contenido va sobre superficies sólidas, como pide la HIG.
 - **AVFoundation** (captura y grabación), **AVKit** (reproducción), **Photos** (guardar con permiso de solo añadir),
-  **UserNotifications** (recordatorio diario).
+  **UserNotifications** (recordatorio diario), **App Intents** (Siri, Atajos, Spotlight y botón de Acción).
 - Modo claro y oscuro, Dynamic Type, etiquetas de VoiceOver, «Reducir movimiento» y vibraciones que se pueden desactivar.
 
 ### Arquitectura
@@ -54,8 +56,9 @@ Relato/
 ├── App/            Punto de entrada, SwiftData (con recuperación si el almacén se corrompe), navegación, preferencias
 ├── Models/         @Model Story · Beat · Take · Idea  +  enums (BeatKind, StoryGenre, StoryStatus)
 ├── Core/           Motores puros y testeables, sin UI:
-│                   ScriptMetrics · HookAnalyzer · PartSplitter · PrompterPacing · StreakCalculator · ScriptExporter
+│                   ScriptMetrics · HookAnalyzer · PartSplitter · PrompterPacing · StreakCalculator · ScriptExporter · SpeechCalibration
 ├── Services/       Cámara (cola propia), almacenamiento de tomas, Fotos, notificaciones, acciones sobre modelos, ejemplos
+├── Intents/        App Intent «Apuntar idea» y frases de Siri
 ├── DesignSystem/   Paleta adaptable, componentes (tarjetas, chips, barra de tiempo, anillo de puntuación…), hápticos
 └── Features/       Onboarding · Library · Templates · Editor · Prompter · Ideas · Settings
 RelatoTests/        Tests unitarios (Swift Testing): motores y modelos
@@ -105,8 +108,8 @@ No necesitas claves de API, backend ni servicios externos: todo funciona sin con
 
 | Suite | Qué cubre | Resultado (Xcode 26.6 · iPhone 17 Pro · iOS 26.5) |
 |---|---|---|
-| `RelatoTests` (Swift Testing) | Duración hablada, coach de gancho, divisor en partes y *cliffhangers*, ritmo del teleprompter (interpolación e inversa), racha, exportación, plantillas, mover y borrar bloques, duplicar, idea → historia, borrado en cascada, valores corruptos | ✅ 39/39 |
-| `RelatoUITests` | Onboarding; flujo de escritura completo en claro y oscuro (biblioteca → editor → partes → plantilla → escribir → ideas → ajustes); teleprompter (ensayo, reproducir, pausar) y modo grabación sin cámara | ✅ 5/5 |
+| `RelatoTests` (Swift Testing) | Duración hablada, coach de gancho, divisor en partes y *cliffhangers*, ritmo del teleprompter (interpolación e inversa), racha, exportación, plantillas, mover y borrar bloques, duplicar, idea → historia, borrado en cascada, valores corruptos, calibración de velocidad, App Intent «Apuntar idea» | ✅ 46/46 |
+| `RelatoUITests` | Onboarding; flujo de escritura completo en claro y oscuro (biblioteca → editor → partes → plantilla → escribir → ideas → ajustes → medir velocidad); teleprompter (ensayo, reproducir, pausar) y modo grabación sin cámara | ✅ 5/5 |
 | Rendimiento | Tiempo de arranque (`XCTApplicationLaunchMetric`) | ≈ 2,9 s en el simulador de CI (en un iPhone real es bastante menor) |
 
 Compila con **Swift 6 en modo estricto de concurrencia** y **0 advertencias** en el código del proyecto.
@@ -127,7 +130,8 @@ Compila con **Swift 6 en modo estricto de concurrencia** y **0 advertencias** en
 | Notificaciones | Al activar el recordatorio diario | Aviso local a la hora que elijas |
 
 ## Hoja de ruta (ideas siguientes)
-- Widget de racha y de la próxima historia que toca grabar (WidgetKit).
+- Widget de racha y de la próxima historia que toca grabar (WidgetKit). Necesita App Groups, que no están
+  disponibles con una cuenta gratuita de Apple, por eso no se ha incluido aún.
 - Sincronizar entre dispositivos con CloudKit (los modelos ya son compatibles).
-- Medir tu velocidad real de habla con Speech y recalibrar las palabras por minuto automáticamente.
+- Recalibrar la velocidad automáticamente a partir de la duración real de cada toma grabada.
 - Subtítulos automáticos al exportar.

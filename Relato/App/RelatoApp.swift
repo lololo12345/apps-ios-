@@ -7,7 +7,7 @@ struct RelatoApp: App {
     @State private var router = AppRouter()
 
     init() {
-        persistence = Persistence.make()
+        persistence = Persistence.shared
     }
 
     var body: some Scene {
@@ -27,6 +27,10 @@ struct Persistence {
     let recoveryNotice: String?
 
     static let schema = Schema([Story.self, Beat.self, Take.self, Idea.self])
+
+    /// One container per process, shared by the UI and by App Intents (Siri, Shortcuts, Action Button),
+    /// so an idea saved from Siri shows up in the app immediately.
+    @MainActor static let shared = make()
 
     @MainActor
     static func make() -> Persistence {
