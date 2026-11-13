@@ -87,12 +87,14 @@ struct IdeasView: View {
                 .lineLimit(1...5)
                 .focused($captureFocused)
                 .submitLabel(.send)
-                .onSubmit(save)
+                .onSubmit { save() }
                 .padding(.vertical, 12)
                 .padding(.leading, 16)
                 .accessibilityIdentifier("ideas.capture")
 
-            Button(action: save) {
+            Button {
+                save()
+            } label: {
                 Image(systemName: "arrow.up")
                     .font(.headline.weight(.bold))
                     .frame(width: 22, height: 22)

@@ -124,7 +124,7 @@ struct SettingsView: View {
 
     private var reminderSection: some View {
         Section {
-            Toggle(isOn: Binding(get: { reminderEnabled }, set: setReminder)) {
+            Toggle(isOn: Binding(get: { reminderEnabled }, set: { setReminder($0) })) {
                 Label("Recordatorio diario", systemImage: "bell.badge.fill")
             }
             if reminderEnabled {

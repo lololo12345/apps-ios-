@@ -100,7 +100,9 @@ struct TakeReviewView: View {
                     }
                     .buttonStyle(.glass)
 
-                    Button(action: saveToPhotos) {
+                    Button {
+                        saveToPhotos()
+                    } label: {
                         Group {
                             switch saveState {
                             case .idle, .failed:

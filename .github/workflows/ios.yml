@@ -45,7 +45,7 @@ jobs:
           set +e
           xcodebuild build-for-testing \
             -project Relato.xcodeproj -scheme Relato \
-            -destination "generic/platform=iOS Simulator" -derivedDataPath DerivedData \
+            -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
             CODE_SIGNING_ALLOWED=NO > build.log 2>&1
           status=$?
           echo "::group::Diagnostics"

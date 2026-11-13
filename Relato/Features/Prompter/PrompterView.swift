@@ -99,8 +99,8 @@ struct PrompterView: View {
         .persistentSystemOverlays(.hidden)
         .animation(.smooth(duration: 0.25), value: engine.didReachEnd)
         .animation(reduceMotion ? nil : .spring(duration: 0.35, bounce: 0.3), value: countdownValue)
-        .onAppear(perform: setUp)
-        .onDisappear(perform: tearDown)
+        .onAppear { setUp() }
+        .onDisappear { tearDown() }
         .onChange(of: speed) { engine.setSpeed(speed) }
         .onChange(of: scenePhase) { _, phase in handleScenePhase(phase) }
         .onChange(of: recorder.finishedClip) { _, clip in
