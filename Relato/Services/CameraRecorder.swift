@@ -140,12 +140,17 @@ final class RecorderModel {
     /// Set when a take file is finalized; the view consumes it and sets it back to nil.
     var finishedClip: RecordedClip?
 
-    @ObservationIgnored let camera = CameraSession()
+    /// Created on first use, so rehearsal mode never pays for an AVCaptureSession.
+    @ObservationIgnored private(set) var camera: CameraSession?
 
-    init() {
+    private func makeCamera() -> CameraSession {
+        if let camera { return camera }
+        let camera = CameraSession()
         camera.onFinish = { [weak self] url, success in
             Task { @MainActor in await self?.handleFinish(url: url, success: success) }
         }
+        self.camera = camera
+        return camera
     }
 
     var isRecording: Bool { phase == .recording }
@@ -162,6 +167,7 @@ final class RecorderModel {
             return
         }
         let audioAllowed = await AVCaptureDevice.requestAccess(for: .audio)
+        let camera = makeCamera()
         do {
             try await camera.configure(includeAudio: audioAllowed)
             hasAudio = audioAllowed
@@ -177,6 +183,7 @@ final class RecorderModel {
         do {
             let url = try TakeStorage.makeRecordingURL()
             lastError = nil
+            guard let camera else { return }
             camera.startRecording(to: url)
             recordingStartedAt = .now
             phase = .recording
@@ -188,11 +195,11 @@ final class RecorderModel {
     func stopRecording() {
         guard phase == .recording else { return }
         phase = .finishing
-        camera.stopRecording()
+        camera?.stopRecording()
     }
 
     func shutdown() {
-        camera.stopRunning()
+        camera?.stopRunning()
         if phase == .ready { phase = .idle }
     }
 
@@ -201,7 +208,7 @@ final class RecorderModel {
         if phase == .idle {
             Task { await prepare() }
         } else {
-            camera.startRunning()
+            camera?.startRunning()
         }
     }
 

@@ -120,8 +120,9 @@ struct PrompterView: View {
 
     @ViewBuilder
     private var background: some View {
-        if mode == .record, recorder.phase == .ready || recorder.phase == .recording || recorder.phase == .finishing {
-            CameraPreview(session: recorder.camera.session)
+        if mode == .record, let camera = recorder.camera,
+           recorder.phase == .ready || recorder.phase == .recording || recorder.phase == .finishing {
+            CameraPreview(session: camera.session)
                 .ignoresSafeArea()
                 .overlay {
                     // Scrim keeps text legible over any background.
@@ -265,7 +266,7 @@ struct PrompterView: View {
             .gesture(scrubGesture(pacing: pacing))
             .accessibilityElement()
             .accessibilityLabel("Guion")
-            .accessibilityValue(segments.map(\.text).joined(separator: " "))
+            .accessibilityValue(segments.first?.text ?? "")
             .accessibilityHint("Toca dos veces para pausar o continuar")
             .accessibilityAction { engine.toggle() }
         }
