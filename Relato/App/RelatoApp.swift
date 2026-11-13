@@ -15,7 +15,7 @@ struct RelatoApp: App {
             RootView(storeRecoveryNotice: persistence.recoveryNotice)
                 .environment(router)
                 .tint(Palette.ember)
-                .preferredColorScheme(LaunchOptions.forceDark ? .dark : nil)
+                .modifier(ForcedAppearance())
         }
         .modelContainer(persistence.container)
     }
@@ -78,5 +78,16 @@ final class AppRouter {
     func open(_ story: Story) {
         tab = .stories
         storyPath = [story]
+    }
+}
+
+/// Applies a forced dark appearance only when requested by a launch argument (screenshots, UI tests).
+private struct ForcedAppearance: ViewModifier {
+    func body(content: Content) -> some View {
+        if LaunchOptions.forceDark {
+            content.preferredColorScheme(.dark)
+        } else {
+            content
+        }
     }
 }

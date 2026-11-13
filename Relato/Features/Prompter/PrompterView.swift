@@ -94,7 +94,9 @@ struct PrompterView: View {
                     .accessibilityLabel("Empieza en \(countdownValue)")
             }
         }
-        .preferredColorScheme(.dark)
+        // Scoped dark appearance: unlike preferredColorScheme, this never touches the window,
+        // so presenting the prompter cannot re-render the rest of the app.
+        .environment(\.colorScheme, .dark)
         .statusBarHidden()
         .persistentSystemOverlays(.hidden)
         .animation(.smooth(duration: 0.25), value: engine.didReachEnd)
