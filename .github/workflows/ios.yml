@@ -81,7 +81,7 @@ jobs:
           xcodebuild test-without-building \
             -project Relato.xcodeproj -scheme Relato \
             -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
-            -only-testing:RelatoUITests -skip-testing:RelatoUITests/RelatoUITests/testLaunchPerformance -resultBundlePath UI.xcresult \
+            -only-testing:RelatoUITests -resultBundlePath UI.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Case|passed|failed|error:|Executed|measured|XCTAssert" | tail -120
 
       - name: Test summaries

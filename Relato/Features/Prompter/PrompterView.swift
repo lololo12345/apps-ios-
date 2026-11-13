@@ -21,8 +21,9 @@ struct PrompterView: View {
     @State private var mode: PrompterMode
     @State private var segments: [ScriptSegment] = []
     @State private var segmentSeconds: [Double] = []
-    @State private var segmentOffsets: [Int: CGFloat] = [:]
-    @State private var columnHeight: CGFloat = 0
+    /// Measured height of each beat. Heights (unlike positions) do not depend on the scroll offset,
+    /// so measuring can never feed back into layout.
+    @State private var segmentHeights: [Int: CGFloat] = [:]
     @State private var engine = PrompterEngine()
     @State private var recorder = RecorderModel()
     @State private var countdownValue: Int?
@@ -37,9 +38,15 @@ struct PrompterView: View {
     }
 
     private var pacing: PrompterPacing? {
-        guard !segments.isEmpty, segmentOffsets.count == segments.count, columnHeight > 0 else { return nil }
-        let offsets = (0..<segments.count).map { Double(segmentOffsets[$0] ?? 0) }
-        return PrompterPacing(segmentSeconds: segmentSeconds, segmentOffsets: offsets, endOffset: Double(columnHeight))
+        guard !segments.isEmpty, segmentHeights.count == segments.count else { return nil }
+        let spacing = PrompterColumn.spacing(for: fontSize)
+        var offsets: [Double] = []
+        var cursor: Double = 0
+        for index in segments.indices {
+            offsets.append(cursor)
+            cursor += Double(segmentHeights[index] ?? 0) + spacing
+        }
+        return PrompterPacing(segmentSeconds: segmentSeconds, segmentOffsets: offsets, endOffset: max(0, cursor - spacing))
     }
 
     var body: some View {
@@ -52,12 +59,8 @@ struct PrompterView: View {
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 8)
 
-                if LaunchOptions.has("-pNoScript") {
-                    Color.clear.frame(maxHeight: .infinity)
-                } else {
-                    scriptArea(pacing: pacing)
-                        .padding(.top, 10)
-                }
+                scriptArea(pacing: pacing)
+                    .padding(.top, 10)
 
                 Spacer(minLength: 12)
 
@@ -82,11 +85,9 @@ struct PrompterView: View {
                         .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
 
-                if !LaunchOptions.has("-pNoControls") {
-                    controls
-                        .padding(.horizontal, Metrics.gutter)
-                        .padding(.bottom, 10)
-                }
+                controls
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.bottom, 10)
             }
 
             if let countdownValue {
@@ -107,7 +108,7 @@ struct PrompterView: View {
         .persistentSystemOverlays(.hidden)
         .animation(.smooth(duration: 0.25), value: engine.didReachEnd)
         .animation(reduceMotion ? nil : .spring(duration: 0.35, bounce: 0.3), value: countdownValue)
-        .onAppear { if !LaunchOptions.has("-pNoSetup") { setUp() } }
+        .onAppear { setUp() }
         .onDisappear { tearDown() }
         .onChange(of: speed) { engine.setSpeed(speed) }
         .onChange(of: scenePhase) { _, phase in handleScenePhase(phase) }
@@ -128,9 +129,7 @@ struct PrompterView: View {
 
     @ViewBuilder
     private var background: some View {
-        if LaunchOptions.has("-pNoBackground") {
-            Color.black.ignoresSafeArea()
-        } else if mode == .record, let camera = recorder.camera,
+        if mode == .record, let camera = recorder.camera,
            recorder.phase == .ready || recorder.phase == .recording || recorder.phase == .finishing {
             CameraPreview(session: camera.session)
                 .ignoresSafeArea()
@@ -176,12 +175,8 @@ struct PrompterView: View {
             Spacer()
 
             // Ticks only while reading or recording: zero work (and battery) while paused.
-            if LaunchOptions.has("-pNoHUD") {
-                Text("HUD")
-            } else {
-                TimelineView(.animation(minimumInterval: 0.25, paused: !engine.isRunning && !recorder.isRecording)) { context in
-                    hud(at: context.date)
-                }
+            TimelineView(.animation(minimumInterval: 0.25, paused: !engine.isRunning && !recorder.isRecording)) { context in
+                hud(at: context.date)
             }
 
             Spacer()
@@ -238,8 +233,10 @@ struct PrompterView: View {
                         segments: segments,
                         fontSize: fontSize,
                         activeIndex: active,
-                        onMeasure: { index, minY in segmentOffsets[index] = minY },
-                        onHeight: { columnHeight = $0 }
+                        onMeasure: { index, height in
+                            // Ignore sub-point jitter so measurement always converges.
+                            if abs((segmentHeights[index] ?? -1) - height) > 0.5 { segmentHeights[index] = height }
+                        }
                     )
                     .equatable()
                     .frame(width: proxy.size.width - 2 * Metrics.gutter - 18, alignment: .leading)
@@ -535,14 +532,15 @@ private struct PrompterColumn: View, Equatable {
     let fontSize: Double
     let activeIndex: Int
     let onMeasure: (Int, CGFloat) -> Void
-    let onHeight: (CGFloat) -> Void
+
+    static func spacing(for fontSize: Double) -> Double { fontSize * 0.9 }
 
     nonisolated static func == (lhs: PrompterColumn, rhs: PrompterColumn) -> Bool {
         lhs.segments == rhs.segments && lhs.fontSize == rhs.fontSize && lhs.activeIndex == rhs.activeIndex
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: fontSize * 0.9) {
+        VStack(alignment: .leading, spacing: Self.spacing(for: fontSize)) {
             ForEach(Array(segments.enumerated()), id: \.element.id) { index, segment in
                 VStack(alignment: .leading, spacing: 6) {
                     Label(segment.kind.title.uppercased(), systemImage: segment.kind.symbol)
@@ -557,19 +555,13 @@ private struct PrompterColumn: View, Equatable {
                         .animation(.smooth(duration: 0.4), value: activeIndex)
                 }
                 .onGeometryChange(for: CGFloat.self) { proxy in
-                    proxy.frame(in: .named("prompterColumn")).minY
-                } action: { minY in
-                    if !LaunchOptions.has("-pNoMeasure") { onMeasure(index, minY) }
+                    proxy.size.height
+                } action: { height in
+                    onMeasure(index, height)
                 }
             }
             // Room so the last line can scroll past the reading line.
             Color.clear.frame(height: 40)
-        }
-        .coordinateSpace(.named("prompterColumn"))
-        .onGeometryChange(for: CGFloat.self) { proxy in
-            proxy.size.height - 40
-        } action: { height in
-            if !LaunchOptions.has("-pNoMeasure") { onHeight(height) }
         }
     }
 }
