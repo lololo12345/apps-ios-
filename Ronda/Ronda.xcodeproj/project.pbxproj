@@ -1,0 +1,506 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		54C989736F577938C4E4F29E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED69E1AA1B6C69C08C20FD83 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05CB10C57A552C1F54EB8BF0;
+			remoteInfo = Ronda;
+		};
+		890584AED7B137593B600D21 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED69E1AA1B6C69C08C20FD83 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05CB10C57A552C1F54EB8BF0;
+			remoteInfo = Ronda;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		43D85A2D70FF385AD864E08E /* Ronda.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ronda.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		942D9AD212DD9532E3D0C3E2 /* RondaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RondaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		130A7EC79B76F6B1A9B3BA3A /* RondaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RondaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A9878D7C81AF643720C0B132 /* Ronda */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Ronda;
+			sourceTree = "<group>";
+		};
+		923FF2E44EF03B21C2E47183 /* RondaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RondaTests;
+			sourceTree = "<group>";
+		};
+		E42A47722B0F5A8431F574EA /* RondaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RondaUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C90F920EA999235A8DE91784 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A0DC5382C24BD3F67F3F0D0F = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39D3932E809EC5D3E2E521DD = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18EFB72AFCD219CC7BC62CA6 = {
+			isa = PBXGroup;
+			children = (
+				A9878D7C81AF643720C0B132 /* Ronda */,
+				923FF2E44EF03B21C2E47183 /* RondaTests */,
+				E42A47722B0F5A8431F574EA /* RondaUITests */,
+				548754A780662EE825432045 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		548754A780662EE825432045 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				43D85A2D70FF385AD864E08E /* Ronda.app */,
+				942D9AD212DD9532E3D0C3E2 /* RondaTests.xctest */,
+				130A7EC79B76F6B1A9B3BA3A /* RondaUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05CB10C57A552C1F54EB8BF0 /* Ronda */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEE9C117B66807092A911577;
+			buildPhases = (
+				A49C98FA941D38C9052E44A9 /* Sources */,
+				C90F920EA999235A8DE91784 /* Frameworks */,
+				0E21D87B070CABA22001ACF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A9878D7C81AF643720C0B132 /* Ronda */,
+			);
+			name = Ronda;
+			packageProductDependencies = (
+			);
+			productName = Ronda;
+			productReference = 43D85A2D70FF385AD864E08E /* Ronda.app */;
+			productType = "com.apple.product-type.application";
+		};
+		050577FB75531F32D2FC35F1 /* RondaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E80B0505FB2451EAD23DFFB3;
+			buildPhases = (
+				16783B1702058CEB0FE4B553 /* Sources */,
+				A0DC5382C24BD3F67F3F0D0F /* Frameworks */,
+				EAF0B76B7EDBF06F6938845E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8CA6BD4E4C433FF8CA9D653 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				923FF2E44EF03B21C2E47183 /* RondaTests */,
+			);
+			name = RondaTests;
+			packageProductDependencies = (
+			);
+			productName = RondaTests;
+			productReference = 942D9AD212DD9532E3D0C3E2 /* RondaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		125617A9BBBDE4C5451B284E /* RondaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0AF660546FD0622E1FA1072;
+			buildPhases = (
+				17D9D13C3C04341DCE6E7F50 /* Sources */,
+				39D3932E809EC5D3E2E521DD /* Frameworks */,
+				B7E6D17879261B72E939A063 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				06EBA588D9090F4CB9D59E62 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E42A47722B0F5A8431F574EA /* RondaUITests */,
+			);
+			name = RondaUITests;
+			packageProductDependencies = (
+			);
+			productName = RondaUITests;
+			productReference = 130A7EC79B76F6B1A9B3BA3A /* RondaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ED69E1AA1B6C69C08C20FD83 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					05CB10C57A552C1F54EB8BF0 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					050577FB75531F32D2FC35F1 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 05CB10C57A552C1F54EB8BF0;
+					};
+					125617A9BBBDE4C5451B284E = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 05CB10C57A552C1F54EB8BF0;
+					};
+				};
+			};
+			buildConfigurationList = 669270CA411E43BA61A666E5;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				es,
+				Base,
+			);
+			mainGroup = 18EFB72AFCD219CC7BC62CA6;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 548754A780662EE825432045 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				05CB10C57A552C1F54EB8BF0 /* Ronda */,
+				050577FB75531F32D2FC35F1 /* RondaTests */,
+				125617A9BBBDE4C5451B284E /* RondaUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0E21D87B070CABA22001ACF8 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAF0B76B7EDBF06F6938845E = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7E6D17879261B72E939A063 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A49C98FA941D38C9052E44A9 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		16783B1702058CEB0FE4B553 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17D9D13C3C04341DCE6E7F50 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D8CA6BD4E4C433FF8CA9D653 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05CB10C57A552C1F54EB8BF0 /* Ronda */;
+			targetProxy = 54C989736F577938C4E4F29E /* PBXContainerItemProxy */;
+		};
+		06EBA588D9090F4CB9D59E62 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05CB10C57A552C1F54EB8BF0 /* Ronda */;
+			targetProxy = 890584AED7B137593B600D21 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B1A518103BA592336CE78F9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		0FDEBC83DBE6A4A7F5BDE5D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4E85BF0E7F6D0F8A45833461 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Ronda-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ronda";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.card-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = "Dark";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		EBE706B6E1F5617A8460DC3D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Ronda-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Ronda";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.card-games";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = "Dark";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		D8568D9D111B1BCD7C3BF813 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ronda.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Ronda";
+			};
+			name = Debug;
+		};
+		B4DB0CD444549A7AA9C89F7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ronda.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Ronda";
+			};
+			name = Release;
+		};
+		A8E4FE808BF9762C871D31B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Ronda;
+			};
+			name = Debug;
+		};
+		C16DD74D32B731EE8306FC33 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.ronda.party.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Ronda;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		669270CA411E43BA61A666E5 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1A518103BA592336CE78F9C /* Debug */,
+				0FDEBC83DBE6A4A7F5BDE5D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEE9C117B66807092A911577 /* Build configuration list for Ronda */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4E85BF0E7F6D0F8A45833461 /* Debug */,
+				EBE706B6E1F5617A8460DC3D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E80B0505FB2451EAD23DFFB3 /* Build configuration list for RondaTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8568D9D111B1BCD7C3BF813 /* Debug */,
+				B4DB0CD444549A7AA9C89F7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F0AF660546FD0622E1FA1072 /* Build configuration list for RondaUITests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8E4FE808BF9762C871D31B9 /* Debug */,
+				C16DD74D32B731EE8306FC33 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ED69E1AA1B6C69C08C20FD83 /* Project object */;
+}

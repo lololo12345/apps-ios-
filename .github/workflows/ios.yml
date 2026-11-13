@@ -13,8 +13,19 @@ concurrency:
 
 jobs:
   build-and-test:
+    name: ${{ matrix.app }}
     runs-on: macos-26
     timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      matrix:
+        # One folder per app: <App>/<App>.xcodeproj with targets <App>, <App>Tests and <App>UITests.
+        app: [ Relato, Ronda ]
+    defaults:
+      run:
+        working-directory: ${{ matrix.app }}
+    env:
+      APP: ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
 
@@ -44,7 +55,7 @@ jobs:
         run: |
           set +e
           xcodebuild build-for-testing \
-            -project Relato.xcodeproj -scheme Relato \
+            -project "$APP.xcodeproj" -scheme "$APP" \
             -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
             CODE_SIGNING_ALLOWED=NO > build.log 2>&1
           status=$?
@@ -61,7 +72,7 @@ jobs:
               grep -n -i -E "while |LLVM ERROR|in function|SIL|IRGen|emitting" build.log | cut -c1-900 | head -40
             fi
           fi
-          echo "Warnings in project sources: $(grep -E '/Relato(Tests|UITests)?/.*warning:' build.log | sort -u | wc -l)"
+          echo "Warnings in project sources: $(grep -E "/${APP}(Tests|UITests)?/.*warning:" build.log | sort -u | wc -l)"
           tail -15 build.log
           exit $status
 
@@ -69,9 +80,9 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild test-without-building \
-            -project Relato.xcodeproj -scheme Relato \
+            -project "$APP.xcodeproj" -scheme "$APP" \
             -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
-            -only-testing:RelatoTests -resultBundlePath Unit.xcresult \
+            -only-testing:"${APP}Tests" -resultBundlePath Unit.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test (Case|Suite|run)|✔|✘|passed|failed|error:|Executed" | tail -150
 
       - name: UI tests (with screenshots)
@@ -79,9 +90,9 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild test-without-building \
-            -project Relato.xcodeproj -scheme Relato \
+            -project "$APP.xcodeproj" -scheme "$APP" \
             -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
-            -only-testing:RelatoUITests -resultBundlePath UI.xcresult \
+            -only-testing:"${APP}UITests" -resultBundlePath UI.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Case|passed|failed|error:|Executed|measured|XCTAssert" | tail -120
 
       - name: Test summaries
@@ -118,13 +129,13 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: build-log
-          path: build.log
+          name: build-log-${{ matrix.app }}
+          path: ${{ matrix.app }}/build.log
           retention-days: 7
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: screenshots
-          path: screenshots
+          name: screenshots-${{ matrix.app }}
+          path: ${{ matrix.app }}/screenshots
           retention-days: 14

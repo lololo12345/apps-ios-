@@ -1,0 +1,152 @@
+import Foundation
+import Observation
+
+enum AgeStatus: String, Codable, Sendable {
+    case adult
+    case minor
+}
+
+enum LaunchOptions {
+    static var isUITesting: Bool { ProcessInfo.processInfo.arguments.contains("-uiTesting") }
+}
+
+/// State of the night: players, the sip tally, settings and the water-break schedule.
+/// Players, tally and settings persist so a game survives the app being closed between rounds.
+@MainActor
+@Observable
+final class PartySession {
+    private enum Key {
+        static let players = "players"
+        static let ledger = "ledger"
+        static let age = "ageStatus"
+        static let sober = "soberMode"
+        static let water = "waterEvery"
+        static let intensity = "intensity"
+        static let setup = "setupDone"
+    }
+
+    @ObservationIgnored private let defaults: UserDefaults
+
+    var players: [Player] { didSet { persistPlayers(); turn = TurnOrder(count: players.count, start: turn.current) } }
+    private(set) var ledger: SipLedger { didSet { persist(ledger, key: Key.ledger) } }
+    var ageStatus: AgeStatus? { didSet { defaults.set(ageStatus?.rawValue, forKey: Key.age) } }
+    var soberPreference: Bool { didSet { defaults.set(soberPreference, forKey: Key.sober) } }
+    var waterEvery: Int { didSet { defaults.set(waterEvery, forKey: Key.water); water = WaterBreakSchedule(every: waterEvery) } }
+    var intensity: Intensity { didSet { defaults.set(intensity.rawValue, forKey: Key.intensity) } }
+    /// Set when the group finishes the first-run player list.
+    var setupDone: Bool { didSet { defaults.set(setupDone, forKey: Key.setup) } }
+
+    var mode: PartyMode = .normal
+    /// Group consent for the Hot section; asked again every time the app is launched.
+    var hotUnlocked = false
+    var pendingWaterBreak: String?
+    private(set) var turn: TurnOrder
+
+    @ObservationIgnored private var water: WaterBreakSchedule
+    @ObservationIgnored private var waterMessages = ShuffledDeck(CardBank.waterBreaks)
+
+    init(defaults: UserDefaults = .standard, uiTesting: Bool = LaunchOptions.isUITesting) {
+        self.defaults = defaults
+        if uiTesting {
+            let fresh = ProcessInfo.processInfo.arguments.contains("-freshInstall")
+            players = fresh ? [] : ["Ana", "Leo", "Sara", "Dani"].map { Player(name: $0) }
+            ledger = SipLedger()
+            ageStatus = fresh ? nil : .adult
+            soberPreference = false
+            waterEvery = 0
+            intensity = .party
+            setupDone = !fresh
+        } else {
+            players = Self.decode([Player].self, from: defaults, key: Key.players) ?? []
+            ledger = Self.decode(SipLedger.self, from: defaults, key: Key.ledger) ?? SipLedger()
+            ageStatus = defaults.string(forKey: Key.age).flatMap(AgeStatus.init(rawValue:))
+            soberPreference = defaults.bool(forKey: Key.sober)
+            waterEvery = defaults.object(forKey: Key.water) as? Int ?? 10
+            intensity = defaults.string(forKey: Key.intensity).flatMap(Intensity.init(rawValue:)) ?? .party
+            setupDone = defaults.bool(forKey: Key.setup)
+        }
+        turn = TurnOrder(count: players.count)
+        water = WaterBreakSchedule(every: waterEvery)
+    }
+
+    // MARK: Derived
+
+    /// Minors can use the app only in alcohol-free mode and never see the Hot section.
+    var soberMode: Bool { soberPreference || ageStatus == .minor }
+    var canUseHot: Bool { ageStatus == .adult }
+    var lexicon: Lexicon { Lexicon(soberMode: soberMode) }
+    var currentPlayer: Player? { players.indices.contains(turn.current) ? players[turn.current] : nil }
+
+    func player(leftOf player: Player) -> Player? {
+        guard let index = players.firstIndex(of: player) else { return nil }
+        return players[turn.left(of: index)]
+    }
+
+    func player(rightOf player: Player) -> Player? {
+        guard let index = players.firstIndex(of: player) else { return nil }
+        return players[turn.right(of: index)]
+    }
+
+    // MARK: Players
+
+    @discardableResult
+    func addPlayer(named raw: String) -> Bool {
+        guard players.count < PlayerRules.maxPlayers,
+              let name = PlayerRules.sanitize(raw, existing: players) else { return false }
+        players.append(Player(name: name))
+        return true
+    }
+
+    func removePlayer(_ player: Player) {
+        players.removeAll { $0.id == player.id }
+    }
+
+    func movePlayers(from source: IndexSet, to destination: Int) {
+        players.move(fromOffsets: source, toOffset: destination)
+    }
+
+    // MARK: Turns & sips
+
+    func nextTurn() {
+        turn.advance()
+    }
+
+    func give(_ sips: Int, to ids: some Sequence<UUID>) {
+        ledger.add(sips, to: ids)
+    }
+
+    func give(_ sips: Int, to player: Player?) {
+        guard let player else { return }
+        ledger.add(sips, to: player.id)
+    }
+
+    func everyone(_ sips: Int) {
+        ledger.add(sips, to: players.map(\.id))
+    }
+
+    func resetLedger() {
+        ledger.reset()
+    }
+
+    /// Call once per card/round. Schedules a water break when due (never in alcohol-free mode).
+    func registerRound() {
+        guard !soberMode, water.registerCard() else { return }
+        pendingWaterBreak = waterMessages.draw()
+    }
+
+    // MARK: Persistence
+
+    private func persistPlayers() {
+        persist(players, key: Key.players)
+    }
+
+    private func persist(_ value: some Encodable, key: String) {
+        guard !LaunchOptions.isUITesting, let data = try? JSONEncoder().encode(value) else { return }
+        defaults.set(data, forKey: key)
+    }
+
+    private static func decode<T: Decodable>(_ type: T.Type, from defaults: UserDefaults, key: String) -> T? {
+        guard let data = defaults.data(forKey: key) else { return nil }
+        return try? JSONDecoder().decode(type, from: data)
+    }
+}
