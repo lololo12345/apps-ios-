@@ -123,7 +123,10 @@ struct OnboardingView: View {
         } else {
             VStack(spacing: 12) {
                 Button {
-                    SampleContent.insert(into: context)
+                    // Replaying the intro from Settings must not duplicate the examples.
+                    if ((try? context.fetchCount(FetchDescriptor<Story>())) ?? 0) == 0 {
+                        SampleContent.insert(into: context)
+                    }
                     Haptics.success()
                     onFinish()
                 } label: {
