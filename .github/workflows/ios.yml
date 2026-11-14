@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         # One folder per app: <App>/<App>.xcodeproj with targets <App>, <App>Tests and <App>UITests.
-        app: [ Relato, Ronda ]
+        app: [ Relato, Ronda, PlanB ]
     defaults:
       run:
         working-directory: ${{ matrix.app }}

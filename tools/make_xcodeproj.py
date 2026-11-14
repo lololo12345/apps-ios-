@@ -6,15 +6,20 @@ The project uses file-system synchronized groups (objectVersion 77), so any file
 
 Usage:
     python3 tools/make_xcodeproj.py <AppDir> <Name> <bundle.id> [--display "Name"] [--info KEY=VALUE ...]
+        [--shared <Folder>] [--widget]
 
 Creates <AppDir>/<Name>.xcodeproj with targets <Name>, <Name>Tests, <Name>UITests and a shared scheme.
+--shared adds a synchronized folder compiled into the app (and into the widget, if any).
+--widget adds a WidgetKit extension target <Name>Widget (folder <Name>Widget/, Info.plist in
+Config/<Name>Widget-Info.plist) embedded in the app.
 """
 import argparse
 import hashlib
 import os
 
 
-def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info_plist: str | None):
+def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info_plist: str | None,
+         shared: str | None = None, widget: bool = False):
     def oid(key: str) -> str:
         return hashlib.md5(f"{name}:{key}".encode()).hexdigest()[:24].upper()
 
@@ -22,9 +27,11 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
     UITESTGROUP MAINGROUP PRODUCTSGROUP APPSOURCES APPFRAMEWORKS APPRESOURCES TESTSOURCES TESTFRAMEWORKS
     TESTRESOURCES UITESTSOURCES UITESTFRAMEWORKS UITESTRESOURCES TESTPROXY TESTDEP UITESTPROXY UITESTDEP
     PROJDEBUG PROJRELEASE APPDEBUG APPRELEASE TESTDEBUG TESTRELEASE UITESTDEBUG UITESTRELEASE PROJCONFIGS
-    APPCONFIGS TESTCONFIGS UITESTCONFIGS""".split()
+    APPCONFIGS TESTCONFIGS UITESTCONFIGS WIDGETTARGET WIDGETPRODUCT WIDGETGROUP SHAREDGROUP WIDGETSOURCES
+    WIDGETFRAMEWORKS WIDGETRESOURCES WIDGETPROXY WIDGETDEP WIDGETDEBUG WIDGETRELEASE WIDGETCONFIGS EMBEDPHASE
+    EMBEDFILE""".split()
     I = {k: oid(k) for k in keys}
-    T, U = f"{name}Tests", f"{name}UITests"
+    T, U, W = f"{name}Tests", f"{name}UITests", f"{name}Widget"
 
     def phase(key, isa):
         return f"""\t\t{I[key]} = {{
@@ -111,6 +118,17 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
         "SWIFT_EMIT_LOC_STRINGS": "NO", "TARGETED_DEVICE_FAMILY": "1", "TEST_TARGET_NAME": name,
     }
 
+    widget_settings = {
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
+        "CODE_SIGN_STYLE": "Automatic", "CURRENT_PROJECT_VERSION": "1", "DEVELOPMENT_TEAM": '""',
+        "GENERATE_INFOPLIST_FILE": "YES", "INFOPLIST_FILE": f'"Config/{W}-Info.plist"',
+        "INFOPLIST_KEY_CFBundleDisplayName": f'"{display}"',
+        "LD_RUNPATH_SEARCH_PATHS": '(\n\t\t\t\t\t"$(inherited)",\n\t\t\t\t\t"@executable_path/Frameworks",\n\t\t\t\t\t"@executable_path/../../Frameworks",\n\t\t\t\t)',
+        "MARKETING_VERSION": "1.0", "PRODUCT_BUNDLE_IDENTIFIER": f'"{bundle_id}.widget"',
+        "PRODUCT_NAME": '"$(TARGET_NAME)"', "SKIP_INSTALL": "YES", "SUPPORTED_PLATFORMS": '"iphoneos iphonesimulator"',
+        "SUPPORTS_MACCATALYST": "NO", "SWIFT_EMIT_LOC_STRINGS": "YES", "TARGETED_DEVICE_FAMILY": "1",
+    }
+
     def conf(key, label, d):
         return f"""\t\t{I[key]} /* {label} */ = {{
 \t\t\tisa = XCBuildConfiguration;
@@ -133,9 +151,11 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t}};
 """
 
-    def target(key, tname, cfg, src, fw, res, group, product, ptype, deps):
+    def target(key, tname, cfg, src, fw, res, group, product, ptype, deps, groups=(), extra_phases=()):
         dep_lines = "".join(f"\t\t\t\t{I[x]} /* PBXTargetDependency */,\n" for x in deps)
-        ext = ".app" if ptype.endswith("application") else ".xctest"
+        ext = ".app" if ptype.endswith("application") else (".appex" if ptype.endswith("app-extension") else ".xctest")
+        group_lines = "".join(f"\t\t\t\t{I[g]} /* {label} */,\n" for g, label in [(group, tname), *groups])
+        phase_lines = "".join(f"\t\t\t\t{I[x]} /* {label} */,\n" for x, label in extra_phases)
         return f"""\t\t{I[key]} /* {tname} */ = {{
 \t\t\tisa = PBXNativeTarget;
 \t\t\tbuildConfigurationList = {I[cfg]};
@@ -143,14 +163,13 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\t\t{I[src]} /* Sources */,
 \t\t\t\t{I[fw]} /* Frameworks */,
 \t\t\t\t{I[res]} /* Resources */,
-\t\t\t);
+{phase_lines}\t\t\t);
 \t\t\tbuildRules = (
 \t\t\t);
 \t\t\tdependencies = (
 {dep_lines}\t\t\t);
 \t\t\tfileSystemSynchronizedGroups = (
-\t\t\t\t{I[group]} /* {tname} */,
-\t\t\t);
+{group_lines}\t\t\t);
 \t\t\tname = {tname};
 \t\t\tpackageProductDependencies = (
 \t\t\t);
@@ -160,13 +179,13 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t}};
 """
 
-    def proxy(key):
+    def proxy(key, remote="APPTARGET", remote_name=None):
         return f"""\t\t{I[key]} /* PBXContainerItemProxy */ = {{
 \t\t\tisa = PBXContainerItemProxy;
 \t\t\tcontainerPortal = {I['PROJECT']} /* Project object */;
 \t\t\tproxyType = 1;
-\t\t\tremoteGlobalIDString = {I['APPTARGET']};
-\t\t\tremoteInfo = {name};
+\t\t\tremoteGlobalIDString = {I[remote]};
+\t\t\tremoteInfo = {remote_name or name};
 \t\t}};
 """
 
@@ -178,6 +197,47 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t}};
 """
 
+    app_groups = [("SHAREDGROUP", shared)] if shared else []
+    app_deps = ["WIDGETDEP"] if widget else []
+    app_phases = [("EMBEDPHASE", "Embed Foundation Extensions")] if widget else []
+    w_proxy = proxy("WIDGETPROXY", "WIDGETTARGET", W) if widget else ""
+    w_fileref = (f"\t\t{I['WIDGETPRODUCT']} /* {W}.appex */ = {{isa = PBXFileReference; explicitFileType = \"wrapper.app-extension\"; "
+                 f"includeInIndex = 0; path = {W}.appex; sourceTree = BUILT_PRODUCTS_DIR; }};\n") if widget else ""
+    w_buildfile = (f"\n/* Begin PBXBuildFile section */\n\t\t{I['EMBEDFILE']} /* {W}.appex in Embed Foundation Extensions */ = "
+                   f"{{isa = PBXBuildFile; fileRef = {I['WIDGETPRODUCT']} /* {W}.appex */; settings = {{ATTRIBUTES = (RemoveHeadersOnCopy, ); }}; }};\n"
+                   "/* End PBXBuildFile section */\n") if widget else ""
+    w_copy = (f"""
+/* Begin PBXCopyFilesBuildPhase section */
+\t\t{I['EMBEDPHASE']} /* Embed Foundation Extensions */ = {{
+\t\t\tisa = PBXCopyFilesBuildPhase;
+\t\t\tbuildActionMask = 2147483647;
+\t\t\tdstPath = "";
+\t\t\tdstSubfolderSpec = 13;
+\t\t\tfiles = (
+\t\t\t\t{I['EMBEDFILE']} /* {W}.appex in Embed Foundation Extensions */,
+\t\t\t);
+\t\t\tname = "Embed Foundation Extensions";
+\t\t\trunOnlyForDeploymentPostprocessing = 0;
+\t\t}};
+/* End PBXCopyFilesBuildPhase section */
+""") if widget else ""
+    extra_groups = (group("SHAREDGROUP", shared) if shared else "") + (group("WIDGETGROUP", W) if widget else "")
+    main_children = (f"\t\t\t\t{I['SHAREDGROUP']} /* {shared} */,\n" if shared else "") + (f"\t\t\t\t{I['WIDGETGROUP']} /* {W} */,\n" if widget else "")
+    product_children = f"\t\t\t\t{I['WIDGETPRODUCT']} /* {W}.appex */,\n" if widget else ""
+    w_phases = (phase('WIDGETFRAMEWORKS', 'PBXFrameworksBuildPhase'), phase('WIDGETRESOURCES', 'PBXResourcesBuildPhase'), phase('WIDGETSOURCES', 'PBXSourcesBuildPhase')) if widget else ("", "", "")
+    w_target = target('WIDGETTARGET', W, 'WIDGETCONFIGS', 'WIDGETSOURCES', 'WIDGETFRAMEWORKS', 'WIDGETRESOURCES', 'WIDGETGROUP', 'WIDGETPRODUCT',
+                      'com.apple.product-type.app-extension', [], groups=app_groups) if widget else ""
+    w_attr = f"\t\t\t\t\t{I['WIDGETTARGET']} = {{\n\t\t\t\t\t\tCreatedOnToolsVersion = 26.0;\n\t\t\t\t\t}};\n" if widget else ""
+    w_target_ref = f"\t\t\t\t{I['WIDGETTARGET']} /* {W} */,\n" if widget else ""
+    w_dep = f"""\t\t{I['WIDGETDEP']} /* PBXTargetDependency */ = {{
+\t\t\tisa = PBXTargetDependency;
+\t\t\ttarget = {I['WIDGETTARGET']} /* {W} */;
+\t\t\ttargetProxy = {I['WIDGETPROXY']} /* PBXContainerItemProxy */;
+\t\t}};
+""" if widget else ""
+    w_confs = (conf('WIDGETDEBUG', 'Debug', widget_settings) + conf('WIDGETRELEASE', 'Release', widget_settings)) if widget else ""
+    w_clist = clist('WIDGETCONFIGS', 'WIDGETDEBUG', 'WIDGETRELEASE', W) if widget else ""
+
     pbx = f"""// !$*UTF8*$!
 {{
 \tarchiveVersion = 1;
@@ -187,19 +247,19 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \tobjects = {{
 
 /* Begin PBXContainerItemProxy section */
-{proxy('TESTPROXY')}{proxy('UITESTPROXY')}/* End PBXContainerItemProxy section */
-
+{proxy('TESTPROXY')}{proxy('UITESTPROXY')}{w_proxy}/* End PBXContainerItemProxy section */
+{w_buildfile}{w_copy}
 /* Begin PBXFileReference section */
 \t\t{I['APPPRODUCT']} /* {name}.app */ = {{isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = {name}.app; sourceTree = BUILT_PRODUCTS_DIR; }};
 \t\t{I['TESTPRODUCT']} /* {T}.xctest */ = {{isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = {T}.xctest; sourceTree = BUILT_PRODUCTS_DIR; }};
 \t\t{I['UITESTPRODUCT']} /* {U}.xctest */ = {{isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = {U}.xctest; sourceTree = BUILT_PRODUCTS_DIR; }};
-/* End PBXFileReference section */
+{w_fileref}/* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-{group('APPGROUP', name)}{group('TESTGROUP', T)}{group('UITESTGROUP', U)}/* End PBXFileSystemSynchronizedRootGroup section */
+{group('APPGROUP', name)}{group('TESTGROUP', T)}{group('UITESTGROUP', U)}{extra_groups}/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-{phase('APPFRAMEWORKS', 'PBXFrameworksBuildPhase')}{phase('TESTFRAMEWORKS', 'PBXFrameworksBuildPhase')}{phase('UITESTFRAMEWORKS', 'PBXFrameworksBuildPhase')}/* End PBXFrameworksBuildPhase section */
+{phase('APPFRAMEWORKS', 'PBXFrameworksBuildPhase')}{phase('TESTFRAMEWORKS', 'PBXFrameworksBuildPhase')}{phase('UITESTFRAMEWORKS', 'PBXFrameworksBuildPhase')}{w_phases[0]}/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 \t\t{I['MAINGROUP']} = {{
@@ -208,7 +268,7 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\t\t{I['APPGROUP']} /* {name} */,
 \t\t\t\t{I['TESTGROUP']} /* {T} */,
 \t\t\t\t{I['UITESTGROUP']} /* {U} */,
-\t\t\t\t{I['PRODUCTSGROUP']} /* Products */,
+{main_children}\t\t\t\t{I['PRODUCTSGROUP']} /* Products */,
 \t\t\t);
 \t\t\tsourceTree = "<group>";
 \t\t}};
@@ -218,14 +278,14 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\t\t{I['APPPRODUCT']} /* {name}.app */,
 \t\t\t\t{I['TESTPRODUCT']} /* {T}.xctest */,
 \t\t\t\t{I['UITESTPRODUCT']} /* {U}.xctest */,
-\t\t\t);
+{product_children}\t\t\t);
 \t\t\tname = Products;
 \t\t\tsourceTree = "<group>";
 \t\t}};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-{target('APPTARGET', name, 'APPCONFIGS', 'APPSOURCES', 'APPFRAMEWORKS', 'APPRESOURCES', 'APPGROUP', 'APPPRODUCT', 'com.apple.product-type.application', [])}{target('TESTTARGET', T, 'TESTCONFIGS', 'TESTSOURCES', 'TESTFRAMEWORKS', 'TESTRESOURCES', 'TESTGROUP', 'TESTPRODUCT', 'com.apple.product-type.bundle.unit-test', ['TESTDEP'])}{target('UITESTTARGET', U, 'UITESTCONFIGS', 'UITESTSOURCES', 'UITESTFRAMEWORKS', 'UITESTRESOURCES', 'UITESTGROUP', 'UITESTPRODUCT', 'com.apple.product-type.bundle.ui-testing', ['UITESTDEP'])}/* End PBXNativeTarget section */
+{target('APPTARGET', name, 'APPCONFIGS', 'APPSOURCES', 'APPFRAMEWORKS', 'APPRESOURCES', 'APPGROUP', 'APPPRODUCT', 'com.apple.product-type.application', app_deps, groups=app_groups, extra_phases=app_phases)}{target('TESTTARGET', T, 'TESTCONFIGS', 'TESTSOURCES', 'TESTFRAMEWORKS', 'TESTRESOURCES', 'TESTGROUP', 'TESTPRODUCT', 'com.apple.product-type.bundle.unit-test', ['TESTDEP'])}{target('UITESTTARGET', U, 'UITESTCONFIGS', 'UITESTSOURCES', 'UITESTFRAMEWORKS', 'UITESTRESOURCES', 'UITESTGROUP', 'UITESTPRODUCT', 'com.apple.product-type.bundle.ui-testing', ['UITESTDEP'])}{w_target}/* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 \t\t{I['PROJECT']} /* Project object */ = {{
@@ -246,7 +306,7 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\t\t\t\tCreatedOnToolsVersion = 26.0;
 \t\t\t\t\t\tTestTargetID = {I['APPTARGET']};
 \t\t\t\t\t}};
-\t\t\t\t}};
+{w_attr}\t\t\t\t}};
 \t\t\t}};
 \t\t\tbuildConfigurationList = {I['PROJCONFIGS']};
 \t\t\tdevelopmentRegion = es;
@@ -265,15 +325,15 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\t\t{I['APPTARGET']} /* {name} */,
 \t\t\t\t{I['TESTTARGET']} /* {T} */,
 \t\t\t\t{I['UITESTTARGET']} /* {U} */,
-\t\t\t);
+{w_target_ref}\t\t\t);
 \t\t}};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-{phase('APPRESOURCES', 'PBXResourcesBuildPhase')}{phase('TESTRESOURCES', 'PBXResourcesBuildPhase')}{phase('UITESTRESOURCES', 'PBXResourcesBuildPhase')}/* End PBXResourcesBuildPhase section */
+{phase('APPRESOURCES', 'PBXResourcesBuildPhase')}{phase('TESTRESOURCES', 'PBXResourcesBuildPhase')}{phase('UITESTRESOURCES', 'PBXResourcesBuildPhase')}{w_phases[1]}/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-{phase('APPSOURCES', 'PBXSourcesBuildPhase')}{phase('TESTSOURCES', 'PBXSourcesBuildPhase')}{phase('UITESTSOURCES', 'PBXSourcesBuildPhase')}/* End PBXSourcesBuildPhase section */
+{phase('APPSOURCES', 'PBXSourcesBuildPhase')}{phase('TESTSOURCES', 'PBXSourcesBuildPhase')}{phase('UITESTSOURCES', 'PBXSourcesBuildPhase')}{w_phases[2]}/* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 \t\t{I['TESTDEP']} /* PBXTargetDependency */ = {{
@@ -286,13 +346,13 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
 \t\t\ttarget = {I['APPTARGET']} /* {name} */;
 \t\t\ttargetProxy = {I['UITESTPROXY']} /* PBXContainerItemProxy */;
 \t\t}};
-/* End PBXTargetDependency section */
+{w_dep}/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-{conf('PROJDEBUG', 'Debug', pdebug)}{conf('PROJRELEASE', 'Release', prelease)}{conf('APPDEBUG', 'Debug', app)}{conf('APPRELEASE', 'Release', app)}{conf('TESTDEBUG', 'Debug', test)}{conf('TESTRELEASE', 'Release', test)}{conf('UITESTDEBUG', 'Debug', uitest)}{conf('UITESTRELEASE', 'Release', uitest)}/* End XCBuildConfiguration section */
+{conf('PROJDEBUG', 'Debug', pdebug)}{conf('PROJRELEASE', 'Release', prelease)}{conf('APPDEBUG', 'Debug', app)}{conf('APPRELEASE', 'Release', app)}{conf('TESTDEBUG', 'Debug', test)}{conf('TESTRELEASE', 'Release', test)}{conf('UITESTDEBUG', 'Debug', uitest)}{conf('UITESTRELEASE', 'Release', uitest)}{w_confs}/* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-{clist('PROJCONFIGS', 'PROJDEBUG', 'PROJRELEASE', 'PBXProject')}{clist('APPCONFIGS', 'APPDEBUG', 'APPRELEASE', name)}{clist('TESTCONFIGS', 'TESTDEBUG', 'TESTRELEASE', T)}{clist('UITESTCONFIGS', 'UITESTDEBUG', 'UITESTRELEASE', U)}/* End XCConfigurationList section */
+{clist('PROJCONFIGS', 'PROJDEBUG', 'PROJRELEASE', 'PBXProject')}{clist('APPCONFIGS', 'APPDEBUG', 'APPRELEASE', name)}{clist('TESTCONFIGS', 'TESTDEBUG', 'TESTRELEASE', T)}{clist('UITESTCONFIGS', 'UITESTDEBUG', 'UITESTRELEASE', U)}{w_clist}/* End XCConfigurationList section */
 \t}};
 \trootObject = {I['PROJECT']} /* Project object */;
 }}
@@ -388,8 +448,17 @@ def make(app_dir: str, name: str, bundle_id: str, display: str, info: dict, info
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n<Workspace\n   version = "1.0">\n   <FileRef\n      location = "self:">\n   </FileRef>\n</Workspace>\n')
     with open(os.path.join(proj, "xcshareddata", "xcschemes", f"{name}.xcscheme"), "w") as f:
         f.write(scheme)
-    for sub in (name, T, U):
+    for sub in (name, T, U, *([shared] if shared else []), *([W] if widget else [])):
         os.makedirs(os.path.join(app_dir, sub), exist_ok=True)
+    if widget:
+        plist = os.path.join(app_dir, "Config", f"{W}-Info.plist")
+        os.makedirs(os.path.dirname(plist), exist_ok=True)
+        if not os.path.exists(plist):
+            with open(plist, "w") as f:
+                f.write('<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" '
+                        '"http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n'
+                        '\t<key>NSExtension</key>\n\t<dict>\n\t\t<key>NSExtensionPointIdentifier</key>\n'
+                        '\t\t<string>com.apple.widgetkit-extension</string>\n\t</dict>\n</dict>\n</plist>\n')
     print(f"Created {proj}")
 
 
@@ -401,6 +470,8 @@ if __name__ == "__main__":
     parser.add_argument("--display")
     parser.add_argument("--info-plist", help="Partial Info.plist path relative to the project (e.g. Config/App-Info.plist)")
     parser.add_argument("--info", action="append", default=[], help="Extra INFOPLIST_KEY_ entries as KEY=VALUE")
+    parser.add_argument("--shared", help="Extra synchronized folder compiled into the app and the widget")
+    parser.add_argument("--widget", action="store_true", help="Add a WidgetKit extension embedded in the app")
     args = parser.parse_args()
     extra = dict(item.split("=", 1) for item in args.info)
-    make(args.app_dir, args.name, args.bundle_id, args.display or args.name, extra, args.info_plist)
+    make(args.app_dir, args.name, args.bundle_id, args.display or args.name, extra, args.info_plist, args.shared, args.widget)
