@@ -144,6 +144,8 @@ struct DiscoverView: View {
         .padding(.horizontal, Metrics.gutter)
         .contentShape(.rect)
         .onTapGesture { detail = plan }
+        // Keep the inner buttons' own identifiers ("active.done").
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("active.banner")
     }
 
@@ -166,6 +168,7 @@ struct DiscoverView: View {
                 let isTop = index == 0
                 let offset = flying?.id == plan.id ? flying!.offset : (isTop ? drag : .zero)
                 PlanCardView(plan: plan)
+                    .accessibilityIdentifier(isTop ? "card.top" : "card.\(index)")
                     .overlay { if isTop { swipeStamp } }
                     .scaleEffect(1 - CGFloat(index) * 0.05)
                     .offset(y: CGFloat(index) * 14)
@@ -177,7 +180,6 @@ struct DiscoverView: View {
                     .onTapGesture { if isTop { detail = plan } }
                     .accessibilityAddTraits(isTop ? .isButton : [])
                     .accessibilityHidden(!isTop)
-                    .accessibilityIdentifier(isTop ? "card.top" : "card.\(index)")
                     .transition(.asymmetric(insertion: .scale(scale: 0.9).combined(with: .opacity), removal: .opacity))
             }
         }
