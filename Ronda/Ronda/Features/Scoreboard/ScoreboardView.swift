@@ -3,7 +3,9 @@ import SwiftUI
 struct ScoreboardView: View {
     @Environment(PartySession.self) private var session
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var confirmReset = false
+    @State private var grown = false
 
     var body: some View {
         let standings = session.ledger.standings(for: session.players)
@@ -12,7 +14,7 @@ struct ScoreboardView: View {
                 NightBackground(colors: [Neon.amber, Neon.magenta])
                 ScrollView {
                     VStack(spacing: 22) {
-                        if session.ledger.total == 0 {
+                        if session.ledger.total(for: session.players) == 0 {
                             ContentUnavailableView(
                                 "Aún no hay marcador",
                                 systemImage: "trophy",
@@ -43,7 +45,7 @@ struct ScoreboardView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Reiniciar", role: .destructive) { confirmReset = true }
-                        .disabled(session.ledger.total == 0)
+                        .disabled(session.ledger.total(for: session.players) == 0)
                 }
             }
             .confirmationDialog("¿Reiniciar el marcador?", isPresented: $confirmReset, titleVisibility: .visible) {
@@ -54,6 +56,10 @@ struct ScoreboardView: View {
             }
         }
         .presentationBackground(Neon.ink)
+        .onAppear {
+            guard !grown else { return }
+            withAnimation(reduceMotion ? nil : .spring(duration: 0.7, bounce: 0.25).delay(0.15)) { grown = true }
+        }
     }
 
     private func podium(_ top: [SipLedger.Standing]) -> some View {
@@ -62,7 +68,7 @@ struct ScoreboardView: View {
         return HStack(alignment: .bottom, spacing: 10) {
             ForEach(order, id: \.self) { index in
                 let standing = top[index]
-                let height: CGFloat = [150, 110, 80][min(index, 2)]
+                let height: CGFloat = grown ? [150, 110, 80][min(index, 2)] : 28
                 VStack(spacing: 6) {
                     Text(["🥇", "🥈", "🥉"][min(index, 2)]).font(.largeTitle)
                     Text(standing.player.name)
@@ -77,6 +83,7 @@ struct ScoreboardView: View {
                                 .font(.title.weight(.black).monospacedDigit())
                                 .foregroundStyle(Neon.ink)
                                 .padding(.top, 10)
+                                .opacity(grown ? 1 : 0)
                         }
                 }
                 .frame(maxWidth: .infinity)
@@ -97,7 +104,7 @@ struct ScoreboardView: View {
             GeometryReader { proxy in
                 Capsule()
                     .fill(Neon.amber.gradient)
-                    .frame(width: max > 0 ? proxy.size.width * CGFloat(standing.sips) / CGFloat(max) : 0)
+                    .frame(width: max > 0 && grown ? proxy.size.width * CGFloat(standing.sips) / CGFloat(max) : 0)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
             .frame(width: 90, height: 8)
@@ -114,7 +121,7 @@ struct ScoreboardView: View {
     private func summary(_ standings: [SipLedger.Standing]) -> String {
         let unit = session.lexicon.unitTitle.lowercased()
         let free = standings.filter { $0.sips == 0 }.map(\.player.name)
-        var text = "Total de la noche: \(session.ledger.total) \(unit)."
+        var text = "Total de la noche: \(session.ledger.total(for: session.players)) \(unit)."
         if !free.isEmpty {
             text += " Se han librado: \(free.joined(separator: ", "))."
         }

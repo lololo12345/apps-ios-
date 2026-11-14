@@ -119,15 +119,13 @@ struct PromptCardView: View {
                     .gradientText(colors)
             }
             Text(text)
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .font(.system(.title, design: .rounded, weight: .bold))
                 .multilineTextAlignment(.center)
-                .minimumScaleFactor(0.6)
+                .minimumScaleFactor(0.5)
                 .foregroundStyle(.white)
-                .contentTransition(.opacity)
-                .id(text)
-                .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .leading).combined(with: .opacity)))
         }
-        .frame(maxWidth: .infinity, minHeight: 300)
+        // Fixed band of heights: short and long cards keep the same footprint, so nothing jumps.
+        .frame(maxWidth: .infinity, minHeight: 220, maxHeight: 340)
         .neonCard(colors, padding: 26)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("prompt.card")
@@ -159,6 +157,19 @@ struct PlayerPicker: View {
     private let columns = [GridItem(.adaptive(minimum: 92), spacing: 8)]
 
     var body: some View {
+        // Big groups scroll inside a fixed area instead of pushing the card off screen.
+        if players.count > 8 {
+            ScrollView {
+                grid.padding(.vertical, 2)
+            }
+            .frame(maxHeight: 150)
+            .scrollIndicators(.visible)
+        } else {
+            grid
+        }
+    }
+
+    private var grid: some View {
         LazyVGrid(columns: columns, spacing: 8) {
             ForEach(players) { player in
                 let isOn = selection.contains(player.id)

@@ -19,6 +19,11 @@ struct SipLedger: Codable, Equatable, Sendable {
         sips[playerID, default: 0]
     }
 
+    /// Total for the players still at the table (removed players no longer count).
+    func total(for players: [Player]) -> Int {
+        players.reduce(0) { $0 + count(for: $1.id) }
+    }
+
     mutating func reset() {
         sips = [:]
         total = 0

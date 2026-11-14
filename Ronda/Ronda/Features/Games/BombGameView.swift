@@ -20,6 +20,8 @@ struct BombGameView: View {
     @State private var heat: Double = 0
     @State private var holder: Set<UUID> = []
     @State private var fuseTask: Task<Void, Never>?
+    @State private var shakes: CGFloat = 0
+    @State private var flash = false
 
     private var colors: [Color] { GameKind.bomb.gradient(for: mode) }
     private var penalty: Int { PromptDecks.penalty(for: .bomb, mode: mode) }
@@ -57,9 +59,19 @@ struct BombGameView: View {
         } controls: {
             controls
         }
+        .modifier(ShakeEffect(shakes: shakes, amplitude: reduceMotion ? 0 : 14))
+        .overlay {
+            // Explosion flash.
+            Color.white
+                .opacity(flash ? 0.55 : 0)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
+        }
         .onAppear {
+            guard category.isEmpty else { return }
             categories = ShuffledDeck(PromptDecks.prompts(for: .bomb, mode: mode, intensity: session.intensity))
             category = categories.draw() ?? ""
+            Haptics.prepare()
         }
         .onDisappear { fuseTask?.cancel() }
     }
@@ -75,8 +87,9 @@ struct BombGameView: View {
     private var bomb: some View {
         ZStack {
             Circle()
-                .fill(RadialGradient(colors: [Neon.orange.opacity(0.2 + heat * 0.6), .clear], center: .center, startRadius: 10, endRadius: 150))
-                .blur(radius: 20)
+                .fill(RadialGradient(colors: [Neon.orange.opacity(0.2 + heat * 0.6), Neon.crimson.opacity(heat * 0.25), .clear], center: .center, startRadius: 10, endRadius: 170))
+                .scaleEffect(0.9 + heat * 0.3)
+                .animation(.easeInOut(duration: 0.4), value: heat)
             Text(phase == .exploded ? "💥" : "💣")
                 .font(.system(size: phase == .exploded ? 150 : 120))
                 .scaleEffect(phase == .burning && ticks.isMultiple(of: 2) && !reduceMotion ? 1.12 : 1)
@@ -141,7 +154,7 @@ struct BombGameView: View {
                 if fuse.hasExploded(elapsed: elapsed) { break }
                 ticks += 1
                 heat = min(1, elapsed / fuse.duration)
-                Haptics.tap(heat > 0.7 ? .heavy : .light)
+                if heat > 0.7 { Haptics.tap(.heavy) } else { Haptics.tick(intensity: min(1, 0.4 + heat)) }
                 try? await Task.sleep(for: .seconds(fuse.tickInterval(elapsed: elapsed)))
             }
             guard !Task.isCancelled else { return }
@@ -150,6 +163,11 @@ struct BombGameView: View {
                 phase = .exploded
                 heat = 1
             }
+            guard !reduceMotion else { return }
+            withAnimation(.linear(duration: 0.55)) { shakes += 1 }
+            flash = true
+            try? await Task.sleep(for: .milliseconds(40))
+            withAnimation(.easeOut(duration: 0.6)) { flash = false }
         }
     }
 }

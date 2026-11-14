@@ -150,14 +150,22 @@ struct CircleGame: Sendable {
             kingsDrawn += 1
             isFinalKing = kingsDrawn == 4
         }
-        return (card, Self.rule(for: card.rank, hot: hot, finalKing: isFinalKing), isFinalKing)
+        return (card, Self.rule(for: card.rank, hot: hot, kingsDrawn: kingsDrawn), isFinalKing)
     }
 
-    static func rule(for rank: Int, hot: Bool, finalKing: Bool = false) -> Rule {
+    /// `kingsDrawn` counts the king just drawn when `rank` is 12.
+    static func rule(for rank: Int, hot: Bool, kingsDrawn: Int = 0) -> Rule {
         if rank == 12 {
-            return finalKing
-                ? Rule(title: "¡El cuarto Rey!", detail: "Has sacado el último Rey: te toca 5 de golpe y se acaba la ronda.", drawerSips: 5, everyoneSips: 0)
-                : Rule(title: "Rey", detail: "Apunta: ya van más reyes. Quien saque el cuarto se lleva el castigo final.", drawerSips: 1, everyoneSips: 0)
+            if kingsDrawn >= 4 {
+                return Rule(title: "¡El cuarto Rey!", detail: "Has sacado el último Rey: te toca 5 de golpe y se acaba la ronda.", drawerSips: 5, everyoneSips: 0)
+            }
+            let left = 4 - kingsDrawn
+            return Rule(
+                title: "Rey nº \(kingsDrawn)",
+                detail: "Bebes 1. \(left == 1 ? "Solo queda 1 Rey" : "Quedan \(left) reyes"): quien saque el cuarto se lleva el castigo final.",
+                drawerSips: 1,
+                everyoneSips: 0
+            )
         }
         let table = hot ? hotRules : normalRules
         return table[rank] ?? Rule(title: "Libre", detail: "Te libras esta vez.", drawerSips: 0, everyoneSips: 0)

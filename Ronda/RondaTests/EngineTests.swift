@@ -76,6 +76,15 @@ struct LedgerTests {
         #expect(ledger.total == 0)
     }
 
+    @Test func totalIgnoresRemovedPlayers() {
+        let group = players("Ana", "Leo", "Sara")
+        var ledger = SipLedger()
+        ledger.add(2, to: group[0].id)
+        ledger.add(5, to: group[2].id)
+        #expect(ledger.total(for: group) == 7)
+        #expect(ledger.total(for: Array(group.prefix(2))) == 2)
+    }
+
     @Test func ledgerRoundTripsThroughJSON() throws {
         let id = UUID()
         var ledger = SipLedger()
@@ -198,6 +207,13 @@ struct CircleTests {
         #expect(finalSeen)
         #expect(game.isFinished)
         #expect(game.draw() == nil)
+    }
+
+    @Test func kingTextCountsDown() {
+        #expect(CircleGame.rule(for: 12, hot: false, kingsDrawn: 1).detail.contains("Quedan 3 reyes"))
+        #expect(CircleGame.rule(for: 12, hot: false, kingsDrawn: 3).detail.contains("Solo queda 1 Rey"))
+        #expect(CircleGame.rule(for: 12, hot: true, kingsDrawn: 4).drawerSips == 5)
+        #expect(CircleGame.rule(for: 12, hot: false, kingsDrawn: 2).title == "Rey nº 2")
     }
 
     @Test func everyRankHasARuleInBothModes() {

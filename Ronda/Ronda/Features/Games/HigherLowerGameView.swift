@@ -2,10 +2,16 @@ import SwiftUI
 
 struct HigherLowerGameView: View {
     @Environment(PartySession.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    /// Built up front so the first frame (during the zoom-in) already shows a card.
     @State private var game: HigherLowerGame?
     @State private var message: (text: String, good: Bool)?
-    @State private var flip = 0.0
+
+    init() {
+        var generator = SystemRandomNumberGenerator()
+        _game = State(initialValue: HigherLowerGame(using: &generator))
+    }
 
     private let colors = GameKind.higherLower.gradient(for: .normal)
 
@@ -19,13 +25,15 @@ struct HigherLowerGameView: View {
                     .accessibilityIdentifier("hl.player")
 
                 if let game {
-                    SpanishCardView(card: game.current, size: 160)
-                        .rotation3DEffect(.degrees(flip), axis: (x: 0, y: 1, z: 0))
-                        .id(game.current.id)
-                        .transition(.asymmetric(insertion: .scale(scale: 0.8).combined(with: .opacity), removal: .opacity))
+                    ZStack {
+                        SpanishCardView(card: game.current, size: 160)
+                            .id(game.current.id)
+                            .transition(.flip(reduceMotion: reduceMotion))
+                    }
+                    .frame(height: 160 * 1.45)
 
                     HStack(spacing: 10) {
-                        SipBadge(count: max(1, game.pot), lexicon: session.lexicon, prefix: "Bote:")
+                        SipBadge(count: max(1, game.pot), lexicon: session.lexicon, prefix: session.lexicon.soberMode ? "Si fallas, sumas" : "Si fallas, bebes")
                         if game.streak > 0 {
                             Label("\(game.streak) seguidos", systemImage: "flame.fill")
                                 .font(.subheadline.weight(.bold))
@@ -40,7 +48,7 @@ struct HigherLowerGameView: View {
                         .font(.headline)
                         .foregroundStyle(message.good ? Neon.lime : Neon.orange)
                         .multilineTextAlignment(.center)
-                        .transition(.opacity)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                         .id(message.text)
                 }
                 Spacer(minLength: 0)
@@ -65,10 +73,7 @@ struct HigherLowerGameView: View {
             }
             .animation(.smooth, value: game?.canStand)
         }
-        .onAppear {
-            var generator = SystemRandomNumberGenerator()
-            game = HigherLowerGame(using: &generator)
-        }
+        .onAppear { Haptics.prepare() }
     }
 
     private func guess(_ guess: HigherLowerGame.Guess) {
@@ -76,9 +81,8 @@ struct HigherLowerGameView: View {
         var generator = SystemRandomNumberGenerator()
         let player = session.currentPlayer
         let result = current.guess(guess, using: &generator)
-        withAnimation(.spring(duration: 0.45, bounce: 0.3)) {
+        withAnimation(.spring(duration: 0.5, bounce: 0.2)) {
             game = current
-            flip += 360
         }
         let name = player?.name ?? "Alguien"
         switch result.outcome {

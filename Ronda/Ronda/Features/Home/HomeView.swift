@@ -8,6 +8,9 @@ struct ActiveGame: Identifiable, Hashable {
 
 struct HomeView: View {
     @Environment(PartySession.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Namespace private var zoom
+    @State private var tilesVisible = false
     @State private var activeGame: ActiveGame?
     @State private var showPlayers = false
     @State private var showScoreboard = false
@@ -45,7 +48,13 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
         }
         .fullScreenCover(item: $activeGame) { game in
+            // Native zoom: the tile grows into the game and shrinks back when closing.
             GameRouter(game: game)
+                .navigationTransition(.zoom(sourceID: game.id, in: zoom))
+        }
+        .onAppear {
+            guard !tilesVisible else { return }
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.5)) { tilesVisible = true }
         }
         .sheet(isPresented: $showPlayers) {
             NavigationStack {
@@ -74,9 +83,12 @@ struct HomeView: View {
                 Text("Ronda")
                     .font(.system(size: 40, weight: .black, design: .rounded))
                     .gradientText(session.mode == .hot ? [Neon.rose, Neon.crimson] : [Neon.magenta, Neon.cyan])
-                Text("\(session.players.count) jugadores · \(session.lexicon.unitTitle.lowercased()): \(session.ledger.total)")
+                let total = session.ledger.total(for: session.players)
+                Text("\(session.players.count) jugadores · \(session.lexicon.unitTitle.lowercased()): \(total)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .contentTransition(.numericText(value: Double(total)))
+                    .animation(.snappy, value: total)
             }
             Spacer()
             GlassEffectContainer(spacing: 8) {
@@ -143,20 +155,28 @@ struct HomeView: View {
 
     private func grid(for mode: PartyMode) -> some View {
         LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(GameKind.games(for: mode)) { kind in
+            ForEach(Array(GameKind.games(for: mode).enumerated()), id: \.element) { index, kind in
                 let enabled = session.players.count >= kind.minimumPlayers
+                let game = ActiveGame(kind: kind, mode: mode)
                 Button {
                     Haptics.tap(.medium)
-                    activeGame = ActiveGame(kind: kind, mode: mode)
+                    activeGame = game
                 } label: {
                     GameTile(kind: kind, mode: mode, enabled: enabled)
+                        .matchedTransitionSource(id: game.id, in: zoom)
                 }
                 .buttonStyle(PressableStyle())
                 .disabled(!enabled)
                 .accessibilityIdentifier("game.\(mode.rawValue).\(kind.rawValue)")
+                // Staggered entrance the first time the home appears.
+                .opacity(tilesVisible ? 1 : 0)
+                .offset(y: tilesVisible || reduceMotion ? 0 : 18)
+                .animation(reduceMotion ? nil : .spring(duration: 0.5, bounce: 0.2).delay(Double(index) * 0.035), value: tilesVisible)
             }
         }
-        .transition(.opacity)
+        // Normal ⇄ Hot swaps the whole grid with a cross-fade instead of recolouring tiles in place.
+        .id(mode)
+        .transition(.opacity.combined(with: .scale(scale: 0.98)))
     }
 
     private var lockedHot: some View {

@@ -39,27 +39,32 @@ enum Metrics {
     static let radius: CGFloat = 26
 }
 
-/// Static glow backdrop (no per-frame work).
+/// Static glow backdrop. Radial gradients instead of large blurs: identical look, but no
+/// per-frame blur filter, so animations on top of it stay at the display's full refresh rate.
 struct NightBackground: View {
     var colors: [Color]
 
     var body: some View {
-        ZStack {
-            Neon.ink
-            Circle()
-                .fill(colors.first ?? Neon.violet)
-                .frame(width: 420, height: 420)
-                .blur(radius: 140)
-                .opacity(0.45)
-                .offset(x: -140, y: -320)
-            Circle()
-                .fill(colors.last ?? Neon.cyan)
-                .frame(width: 380, height: 380)
-                .blur(radius: 150)
-                .opacity(0.35)
-                .offset(x: 160, y: 360)
+        GeometryReader { proxy in
+            let size = proxy.size
+            ZStack {
+                Neon.ink
+                RadialGradient(
+                    colors: [(colors.first ?? Neon.violet).opacity(0.42), .clear],
+                    center: UnitPoint(x: 0.1, y: 0.05),
+                    startRadius: 0,
+                    endRadius: max(size.width, size.height) * 0.62
+                )
+                RadialGradient(
+                    colors: [(colors.last ?? Neon.cyan).opacity(0.32), .clear],
+                    center: UnitPoint(x: 0.95, y: 0.95),
+                    startRadius: 0,
+                    endRadius: max(size.width, size.height) * 0.58
+                )
+            }
         }
         .ignoresSafeArea()
+        .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 }
@@ -80,7 +85,7 @@ struct NeonCard: ViewModifier {
                         RoundedRectangle(cornerRadius: radius, style: .continuous)
                             .strokeBorder(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1.5)
                     }
-                    .shadow(color: (colors.first ?? .clear).opacity(0.35), radius: 24, y: 8)
+                    .shadow(color: (colors.first ?? .clear).opacity(0.3), radius: 18, y: 8)
             }
     }
 }
@@ -104,33 +109,140 @@ struct PressableStyle: ButtonStyle {
     }
 }
 
+/// Feedback generators are created once and kept prepared, so every vibration fires with no latency.
 @MainActor
 enum Haptics {
     static var enabled: Bool { UserDefaults.standard.object(forKey: "haptics") as? Bool ?? true }
 
+    private static let light = UIImpactFeedbackGenerator(style: .light)
+    private static let medium = UIImpactFeedbackGenerator(style: .medium)
+    private static let heavy = UIImpactFeedbackGenerator(style: .heavy)
+    private static let rigid = UIImpactFeedbackGenerator(style: .rigid)
+    private static let selection = UISelectionFeedbackGenerator()
+    private static let notification = UINotificationFeedbackGenerator()
+
     static func tap(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .light) {
         guard enabled else { return }
-        UIImpactFeedbackGenerator(style: style).impactOccurred()
+        let generator: UIImpactFeedbackGenerator = switch style {
+        case .heavy: heavy
+        case .medium: medium
+        case .rigid: rigid
+        default: light
+        }
+        generator.impactOccurred()
+        generator.prepare()
+    }
+
+    /// Short crisp tick (roulette segments, bomb fuse).
+    static func tick(intensity: CGFloat = 0.6) {
+        guard enabled else { return }
+        rigid.impactOccurred(intensity: intensity)
+        rigid.prepare()
     }
 
     static func select() {
         guard enabled else { return }
-        UISelectionFeedbackGenerator().selectionChanged()
+        selection.selectionChanged()
+        selection.prepare()
     }
 
     static func success() {
         guard enabled else { return }
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        notification.notificationOccurred(.success)
+        notification.prepare()
     }
 
     static func warning() {
         guard enabled else { return }
-        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        notification.notificationOccurred(.warning)
+        notification.prepare()
     }
 
     static func boom() {
         guard enabled else { return }
-        UINotificationFeedbackGenerator().notificationOccurred(.error)
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred(intensity: 1)
+        notification.notificationOccurred(.error)
+        heavy.impactOccurred(intensity: 1)
+        heavy.prepare()
+    }
+
+    /// Call when a screen with frequent feedback appears.
+    static func prepare() {
+        guard enabled else { return }
+        light.prepare()
+        rigid.prepare()
+        selection.prepare()
+    }
+}
+
+// MARK: - Motion
+
+/// Card dealt from a deck: the new card scales up from behind, the old one is flicked away.
+struct DeckDealModifier: ViewModifier {
+    let offset: CGFloat
+    let rotation: Double
+    let scale: CGFloat
+    let opacity: Double
+
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(scale)
+            .rotationEffect(.degrees(rotation), anchor: .bottom)
+            .offset(x: offset)
+            .opacity(opacity)
+    }
+}
+
+/// Card turned over around the vertical axis.
+struct FlipModifier: ViewModifier {
+    let angle: Double
+    let opacity: Double
+
+    func body(content: Content) -> some View {
+        content
+            .rotation3DEffect(.degrees(angle), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
+            .opacity(opacity)
+    }
+}
+
+/// Horizontal shake for impacts (bomb explosion). `shakes` animates from n to n+1.
+struct ShakeEffect: GeometryEffect {
+    var shakes: CGFloat
+    var amplitude: CGFloat = 12
+
+    nonisolated var animatableData: CGFloat {
+        get { shakes }
+        set { shakes = newValue }
+    }
+
+    nonisolated func effectValue(size: CGSize) -> ProjectionTransform {
+        let progress = shakes - shakes.rounded(.down)
+        let damping = 1 - progress
+        let x = sin(progress * .pi * 8) * amplitude * damping
+        return ProjectionTransform(CGAffineTransform(translationX: x, y: 0))
+    }
+}
+
+extension AnyTransition {
+    /// Deck deal, or a plain cross-fade when Reduce Motion is on.
+    static func deal(reduceMotion: Bool) -> AnyTransition {
+        guard !reduceMotion else { return .opacity }
+        return .asymmetric(
+            insertion: .modifier(
+                active: DeckDealModifier(offset: 0, rotation: 0, scale: 0.86, opacity: 0),
+                identity: DeckDealModifier(offset: 0, rotation: 0, scale: 1, opacity: 1)
+            ),
+            removal: .modifier(
+                active: DeckDealModifier(offset: -420, rotation: -14, scale: 0.96, opacity: 0),
+                identity: DeckDealModifier(offset: 0, rotation: 0, scale: 1, opacity: 1)
+            )
+        )
+    }
+
+    static func flip(reduceMotion: Bool) -> AnyTransition {
+        guard !reduceMotion else { return .opacity }
+        return .asymmetric(
+            insertion: .modifier(active: FlipModifier(angle: -90, opacity: 0), identity: FlipModifier(angle: 0, opacity: 1)),
+            removal: .modifier(active: FlipModifier(angle: 90, opacity: 0), identity: FlipModifier(angle: 0, opacity: 1))
+        )
     }
 }

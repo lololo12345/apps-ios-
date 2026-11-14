@@ -7,6 +7,7 @@ struct PromptGameView: View {
     let mode: PartyMode
 
     @Environment(PartySession.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Query(sort: \CustomCard.createdAt) private var customCards: [CustomCard]
 
     @State private var deck = ShuffledDeck<String>([])
@@ -14,6 +15,9 @@ struct PromptGameView: View {
     @State private var selection: Set<UUID> = []
     @State private var pointingPhase: PointingPhase = .question
     @State private var countdownTask: Task<Void, Never>?
+    @State private var loaded = false
+    /// Increments on every new card so even a repeated text animates as a fresh card.
+    @State private var dealt = 0
 
     private enum PointingPhase: Equatable {
         case question
@@ -29,10 +33,18 @@ struct PromptGameView: View {
         GameScaffold(game: kind, mode: mode) {
             VStack(spacing: 18) {
                 Spacer(minLength: 8)
-                if let card {
-                    PromptCardView(text: lexicon.adapt(card.text), colors: colors, eyebrow: eyebrow(for: card))
-                } else {
-                    ContentUnavailableView("Sin cartas", systemImage: "rectangle.stack", description: Text("No hay cartas para este juego."))
+                ZStack {
+                    if let card {
+                        PromptCardView(text: lexicon.adapt(card.text), colors: colors, eyebrow: eyebrow(for: card))
+                            .id(dealt)
+                            .transition(.deal(reduceMotion: reduceMotion))
+                    } else if loaded {
+                        ContentUnavailableView("Sin cartas", systemImage: "rectangle.stack", description: Text("No hay cartas para este juego."))
+                    } else {
+                        // Same footprint as a card while the deck is prepared: no flash of empty states.
+                        PromptCardView(text: " ", colors: colors)
+                            .redacted(reason: .placeholder)
+                    }
                 }
                 if case .countdown(let value) = pointingPhase {
                     Text("\(value)")
@@ -46,12 +58,14 @@ struct PromptGameView: View {
                 }
                 Spacer(minLength: 8)
             }
-            .animation(.smooth(duration: 0.35), value: card?.text)
             .animation(.spring(duration: 0.3), value: pointingPhase)
         } controls: {
             controls
         }
-        .onAppear(perform: setUp)
+        .onAppear {
+            guard !loaded else { return }
+            setUp()
+        }
         .onDisappear { countdownTask?.cancel() }
     }
 
@@ -136,6 +150,8 @@ struct PromptGameView: View {
         let custom = customCards.filter { $0.game == kind && $0.mode == mode }.map(\.text)
         deck = ShuffledDeck(PromptDecks.prompts(for: kind, mode: mode, intensity: session.intensity) + custom)
         draw()
+        loaded = true
+        Haptics.prepare()
     }
 
     private func draw() {
@@ -146,6 +162,7 @@ struct PromptGameView: View {
         var generator = SystemRandomNumberGenerator()
         let filled = CardText.fill(template, players: session.players, first: session.currentPlayer, using: &generator)
         card = (filled.text, filled.involved)
+        dealt += 1
     }
 
     private func next(advanceTurn: Bool) {
@@ -153,7 +170,7 @@ struct PromptGameView: View {
         pointingPhase = .question
         if advanceTurn { session.nextTurn() }
         session.registerRound()
-        withAnimation(.smooth(duration: 0.35)) { draw() }
+        withAnimation(.spring(duration: 0.45, bounce: 0.18)) { draw() }
     }
 
     private func startCountdown() {

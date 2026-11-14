@@ -3,7 +3,8 @@ import SwiftUI
 struct DuelsGameView: View {
     @Environment(PartySession.self) private var session
 
-    @State private var selection: Set<UUID> = []
+    /// Chosen fighters in tap order; picking a third replaces the oldest pick.
+    @State private var picked: [UUID] = []
     @State private var kind: Duel.Kind = .reflex
     @State private var fighters: (top: Player, bottom: Player)?
     @State private var lastResult: String?
@@ -49,16 +50,20 @@ struct DuelsGameView: View {
                         Label(lastResult, systemImage: "trophy.fill")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(Neon.amber)
+                            .id(lastResult)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                 }
                 .padding(.vertical, 12)
+                .animation(.snappy(duration: 0.25), value: kind)
+                .animation(.smooth, value: lastResult)
             }
             .scrollIndicators(.hidden)
         } controls: {
             BigButton(title: "¡A luchar!", symbol: "bolt.fill", tint: colors.first ?? Neon.magenta, identifier: "duel.start") {
                 startDuel()
             }
-            .disabled(selection.count != 2)
+            .disabled(picked.count != 2)
         }
         .fullScreenCover(isPresented: Binding(get: { fighters != nil }, set: { if !$0 { fighters = nil } })) {
             if let fighters {
@@ -72,19 +77,18 @@ struct DuelsGameView: View {
     /// Picker binding that never holds more than two players.
     private var limitedSelection: Binding<Set<UUID>> {
         Binding {
-            selection
+            Set(picked)
         } set: { newValue in
-            if newValue.count <= 2 {
-                selection = newValue
-            } else if let added = newValue.subtracting(selection).first {
-                selection = [added]
-            }
+            picked.removeAll { !newValue.contains($0) }
+            for id in newValue where !picked.contains(id) { picked.append(id) }
+            while picked.count > 2 { picked.removeFirst() }
         }
     }
 
     private func startDuel() {
-        let chosen = session.players.filter { selection.contains($0.id) }
+        let chosen = picked.compactMap { id in session.players.first { $0.id == id } }
         guard chosen.count == 2 else { return }
+        Haptics.tap(.heavy)
         fighters = (chosen[0], chosen[1])
     }
 
@@ -140,12 +144,16 @@ struct DuelArena: View {
             .ignoresSafeArea()
 
             if case .finished = phase {
-                VStack(spacing: 12) {
-                    BigButton(title: "Volver", symbol: "arrow.uturn.left", tint: Neon.magenta, identifier: "duel.back") {
+                HStack(spacing: 10) {
+                    BigButton(title: "Volver", symbol: "arrow.uturn.left", tint: Neon.magenta, prominent: false, identifier: "duel.back") {
                         dismiss()
                     }
+                    BigButton(title: "Revancha", symbol: "arrow.counterclockwise", tint: Neon.magenta, identifier: "duel.rematch") {
+                        rematch()
+                    }
                 }
-                .frame(maxWidth: 260)
+                .padding(.horizontal, 32)
+                .transition(.scale(scale: 0.8).combined(with: .opacity))
             }
         }
         .statusBarHidden()
@@ -234,7 +242,17 @@ struct DuelArena: View {
 
     // MARK: - Flow
 
+    private func rematch() {
+        task?.cancel()
+        taps = (0, 0)
+        roundIndex = 0
+        tapsRemaining = Duel.tapDuration
+        withAnimation(.smooth(duration: 0.25)) { phase = .countdown(3) }
+        begin()
+    }
+
     private func begin() {
+        Haptics.prepare()
         var generator = SystemRandomNumberGenerator()
         rounds = Duel.colorRounds(using: &generator)
         task = Task {

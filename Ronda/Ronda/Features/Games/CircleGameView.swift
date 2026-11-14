@@ -4,6 +4,7 @@ struct CircleGameView: View {
     let mode: PartyMode
 
     @Environment(PartySession.self) private var session
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var game: CircleGame?
     @State private var drawn: (card: SpanishCard, rule: CircleGame.Rule, drawer: Player?, finalKing: Bool)?
@@ -11,10 +12,21 @@ struct CircleGameView: View {
 
     private var colors: [Color] { GameKind.circle.gradient(for: mode) }
 
+    init(mode: PartyMode) {
+        self.mode = mode
+        var generator = SystemRandomNumberGenerator()
+        _game = State(initialValue: CircleGame(hot: mode == .hot, using: &generator))
+    }
+
     var body: some View {
         GameScaffold(game: .circle, mode: mode) {
             VStack(spacing: 16) {
                 Spacer(minLength: 0)
+                Text(game?.isFinished == true ? "¡Ronda terminada!" : "Le toca a \(session.currentPlayer?.name ?? "—")")
+                    .font(.title3.weight(.bold))
+                    .gradientText(colors)
+                    .contentTransition(.opacity)
+                    .accessibilityIdentifier("circle.player")
                 if let game {
                     HStack(spacing: 14) {
                         Label("\(game.cardsLeft) cartas", systemImage: "rectangle.stack.fill")
@@ -27,9 +39,12 @@ struct CircleGameView: View {
                 }
 
                 if let drawn {
-                    SpanishCardView(card: drawn.card, size: 130)
-                        .id(drawn.card.id)
-                        .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity), removal: .opacity))
+                    ZStack {
+                        SpanishCardView(card: drawn.card, size: 130)
+                            .id(drawn.card.id)
+                            .transition(.flip(reduceMotion: reduceMotion))
+                    }
+                    .frame(height: 130 * 1.45)
                     VStack(spacing: 8) {
                         Text(drawn.rule.title)
                             .font(.title2.weight(.black))
@@ -69,13 +84,13 @@ struct CircleGameView: View {
                         restart()
                     }
                 } else {
-                    BigButton(title: "Saca \(session.currentPlayer?.name ?? "carta")", symbol: "hand.draw.fill", tint: colors.first ?? Neon.cyan, identifier: "circle.draw") {
+                    BigButton(title: "Sacar carta", symbol: "hand.draw.fill", tint: colors.first ?? Neon.cyan, identifier: "circle.draw") {
                         draw()
                     }
                 }
             }
         }
-        .onAppear(perform: restart)
+        .onAppear { Haptics.prepare() }
     }
 
     private func restart() {
@@ -109,7 +124,7 @@ struct CircleGameView: View {
         }
         autoNote = notes.isEmpty ? nil : "Apuntado en el marcador · " + notes.joined(separator: " · ")
         result.isFinalKing ? Haptics.boom() : Haptics.tap(.medium)
-        withAnimation(.spring(duration: 0.45, bounce: 0.3)) {
+        withAnimation(.spring(duration: 0.5, bounce: 0.2)) {
             drawn = (result.card, rule, drawer, result.isFinalKing)
         }
         session.nextTurn()
