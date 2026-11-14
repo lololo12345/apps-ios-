@@ -11,10 +11,8 @@ struct OnboardingView: View {
     }
 
     var body: some View {
-        ZStack {
-            WarmBackground()
+        ScrollView {
             VStack(spacing: 28) {
-                Spacer()
                 VStack(spacing: 10) {
                     Text("💞")
                         .font(.system(size: 72))
@@ -25,7 +23,9 @@ struct OnboardingView: View {
                         .font(.title3.weight(.medium))
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
+                .padding(.top, 48)
 
                 VStack(spacing: 12) {
                     Text("¿Cómo os llamáis?")
@@ -35,9 +35,15 @@ struct OnboardingView: View {
                 }
                 .padding(20)
                 .glassEffect(.regular, in: .rect(cornerRadius: Metrics.radius))
-
-                Spacer()
-
+            }
+            .padding(.horizontal, 24)
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(WarmBackground())
+        // Pinned to the bottom, and lifted above the keyboard while typing.
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 10) {
                 Button {
                     Haptics.success()
                     state.setNames(nameA, nameB)

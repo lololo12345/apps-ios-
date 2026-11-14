@@ -54,6 +54,7 @@ struct DiscoverView: View {
                         .frame(maxHeight: .infinity, alignment: .top)
                         .padding(.top, 4)
                         .transition(.move(edge: .top).combined(with: .opacity))
+                        .allowsHitTesting(false)
                         .accessibilityIdentifier("discover.toast")
                 }
             }
@@ -199,6 +200,7 @@ struct DiscoverView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: saving ? .topLeading : .topTrailing)
             .padding(24)
             .allowsHitTesting(false)
+            .accessibilityHidden(true)
     }
 
     private func dragGesture(_ plan: Plan) -> some Gesture {

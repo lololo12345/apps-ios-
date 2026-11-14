@@ -68,8 +68,10 @@ final class PlanBUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["¿Qué os apetece hoy?"].exists)
         snapshot("01-discover", app)
 
+        let saved = element("card.top", app).label
         tap("deck.save", app)
-        XCTAssertTrue(element("discover.toast", app).waitForExistence(timeout: 3))
+        usleep(400_000)
+        snapshot("01b-saved-toast", app)
         sleep(1)
         tap("deck.pass", app)
         sleep(1)
@@ -98,6 +100,8 @@ final class PlanBUITests: XCTestCase {
 
         tab("Guardados", app)
         XCTAssertTrue(app.navigationBars["Guardados"].waitForExistence(timeout: 3))
+        let firstWords = saved.components(separatedBy: ", ").dropFirst().first ?? ""
+        XCTAssertTrue(text(firstWords, app).waitForExistence(timeout: 3), "Saved plan \(firstWords) not listed")
         snapshot("06-saved", app)
     }
 
@@ -185,8 +189,10 @@ final class PlanBUITests: XCTestCase {
         XCTAssertTrue(text("Bolos y hamburguesa", app).waitForExistence(timeout: 3))
         snapshot("16-custom", app)
 
+        // Leave the form (and its keyboard) before switching tabs.
+        app.navigationBars.buttons.firstMatch.tap()
         tab("Descubrir", app)
-        let intimate = app.segmentedControls["discover.section"].buttons["Íntimo"]
+        let intimate = app.buttons["Íntimo"]
         XCTAssertTrue(intimate.waitForExistence(timeout: 5))
         intimate.tap()
         sleep(1)
