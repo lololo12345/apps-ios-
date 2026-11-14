@@ -126,6 +126,30 @@ jobs:
           print("\n".join(sorted(os.listdir("screenshots"))))
           PY
 
+      - name: Package unsigned IPA
+        id: ipa
+        if: steps.build.outcome == 'success'
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project "$APP.xcodeproj" -scheme "$APP" -configuration Release \
+            -destination "generic/platform=iOS" -derivedDataPath DerivedDataDevice \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" 2>&1 \
+            | grep -E "error:|warning: .*${APP}/|BUILD (SUCCEEDED|FAILED)" | tail -40
+          APP_PATH="DerivedDataDevice/Build/Products/Release-iphoneos/$APP.app"
+          test -d "$APP_PATH"
+          rm -rf Payload && mkdir Payload && cp -R "$APP_PATH" Payload/
+          zip -qry "$APP.ipa" Payload
+          ls -lh "$APP.ipa"
+          /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP_PATH/Info.plist"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.ipa.outcome == 'success'
+        with:
+          name: ipa-${{ matrix.app }}
+          path: ${{ matrix.app }}/${{ matrix.app }}.ipa
+          retention-days: 30
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
