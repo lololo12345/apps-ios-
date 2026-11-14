@@ -46,7 +46,8 @@ struct CountdownTests {
         #expect(done.buttons.map(\.id) == ["restart", "stop"])
         _ = s.handle("restart", now: t0.addingTimeInterval(70))
         #expect(!s.display(now: t0.addingTimeInterval(80)).finished)
-        #expect(!s.handle("stop", now: t0))
+        let keepsRunning = s.handle("stop", now: t0)
+        #expect(!keepsRunning)
     }
 
     @Test func pillRestartsWhenTaken() {
