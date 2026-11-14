@@ -19,6 +19,15 @@ struct SipLedger: Codable, Equatable, Sendable {
         sips[playerID, default: 0]
     }
 
+    /// Corrects a mistaken entry; never goes below zero.
+    mutating func remove(_ amount: Int, from playerID: UUID) {
+        let current = sips[playerID, default: 0]
+        let removed = min(max(0, amount), current)
+        guard removed > 0 else { return }
+        sips[playerID] = current - removed
+        total -= removed
+    }
+
     /// Total for the players still at the table (removed players no longer count).
     func total(for players: [Player]) -> Int {
         players.reduce(0) { $0 + count(for: $1.id) }

@@ -211,10 +211,19 @@ struct BigButton: View {
     var tint: Color = Neon.violet
     var prominent = true
     var identifier: String?
+    /// Taps closer together than this are ignored, so a double tap never skips a card or a turn.
+    var cooldown: Double = 0.35
     let action: () -> Void
 
+    @State private var lastTap = Date.distantPast
+
     var body: some View {
-        Button(action: action) {
+        Button {
+            let now = Date.now
+            guard now.timeIntervalSince(lastTap) >= cooldown else { return }
+            lastTap = now
+            action()
+        } label: {
             Label {
                 Text(title)
             } icon: {

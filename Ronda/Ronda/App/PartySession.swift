@@ -23,6 +23,7 @@ final class PartySession {
         static let water = "waterEvery"
         static let intensity = "intensity"
         static let setup = "setupDone"
+        static let turn = "turn"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -70,7 +71,7 @@ final class PartySession {
         }
         players = initialPlayers
         waterEvery = initialWater
-        turn = TurnOrder(count: initialPlayers.count)
+        turn = TurnOrder(count: initialPlayers.count, start: uiTesting ? 0 : defaults.integer(forKey: Key.turn))
         water = WaterBreakSchedule(every: initialWater)
     }
 
@@ -114,6 +115,12 @@ final class PartySession {
 
     func nextTurn() {
         turn.advance()
+        if !LaunchOptions.isUITesting { defaults.set(turn.current, forKey: Key.turn) }
+    }
+
+    /// Undo a mistaken sip from the scoreboard.
+    func undoSip(for player: Player) {
+        ledger.remove(1, from: player.id)
     }
 
     func give(_ sips: Int, to ids: some Sequence<UUID>) {
@@ -137,6 +144,7 @@ final class PartySession {
     func registerRound() {
         guard !soberMode, water.registerCard() else { return }
         pendingWaterBreak = waterMessages.draw()
+        Haptics.warning()
     }
 
     // MARK: Persistence

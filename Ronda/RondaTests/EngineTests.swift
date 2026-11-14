@@ -85,6 +85,21 @@ struct LedgerTests {
         #expect(ledger.total(for: Array(group.prefix(2))) == 2)
     }
 
+    @Test func removeCorrectsWithoutGoingNegative() {
+        let id = UUID(), other = UUID()
+        var ledger = SipLedger()
+        ledger.add(3, to: id)
+        ledger.remove(1, from: id)
+        #expect(ledger.count(for: id) == 2)
+        #expect(ledger.total == 2)
+        ledger.remove(10, from: id)
+        #expect(ledger.count(for: id) == 0)
+        #expect(ledger.total == 0)
+        ledger.remove(1, from: other)
+        ledger.remove(-4, from: id)
+        #expect(ledger.total == 0)
+    }
+
     @Test func ledgerRoundTripsThroughJSON() throws {
         let id = UUID()
         var ledger = SipLedger()

@@ -29,7 +29,14 @@ struct RouletteGameView: View {
                         .equatable()
                         .rotationEffect(.degrees(rotation))
                         .frame(width: 300, height: 300)
-                        .shadow(color: (colors.first ?? .clear).opacity(0.5), radius: 24)
+                        // Static glow behind the wheel (a background never affects layout, and unlike a
+                        // shadow on the rotating wheel it is not recomputed on every frame of the spin).
+                        .background {
+                            Circle()
+                                .fill(RadialGradient(colors: [(colors.first ?? .clear).opacity(0.45), .clear], center: .center, startRadius: 120, endRadius: 190))
+                                .frame(width: 380, height: 380)
+                                .allowsHitTesting(false)
+                        }
                     Image(systemName: "arrowtriangle.down.fill")
                         .font(.system(size: 30))
                         .foregroundStyle(.white)

@@ -111,11 +111,24 @@ struct ScoreboardView: View {
             Text("\(standing.sips)")
                 .font(.headline.monospacedDigit())
                 .frame(minWidth: 30, alignment: .trailing)
+                .contentTransition(.numericText(value: Double(standing.sips)))
+            Button {
+                withAnimation(.snappy) { session.undoSip(for: standing.player) }
+                Haptics.select()
+            } label: {
+                Image(systemName: "minus")
+                    .font(.footnote.weight(.bold))
+                    .frame(width: 28, height: 28)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .disabled(standing.sips == 0)
+            .accessibilityLabel("Quitar 1 a \(standing.player.name)")
+            .accessibilityIdentifier("undo.\(standing.player.name)")
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 14)
         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Neon.surface.opacity(0.9)))
-        .accessibilityElement(children: .combine)
     }
 
     private func summary(_ standings: [SipLedger.Standing]) -> String {

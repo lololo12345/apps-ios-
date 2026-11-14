@@ -54,12 +54,15 @@ struct SessionTests {
         first.setupDone = true
         first.give(3, to: first.players[0])
         first.waterEvery = 5
+        first.nextTurn()
+        first.undoSip(for: first.players[0])
 
         let second = PartySession(defaults: defaults, uiTesting: false)
         #expect(second.ageStatus == .adult)
         #expect(second.players.map(\.name) == ["Ana", "Leo"])
         #expect(second.setupDone)
-        #expect(second.ledger.count(for: second.players[0].id) == 3)
+        #expect(second.ledger.count(for: second.players[0].id) == 2)
+        #expect(second.currentPlayer?.name == "Leo")
         #expect(second.waterEvery == 5)
     }
 
