@@ -101,7 +101,9 @@ struct FilterBar: View {
             .foregroundStyle(value == nil ? Color.primary : Color.white)
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .glassEffect(value == nil ? .regular.interactive() : .regular.tint(Palette.coral).interactive(), in: .capsule)
+            // Non-interactive glass: an interactive one would take the tap away from the Menu.
+            .glassEffect(value == nil ? .regular : .regular.tint(Palette.coral), in: .capsule)
+            .contentShape(.capsule)
         }
         .accessibilityIdentifier(id)
     }

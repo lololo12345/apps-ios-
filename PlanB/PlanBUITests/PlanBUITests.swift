@@ -113,7 +113,8 @@ final class PlanBUITests: XCTestCase {
         let before = count.label
         tap("filter.place", app)
         let home = app.buttons["En casa"]
-        XCTAssertTrue(home.waitForExistence(timeout: 3))
+        if !home.waitForExistence(timeout: 3) { snapshot("07-debug-menu", app) }
+        XCTAssertTrue(home.exists)
         home.tap()
         tap("filter.budget", app)
         let free = app.buttons["Gratis"]

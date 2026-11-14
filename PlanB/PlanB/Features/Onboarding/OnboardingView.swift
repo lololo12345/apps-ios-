@@ -12,12 +12,13 @@ struct OnboardingView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 28) {
-                VStack(spacing: 10) {
+            // Compact enough that the names and the button stay above the keyboard on every iPhone.
+            VStack(spacing: 22) {
+                VStack(spacing: 6) {
                     Text("💞")
-                        .font(.system(size: 72))
+                        .font(.system(size: 56))
                     Text("Plan B")
-                        .font(.system(size: 56, weight: .black, design: .rounded))
+                        .font(.system(size: 48, weight: .black, design: .rounded))
                         .gradientText(Palette.brand)
                     Text("Planes para dos, para cuando no sabéis qué hacer.")
                         .font(.title3.weight(.medium))
@@ -25,45 +26,40 @@ struct OnboardingView: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.top, 48)
+                .padding(.top, 24)
 
                 VStack(spacing: 12) {
                     Text("¿Cómo os llamáis?")
                         .font(.headline)
                     nameField("Tu nombre", text: $nameA, id: "onboarding.nameA", index: 0)
                     nameField("El nombre de tu pareja", text: $nameB, id: "onboarding.nameB", index: 1)
+                    Button {
+                        Haptics.success()
+                        state.setNames(nameA, nameB)
+                    } label: {
+                        Label("Empezar", systemImage: "heart.fill")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                    }
+                    .buttonStyle(.glassProminent)
+                    .disabled(!ready)
+                    .padding(.top, 4)
+                    .accessibilityIdentifier("onboarding.start")
                 }
                 .padding(20)
                 .glassEffect(.regular, in: .rect(cornerRadius: Metrics.radius))
-            }
-            .padding(.horizontal, 24)
-        }
-        .scrollDismissesKeyboard(.interactively)
-        .scrollBounceBehavior(.basedOnSize)
-        .background(WarmBackground())
-        // Pinned to the bottom, and lifted above the keyboard while typing.
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 10) {
-                Button {
-                    Haptics.success()
-                    state.setNames(nameA, nameB)
-                } label: {
-                    Label("Empezar", systemImage: "heart.fill")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                }
-                .buttonStyle(.glassProminent)
-                .disabled(!ready)
-                .accessibilityIdentifier("onboarding.start")
 
                 Text("Todo se guarda solo en este iPhone.")
                     .font(.footnote)
                     .foregroundStyle(.tertiary)
             }
             .padding(.horizontal, 24)
-            .padding(.bottom, 8)
+            .padding(.bottom, 24)
         }
+        .scrollDismissesKeyboard(.interactively)
+        .scrollBounceBehavior(.basedOnSize)
+        .background(WarmBackground())
         .onAppear { focus = 0 }
     }
 
