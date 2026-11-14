@@ -8,9 +8,10 @@ on:
     paths-ignore: [ "RondaAndroid/**", ".github/workflows/android.yml" ]
   workflow_dispatch:
 
+# Queue new pushes instead of cancelling a run that is already testing (several apps share this workflow).
 concurrency:
   group: ios-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 
 jobs:
