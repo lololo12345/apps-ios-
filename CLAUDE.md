@@ -8,11 +8,12 @@
 3. Solo después de la aceptación, empieza a desarrollar.
 
 ## Plataformas
-- Cada app nueva se hace SOLO para iPhone (SwiftUI, carpeta `<App>/`, proyecto con `tools/make_xcodeproj.py`,
-  CI en `ios.yml`). Al terminar, entrega el `.ipa`.
-- La versión de Android se hace únicamente si el usuario la pide después. Entonces se porta la app con las
-  mismas funciones y contenido: Kotlin + Jetpack Compose, carpeta `<App>Android/` (mismo esquema que
-  `RondaAndroid/`, CI en `android.yml`), y se entrega el `.apk`.
+- Cuando el usuario pida una app nueva, pregúntale SIEMPRE para qué plataforma la quiere: iPhone, Android o las dos.
+  Hazlo antes de presentar la propuesta, y que la propuesta refleje la elección.
+- iPhone: SwiftUI, carpeta `<App>/` (proyecto con `tools/make_xcodeproj.py`, CI en `ios.yml`). Se entrega el `.ipa`.
+- Android: Kotlin + Jetpack Compose, carpeta `<App>Android/` (mismo esquema que `RondaAndroid/`, CI en
+  `android.yml`). Se entrega el `.apk`.
+- Si más adelante pide la otra plataforma de una app ya hecha, pórtala con las mismas funciones y contenido.
 
 ## Repositorio
 - Todo el trabajo de apps (iPhone y Android) va en este repositorio (`lololo12345/apps-ios-`).
