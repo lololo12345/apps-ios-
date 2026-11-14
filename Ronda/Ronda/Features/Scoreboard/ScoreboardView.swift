@@ -68,15 +68,17 @@ struct ScoreboardView: View {
         return HStack(alignment: .bottom, spacing: 10) {
             ForEach(order, id: \.self) { index in
                 let standing = top[index]
-                let height: CGFloat = grown ? [150, 110, 80][min(index, 2)] : 28
+                // Ties share a step: medal and height follow the ranking position, not the slot.
+                let rank = min(max(standing.position - 1, 0), 2)
+                let height: CGFloat = grown ? [150, 110, 80][rank] : 28
                 VStack(spacing: 6) {
-                    Text(["🥇", "🥈", "🥉"][min(index, 2)]).font(.largeTitle)
+                    Text(["🥇", "🥈", "🥉"][rank]).font(.largeTitle)
                     Text(standing.player.name)
                         .font(.headline)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(LinearGradient(colors: [Neon.amber, Neon.magenta], startPoint: .top, endPoint: .bottom).opacity(1 - Double(index) * 0.25))
+                        .fill(LinearGradient(colors: [Neon.amber, Neon.magenta], startPoint: .top, endPoint: .bottom).opacity(1 - Double(rank) * 0.25))
                         .frame(height: height)
                         .overlay(alignment: .top) {
                             Text("\(standing.sips)")
