@@ -35,7 +35,7 @@ struct HigherLowerGameView: View {
                     HStack(spacing: 10) {
                         SipBadge(count: max(1, game.pot), lexicon: session.lexicon, prefix: session.lexicon.soberMode ? "Si fallas, sumas" : "Si fallas, bebes")
                         if game.streak > 0 {
-                            Label("\(game.streak) seguidos", systemImage: "flame.fill")
+                            Label(game.streak == 1 ? "1 acierto" : "\(game.streak) aciertos seguidos", systemImage: "flame.fill")
                                 .font(.subheadline.weight(.bold))
                                 .foregroundStyle(Neon.amber)
                         }
