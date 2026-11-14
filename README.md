@@ -1,6 +1,6 @@
 # Apps iOS
 
-Apps nativas para iPhone (SwiftUI · iOS 26 · Liquid Glass). Cada app vive en su propia carpeta con su
+Apps nativas para iPhone (SwiftUI · iOS 26 · Liquid Glass) y, cuando se pide, para Android. Cada app vive en su propia carpeta con su
 proyecto de Xcode, sus tests y sus capturas. La integración continua (`.github/workflows/ios.yml`)
 compila y prueba todas las apps en paralelo en cada push.
 
@@ -8,6 +8,8 @@ compila y prueba todas las apps en paralelo en cada push.
 |---|---|---|
 | **Relato** | Estudio para crear historias de vídeo vertical: guion por bloques, coach de gancho, partes con *cliffhanger* y teleprompter con cámara. | [`Relato/`](Relato/README.md) |
 | **Ronda** | Juegos para la previa: 8 juegos en el apartado Normal y 7 en el apartado Hot, con marcador, modo sin alcohol y cartas propias. | [`Ronda/`](Ronda/README.md) |
+| **Plan B** | Planes para pareja: 300 ideas con filtros, ruleta, plan sorpresa, diario de citas y widget. | [`PlanB/`](PlanB/README.md) |
+| **Isla** | 30 herramientas para la Isla Dinámica: temporizadores, foco, marcador, parada de bus, lista de la compra… | [`Isla/`](Isla) |
 | **Ronda (Android)** | La misma app para Android (Kotlin · Jetpack Compose), con el mismo contenido y los mismos juegos. | [`RondaAndroid/`](RondaAndroid/README.md) |
 
 ## Abrir una app
