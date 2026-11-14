@@ -87,6 +87,19 @@ jobs:
             -only-testing:"${APP}Tests" -resultBundlePath Unit.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test (Case|Suite|run)|✔|✘|passed|failed|error:|Executed" | tail -150
 
+      - name: Warm up simulator (first app launch is slow)
+        if: always() && steps.build.outcome == 'success'
+        run: |
+          SIM_ID="${TEST_DESTINATION#id=}"
+          xcrun simctl boot "$SIM_ID" 2>/dev/null || true
+          xcrun simctl bootstatus "$SIM_ID" -b
+          APP_PATH="DerivedData/Build/Products/Debug-iphonesimulator/$APP.app"
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP_PATH/Info.plist")
+          xcrun simctl install "$SIM_ID" "$APP_PATH"
+          xcrun simctl launch "$SIM_ID" "$BUNDLE" -uiTesting || true
+          sleep 8
+          xcrun simctl terminate "$SIM_ID" "$BUNDLE" || true
+
       - name: UI tests (with screenshots)
         if: always() && steps.build.outcome == 'success'
         run: |
