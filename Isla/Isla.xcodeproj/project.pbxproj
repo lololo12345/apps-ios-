@@ -1,0 +1,668 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		983122E45FCDE5951D0AAAB1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AFF0584D181A1D8F202E1BA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D27745F5E64A311209F9E0BE;
+			remoteInfo = Isla;
+		};
+		834ED34A23BD853B734F00E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AFF0584D181A1D8F202E1BA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D27745F5E64A311209F9E0BE;
+			remoteInfo = Isla;
+		};
+		AE1B213E54FFA6F6E650DD61 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AFF0584D181A1D8F202E1BA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 43704DB14ACA286A4C0A4CBE;
+			remoteInfo = IslaWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXBuildFile section */
+		B0A59F247B44C87A8F6460BB /* IslaWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = D1D5661FF5E32EFF252E7DA2 /* IslaWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		48D563C0DBF47CBAF42249E2 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B0A59F247B44C87A8F6460BB /* IslaWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B0B6F7001ABD5207FC427880 /* Isla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Isla.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9233B32A9D7D00649539836C /* IslaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IslaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF736F4F16561E80077DCBB4 /* IslaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IslaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1D5661FF5E32EFF252E7DA2 /* IslaWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IslaWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		1BA4C746D2A9D8A9468EEA83 /* Isla */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Isla;
+			sourceTree = "<group>";
+		};
+		582844FA1316C9672E41CEAE /* IslaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = IslaTests;
+			sourceTree = "<group>";
+		};
+		5BB87B4BD4BA11297A543485 /* IslaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = IslaUITests;
+			sourceTree = "<group>";
+		};
+		DC3C21AFB8E2F9F7D1B66453 /* IslaKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = IslaKit;
+			sourceTree = "<group>";
+		};
+		FAB566A95636A34451F35EC3 /* IslaWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = IslaWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A358F910AA524ADB67941A41 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D6B13C8F410C4F71FF342C6 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		257521BED6510166DD1B416F = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7B34AD779BE28E255BFFE768 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		116DF60056929325A5827443 = {
+			isa = PBXGroup;
+			children = (
+				1BA4C746D2A9D8A9468EEA83 /* Isla */,
+				582844FA1316C9672E41CEAE /* IslaTests */,
+				5BB87B4BD4BA11297A543485 /* IslaUITests */,
+				DC3C21AFB8E2F9F7D1B66453 /* IslaKit */,
+				FAB566A95636A34451F35EC3 /* IslaWidget */,
+				5D0462671F07B4CB813495B3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5D0462671F07B4CB813495B3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0B6F7001ABD5207FC427880 /* Isla.app */,
+				9233B32A9D7D00649539836C /* IslaTests.xctest */,
+				BF736F4F16561E80077DCBB4 /* IslaUITests.xctest */,
+				D1D5661FF5E32EFF252E7DA2 /* IslaWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D27745F5E64A311209F9E0BE /* Isla */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 62C2C7A9DCA4D6978B74F10A;
+			buildPhases = (
+				64E94B4CFE6D84962DF6F7E6 /* Sources */,
+				A358F910AA524ADB67941A41 /* Frameworks */,
+				E4CFB8645269BE3A6CD991B6 /* Resources */,
+				48D563C0DBF47CBAF42249E2 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3D598A159CFBC7B37C9E4726 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1BA4C746D2A9D8A9468EEA83 /* Isla */,
+				DC3C21AFB8E2F9F7D1B66453 /* IslaKit */,
+			);
+			name = Isla;
+			packageProductDependencies = (
+			);
+			productName = Isla;
+			productReference = B0B6F7001ABD5207FC427880 /* Isla.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CB3429FAA989D24F072F56AD /* IslaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E43916C4B465B524C0C0EC84;
+			buildPhases = (
+				CCBD82A1227E2B123BEF775B /* Sources */,
+				8D6B13C8F410C4F71FF342C6 /* Frameworks */,
+				8925F3A726B185E8E4C6FEB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36153F3F690317E56F31E622 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				582844FA1316C9672E41CEAE /* IslaTests */,
+			);
+			name = IslaTests;
+			packageProductDependencies = (
+			);
+			productName = IslaTests;
+			productReference = 9233B32A9D7D00649539836C /* IslaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AB1A86D0569612A471A29A79 /* IslaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A2954F41494E4E5AACE6D6E5;
+			buildPhases = (
+				D414EE383DF3276DA0F9B737 /* Sources */,
+				257521BED6510166DD1B416F /* Frameworks */,
+				6A4EB46052BB76108A6D9E41 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				82CD4C7E5EB0F4DA5BC95F1E /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5BB87B4BD4BA11297A543485 /* IslaUITests */,
+			);
+			name = IslaUITests;
+			packageProductDependencies = (
+			);
+			productName = IslaUITests;
+			productReference = BF736F4F16561E80077DCBB4 /* IslaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		43704DB14ACA286A4C0A4CBE /* IslaWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 461F2EDD68FCC501DCFEBD72;
+			buildPhases = (
+				760E8FCE257A80CA9B484B16 /* Sources */,
+				7B34AD779BE28E255BFFE768 /* Frameworks */,
+				C8BE762526D3F2EB1622697E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FAB566A95636A34451F35EC3 /* IslaWidget */,
+				DC3C21AFB8E2F9F7D1B66453 /* IslaKit */,
+			);
+			name = IslaWidget;
+			packageProductDependencies = (
+			);
+			productName = IslaWidget;
+			productReference = D1D5661FF5E32EFF252E7DA2 /* IslaWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3AFF0584D181A1D8F202E1BA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					D27745F5E64A311209F9E0BE = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					CB3429FAA989D24F072F56AD = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = D27745F5E64A311209F9E0BE;
+					};
+					AB1A86D0569612A471A29A79 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = D27745F5E64A311209F9E0BE;
+					};
+					43704DB14ACA286A4C0A4CBE = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = 2CB5000ED1E139C9ACEA2D04;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				es,
+				Base,
+			);
+			mainGroup = 116DF60056929325A5827443;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5D0462671F07B4CB813495B3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D27745F5E64A311209F9E0BE /* Isla */,
+				CB3429FAA989D24F072F56AD /* IslaTests */,
+				AB1A86D0569612A471A29A79 /* IslaUITests */,
+				43704DB14ACA286A4C0A4CBE /* IslaWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E4CFB8645269BE3A6CD991B6 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8925F3A726B185E8E4C6FEB3 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6A4EB46052BB76108A6D9E41 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C8BE762526D3F2EB1622697E = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		64E94B4CFE6D84962DF6F7E6 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCBD82A1227E2B123BEF775B = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D414EE383DF3276DA0F9B737 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		760E8FCE257A80CA9B484B16 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		36153F3F690317E56F31E622 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D27745F5E64A311209F9E0BE /* Isla */;
+			targetProxy = 983122E45FCDE5951D0AAAB1 /* PBXContainerItemProxy */;
+		};
+		82CD4C7E5EB0F4DA5BC95F1E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D27745F5E64A311209F9E0BE /* Isla */;
+			targetProxy = 834ED34A23BD853B734F00E6 /* PBXContainerItemProxy */;
+		};
+		3D598A159CFBC7B37C9E4726 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 43704DB14ACA286A4C0A4CBE /* IslaWidget */;
+			targetProxy = AE1B213E54FFA6F6E650DD61 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D5C1BF45CAB15A07A04B9082 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		2F47A5D939D4E3C104BA2503 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BD9E094BB1382C169FCD4607 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Isla-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Isla";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Para enseñar tu próxima cita en la Isla Dinámica.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Para hacer una foto de dónde has aparcado.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Para seguir la distancia a tu parada o a tu coche con la pantalla apagada.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Para avisarte al llegar a tu parada y guiarte de vuelta al coche.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		6F1B21872D472A841B60C0D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Isla-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Isla";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Para enseñar tu próxima cita en la Isla Dinámica.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Para hacer una foto de dónde has aparcado.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Para seguir la distancia a tu parada o a tu coche con la pantalla apagada.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Para avisarte al llegar a tu parada y guiarte de vuelta al coche.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		174AD2A4B4A17E03337D7A5F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Isla.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Isla";
+			};
+			name = Debug;
+		};
+		5A6450B4F40393FD30A850A1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Isla.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Isla";
+			};
+			name = Release;
+		};
+		417A3F12101601C19376DEF5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Isla;
+			};
+			name = Debug;
+		};
+		74DE2795C8E4578B27677E60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Isla;
+			};
+			name = Release;
+		};
+		44A36BE1681168CE716C3074 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/IslaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Isla";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		4F19DA3C09009DB5ACF5C523 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/IslaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Isla";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.isla.island.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2CB5000ED1E139C9ACEA2D04 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D5C1BF45CAB15A07A04B9082 /* Debug */,
+				2F47A5D939D4E3C104BA2503 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		62C2C7A9DCA4D6978B74F10A /* Build configuration list for Isla */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BD9E094BB1382C169FCD4607 /* Debug */,
+				6F1B21872D472A841B60C0D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E43916C4B465B524C0C0EC84 /* Build configuration list for IslaTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				174AD2A4B4A17E03337D7A5F /* Debug */,
+				5A6450B4F40393FD30A850A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A2954F41494E4E5AACE6D6E5 /* Build configuration list for IslaUITests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				417A3F12101601C19376DEF5 /* Debug */,
+				74DE2795C8E4578B27677E60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		461F2EDD68FCC501DCFEBD72 /* Build configuration list for IslaWidget */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				44A36BE1681168CE716C3074 /* Debug */,
+				4F19DA3C09009DB5ACF5C523 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3AFF0584D181A1D8F202E1BA /* Project object */;
+}
