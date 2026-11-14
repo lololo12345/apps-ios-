@@ -92,7 +92,7 @@ final class AppModel {
         if case .location = session.state { location?.end(session.id) }
         if let activity = activities.removeValue(forKey: session.id) {
             let final = ActivityContent(state: IslaAttributes.ContentState(display: session.display()), staleDate: nil)
-            Task { await activity.end(final, dismissalPolicy: .immediate) }
+            Self.withActivity(activity.id) { await $0.end(final, dismissalPolicy: .immediate) }
         }
         save()
     }
@@ -116,7 +116,7 @@ final class AppModel {
         guard let activity = activities[session.id] else { return }
         let display = session.display(now: now)
         let content = ActivityContent(state: IslaAttributes.ContentState(display: display), staleDate: session.staleDate(now: now))
-        Task { await activity.update(content) }
+        Self.withActivity(activity.id) { await $0.update(content) }
     }
 
     private func advanceEvent(at index: Int, now: Date) {
@@ -164,7 +164,16 @@ final class AppModel {
             if let id = UUID(uuidString: activity.attributes.sessionID), sessions.contains(where: { $0.id == id }) {
                 activities[id] = activity
             } else {
-                Task { await activity.end(nil, dismissalPolicy: .immediate) }
+                Self.withActivity(activity.id) { await $0.end(nil, dismissalPolicy: .immediate) }
+            }
+        }
+    }
+
+    /// Activity objects are not Sendable: look the activity up by id inside the task instead of passing it in.
+    private nonisolated static func withActivity(_ id: String, _ body: @escaping @Sendable (Activity<IslaAttributes>) async -> Void) {
+        Task.detached {
+            for activity in Activity<IslaAttributes>.activities where activity.id == id {
+                await body(activity)
             }
         }
     }
