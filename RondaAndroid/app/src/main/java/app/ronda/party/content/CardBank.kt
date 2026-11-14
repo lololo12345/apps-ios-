@@ -1,0 +1,345 @@
+package app.ronda.party.content
+
+import app.ronda.party.core.Roulette
+
+/**
+ * Every built-in card, written for Spanish-speaking groups. `{1}` and `{2}` are replaced with players.
+ * Hot content is suggestive and adult, never explicit, and every card can always be skipped by drinking.
+ * Same content as the iOS app (converted from Ronda/Ronda/Content/CardBank.swift).
+ */
+object CardBank {
+    // Yo nunca
+
+    val neverSoft = listOf(
+        "Yo nunca he fingido que me sabía una canción en un concierto.",
+        "Yo nunca he hablado solo por la calle y alguien me ha pillado.",
+        "Yo nunca he mandado un audio de más de 3 minutos.",
+        "Yo nunca he stalkeado a alguien hasta fotos de hace años.",
+        "Yo nunca me he quedado dormido en el transporte y me he pasado de parada.",
+        "Yo nunca he dicho «estoy de camino» sin haber salido de casa.",
+        "Yo nunca he comido algo que se había caído al suelo.",
+        "Yo nunca he fingido una llamada para escapar de una conversación.",
+        "Yo nunca he llorado viendo una película de dibujos.",
+        "Yo nunca he saludado a alguien que no me saludaba a mí.",
+        "Yo nunca he mentido sobre mi edad.",
+        "Yo nunca he usado la ropa de otra persona sin pedir permiso.",
+        "Yo nunca he buscado mi propio nombre en Google.",
+        "Yo nunca he cantado en la ducha como si fuera un concierto.",
+        "Yo nunca he roto algo en casa ajena y no lo he dicho.",
+        "Yo nunca he leído los mensajes de alguien sin que lo supiera.",
+        "Yo nunca he tenido miedo a la oscuridad siendo ya adulto.",
+        "Yo nunca he pedido comida a domicilio dos veces el mismo día.",
+        "Yo nunca he olvidado el cumpleaños de mi mejor amigo.",
+        "Yo nunca he hecho ghosting a alguien.",
+        "Yo nunca he dicho «no tengo hambre» y luego me he comido lo de otro.",
+        "Yo nunca he subido una foto y la he borrado por pocos likes.",
+        "Yo nunca he suspendido un examen por no estudiar nada.",
+        "Yo nunca he fingido estar enfermo para no ir a clase o al trabajo.",
+        "Yo nunca he hecho una maratón de una serie entera en un día.",
+        "Yo nunca he perdido el móvil y lo tenía en la mano.",
+        "Yo nunca he tropezado en público y he disimulado corriendo.",
+        "Yo nunca he regalado algo que me habían regalado a mí.",
+        "Yo nunca he dicho «te quiero» por error a quien no tocaba.",
+        "Yo nunca he hablado mal de alguien que estaba detrás de mí.",
+    )
+
+    val neverParty = listOf(
+        "Yo nunca he vomitado en una fiesta.",
+        "Yo nunca he despertado sin saber cómo llegué a casa.",
+        "Yo nunca me he colado en una discoteca.",
+        "Yo nunca he escrito a mi ex borracho.",
+        "Yo nunca he salido de fiesta un lunes.",
+        "Yo nunca he perdido el móvil saliendo de fiesta.",
+        "Yo nunca he dormido en un sitio que no era una cama después de salir.",
+        "Yo nunca he dicho que era mi cumpleaños para que me invitaran a algo.",
+        "Yo nunca he bailado encima de una mesa.",
+        "Yo nunca he hecho el ridículo en un karaoke… y me ha encantado.",
+        "Yo nunca he ido a trabajar o a clase sin dormir después de salir.",
+        "Yo nunca he llamado a alguien a las 4 de la mañana sin motivo.",
+        "Yo nunca me he liado con alguien de este grupo.",
+        "Yo nunca he mentido a mis padres sobre dónde estaba.",
+        "Yo nunca he perdido una prenda de ropa en una fiesta.",
+        "Yo nunca he hecho un simpa.",
+        "Yo nunca me he dormido en una fiesta.",
+        "Yo nunca he subido una historia de la que me haya arrepentido al día siguiente.",
+        "Yo nunca he empezado una pelea por una tontería estando de fiesta.",
+        "Yo nunca he volcado una copa encima de alguien.",
+        "Yo nunca he salido de fiesta con resaca de la noche anterior.",
+        "Yo nunca he dejado plantado a alguien en una cita.",
+        "Yo nunca he cogido un taxi y me he quedado dormido.",
+        "Yo nunca he comido kebab a las 6 de la mañana.",
+        "Yo nunca he fingido conocer a alguien para entrar en una fiesta.",
+        "Yo nunca he hecho un baile viral en público.",
+        "Yo nunca he perdido a mis amigos en una discoteca y me he ido solo.",
+        "Yo nunca he dado mi número falso a alguien.",
+        "Yo nunca he llorado en una fiesta.",
+        "Yo nunca he dicho «solo una copa» y he vuelto de día.",
+    )
+
+    val neverHot = listOf(
+        "Yo nunca he enviado una foto atrevida.",
+        "Yo nunca he tenido una cita a ciegas.",
+        "Yo nunca me he liado con alguien el mismo día que lo conocí.",
+        "Yo nunca he usado una app de ligar.",
+        "Yo nunca he tenido un crush con alguien de esta mesa.",
+        "Yo nunca he besado a dos personas en la misma noche.",
+        "Yo nunca he mentido en mi perfil de una app de ligar.",
+        "Yo nunca he tenido un rollo con un ex de un amigo.",
+        "Yo nunca he ligado con alguien por mensaje sin conocerlo en persona.",
+        "Yo nunca he fingido que no me gustaba alguien que sí me gustaba.",
+        "Yo nunca me he enamorado de un profesor o un jefe.",
+        "Yo nunca he dado un beso para ganar una apuesta.",
+        "Yo nunca he tenido una relación a distancia.",
+        "Yo nunca he vuelto con un ex.",
+        "Yo nunca he tenido un sueño subido de tono con alguien de aquí.",
+        "Yo nunca he dejado a alguien por mensaje.",
+        "Yo nunca me he liado con alguien en un sitio público.",
+        "Yo nunca he escrito «¿estás despierto?» a medianoche.",
+        "Yo nunca he hecho un baile sensual para impresionar a alguien.",
+        "Yo nunca he tenido un amigo con derecho a roce.",
+        "Yo nunca he buscado a mi crush en todas sus redes.",
+        "Yo nunca he mandado un mensaje picante a la persona equivocada.",
+        "Yo nunca he besado a alguien de mi mismo sexo.",
+        "Yo nunca he tenido una cita que acabó en desayuno.",
+        "Yo nunca he guardado una foto de mi ex.",
+    )
+
+    // ¿Quién es más probable?
+
+    val mostLikelySoft = listOf(
+        "¿Quién es más probable que se pierda en su propia ciudad?",
+        "¿Quién es más probable que llegue tarde a su propia boda?",
+        "¿Quién es más probable que se haga famoso por un vídeo viral?",
+        "¿Quién es más probable que adopte cinco gatos?",
+        "¿Quién es más probable que se olvide de dónde ha aparcado?",
+        "¿Quién es más probable que gane un concurso de la tele?",
+        "¿Quién es más probable que se ría en un momento serio?",
+        "¿Quién es más probable que se haga millonario?",
+        "¿Quién es más probable que se apunte al gimnasio y no vaya nunca?",
+        "¿Quién es más probable que sobreviva a un apocalipsis zombi?",
+        "¿Quién es más probable que tenga una cuenta secreta en redes?",
+        "¿Quién es más probable que se coma la comida de los demás?",
+        "¿Quién es más probable que llore con un anuncio?",
+        "¿Quién es más probable que deje el móvil sin batería en el peor momento?",
+        "¿Quién es más probable que discuta con un desconocido por internet?",
+        "¿Quién es más probable que se vaya a vivir a otro país?",
+        "¿Quién es más probable que se olvide del cumpleaños de su pareja?",
+        "¿Quién es más probable que hable con los animales como si fueran personas?",
+        "¿Quién es más probable que se compre algo carísimo e inútil?",
+        "¿Quién es más probable que se duerma en el cine?",
+    )
+
+    val mostLikelyParty = listOf(
+        "¿Quién es más probable que acabe llorando esta noche?",
+        "¿Quién es más probable que pierda algo antes de volver a casa?",
+        "¿Quién es más probable que acabe cantando en el karaoke?",
+        "¿Quién es más probable que escriba a su ex hoy?",
+        "¿Quién es más probable que se duerma el primero?",
+        "¿Quién es más probable que acabe en un after?",
+        "¿Quién es más probable que haga amigos con desconocidos en el baño?",
+        "¿Quién es más probable que pida una ronda de chupitos sin que nadie se lo pida?",
+        "¿Quién es más probable que se despierte en casa de otro?",
+        "¿Quién es más probable que suba una historia de la que se arrepienta?",
+        "¿Quién es más probable que se líe con alguien esta noche?",
+        "¿Quién es más probable que se enfade por una tontería?",
+        "¿Quién es más probable que baile con el DJ?",
+        "¿Quién es más probable que pierda a todo el grupo?",
+        "¿Quién es más probable que acabe comiendo a las 5 de la mañana?",
+        "¿Quién es más probable que diga «solo una más» cinco veces?",
+        "¿Quién es más probable que se haga una foto con un desconocido?",
+        "¿Quién es más probable que no recuerde nada mañana?",
+        "¿Quién es más probable que pague la cuenta de todos sin querer?",
+        "¿Quién es más probable que se quede sin batería el primero?",
+    )
+
+    val mostLikelyHot = listOf(
+        "¿Quién es más probable que tenga un rollo esta noche?",
+        "¿Quién es más probable que tenga más matches en las apps de ligar?",
+        "¿Quién es más probable que se líe con alguien de este grupo?",
+        "¿Quién es más probable que haya enviado una foto atrevida esta semana?",
+        "¿Quién es más probable que vuelva con su ex?",
+        "¿Quién es más probable que tenga un crush secreto aquí?",
+        "¿Quién es más probable que ligue con el camarero?",
+        "¿Quién es más probable que tenga la vida amorosa más caótica?",
+        "¿Quién es más probable que se case con alguien que conoció en una noche?",
+        "¿Quién es más probable que tenga una cita esta semana?",
+        "¿Quién es más probable que escriba «¿estás despierto?» esta noche?",
+        "¿Quién es más probable que bese mejor?",
+        "¿Quién es más probable que tenga un amigo con derecho a roce?",
+        "¿Quién es más probable que se enamore en un viaje?",
+        "¿Quién es más probable que haga el primer movimiento?",
+        "¿Quién es más probable que tenga un pasado más salvaje?",
+        "¿Quién es más probable que ligue usando una frase de película?",
+        "¿Quién es más probable que tenga una cita en el sitio más raro?",
+        "¿Quién es más probable que se ponga rojo con este juego?",
+        "¿Quién es más probable que acabe la noche con más números nuevos?",
+    )
+
+    // Verdad o trago
+
+    val truthSoft = listOf(
+        "¿Cuál es la mentira más gorda que les has contado a tus padres?",
+        "¿Qué es lo más vergonzoso que tienes en la galería del móvil?",
+        "¿A quién de esta mesa llamarías a las 3 de la mañana con un problema?",
+        "¿Cuál es tu mayor manía que nadie conoce?",
+        "¿Qué es lo peor que has cocinado nunca?",
+        "¿Cuál es la canción que escuchas a escondidas?",
+        "¿Qué es lo más infantil que sigues haciendo?",
+        "¿Cuál es tu búsqueda más rara en internet?",
+        "¿Qué superpoder elegirías y para qué lo usarías de verdad?",
+        "¿Cuál ha sido tu peor corte de pelo?",
+        "¿Qué opinión impopular tienes?",
+        "¿Cuál es tu mayor miedo?",
+        "¿Qué es lo último que has buscado en el móvil?",
+        "¿Cuál es el regalo más feo que te han hecho?",
+        "¿Qué harías si te tocara la lotería mañana?",
+        "¿Cuál es la excusa más absurda que has puesto?",
+        "¿A quién de aquí cambiarías la vida un día?",
+        "¿Cuál es tu placer culpable?",
+        "¿Qué es lo más raro que has comido?",
+        "¿Qué es lo que más te molesta de la persona de tu izquierda?",
+    )
+
+    val truthParty = listOf(
+        "¿Cuál es la noche de fiesta de la que menos te acuerdas?",
+        "¿Qué es lo peor que has hecho borracho?",
+        "¿A quién has escrito de fiesta y no debías?",
+        "¿Cuál ha sido tu peor resaca y qué la provocó?",
+        "¿Alguna vez te has liado con alguien y no recordabas su nombre?",
+        "¿Cuál es la peor cita que has tenido?",
+        "¿Qué secreto de alguien de esta mesa has contado?",
+        "¿Has mentido alguna vez en este juego?",
+        "¿Quién de esta mesa crees que tiene más secretos?",
+        "¿Cuál es lo más caro que has perdido de fiesta?",
+        "¿Con quién de aquí no irías de vacaciones y por qué?",
+        "¿Cuál es el sitio más raro en el que te has dormido?",
+        "¿Qué es lo más atrevido que has hecho por una apuesta?",
+        "¿A quién de esta mesa conocías menos y ahora te cae mejor?",
+        "¿Cuál ha sido el peor plan que has propuesto tú?",
+        "¿Qué mensaje te daría más vergüenza que leyéramos ahora?",
+        "¿Cuándo fue la última vez que mentiste a alguien de aquí?",
+        "¿Qué es lo que nunca harías de fiesta… y ya has hecho?",
+        "¿Cuál es tu bebida de la vergüenza?",
+        "¿Has dejado alguna vez a un amigo tirado en una fiesta?",
+    )
+
+    val truthHot = listOf(
+        "¿Quién de esta mesa te parece más atractivo?",
+        "¿Cuál ha sido tu cita más desastrosa?",
+        "¿Cuál es tu tipo ideal, con todo detalle?",
+        "¿Qué es lo más atrevido que has hecho por ligar?",
+        "¿Has tenido alguna vez un crush con alguien de aquí?",
+        "¿Cuál es el lugar más raro donde te has dado un beso?",
+        "¿Qué es lo primero en lo que te fijas de alguien?",
+        "¿Cuál ha sido tu mejor beso y con quién?",
+        "¿Qué es lo que más te pone de una persona?",
+        "¿Has escrito alguna vez a alguien solo porque estabas aburrido?",
+        "¿Cuánto tiempo ha pasado desde tu último beso?",
+        "¿Qué ex volverías a ver solo una noche?",
+        "¿Cuál es tu frase de ligar que nunca falla?",
+        "¿Has mentido alguna vez en una cita para quedar bien?",
+        "¿Qué famoso sería tu pase libre?",
+        "¿Cuál es tu fantasía de cita perfecta?",
+        "¿Te ha gustado alguna vez la pareja de un amigo?",
+        "¿Cuál es la cosa más romántica que has hecho?",
+        "¿Has tenido un rollo del que nadie de aquí sabe nada?",
+        "¿Qué es lo que nunca harías en una primera cita?",
+    )
+
+    // Retos hot
+
+    /// Always shown with the option to refuse and drink instead.
+    val daresHot = listOf(
+        "{1}, dale un beso en la mejilla a {2}.",
+        "{1}, susúrrale algo bonito al oído a {2}.",
+        "{1}, baila lento con {2} durante una canción.",
+        "{1}, lee en voz alta el último mensaje que le enviaste a tu crush.",
+        "{1}, haz tu mejor mirada seductora a {2} durante 10 segundos sin reírte.",
+        "{1}, dile a {2} qué es lo que más te gusta de su físico.",
+        "{1}, enséñale al grupo la última foto que te hiciste.",
+        "{1}, intercambia una prenda con {2} hasta el final de la ronda.",
+        "{1}, haz un masaje de hombros de 30 segundos a {2}.",
+        "{1}, declara tu amor a {2} como en una telenovela.",
+        "{1}, deja que {2} te escriba un estado en tus redes (y no lo borres en una hora).",
+        "{1}, siéntate en las rodillas de {2} durante una ronda.",
+        "{1}, dile tu mejor frase para ligar a {2} mirándole a los ojos.",
+        "{1}, haz una pasarela sexy de un lado a otro de la habitación.",
+        "{1}, dale la mano a {2} durante la próxima ronda entera.",
+        "{1}, cuenta con detalle tu última cita.",
+        "{1}, deja que {2} elija a quién le das un abrazo de 10 segundos.",
+        "{1}, imita cómo ligas cuando sales de fiesta.",
+        "{1}, escribe un piropo a {2} y que lo lea en voz alta.",
+        "{1}, besa la mano de {2} como en la época medieval.",
+        "{1}, haz un baile sensual de 15 segundos sin música.",
+        "{1}, enseña la última conversación de tu app de ligar (o di que no tienes).",
+        "{1}, deja que {2} te haga una pregunta íntima. Contesta con sinceridad.",
+        "{1}, mira a {2} a los ojos 20 segundos. El primero que se ría bebe.",
+        "{1}, describe a tu crush ideal usando a gente de esta mesa.",
+        "{1}, dale un beso en la frente a {2}.",
+        "{1} y {2}, brindad con los brazos entrelazados.",
+        "{1}, cuenta cuál ha sido tu momento más vergonzoso ligando.",
+        "{1}, elige a dos de la mesa: ¿con quién tendrías una cita?",
+        "{1}, haz de ligón de bar con {2} durante 30 segundos.",
+    )
+
+    // La Bomba (categorías)
+
+    val bombNormal = listOf(
+        "Marcas de cerveza", "Cócteles", "Canciones del verano", "Series de Netflix", "Futbolistas",
+        "Cantantes españoles", "Películas de Disney", "Marcas de coche", "Capitales de Europa", "Frutas",
+        "Cosas que hay en una nevera", "Palabras que rimen con «fiesta»", "Apps del móvil", "Animales del zoo",
+        "Personajes de Harry Potter", "Comidas típicas españolas", "Cosas que se llevan a la playa",
+        "Marcas de ropa", "Superhéroes", "Videojuegos", "Instrumentos musicales", "Deportes olímpicos",
+        "Excusas para no ir a trabajar", "Cosas que pierdes de fiesta", "Pokémon", "Islas",
+        "Programas de la tele", "Cosas de color rojo", "Raperos", "Dibujos animados de la infancia",
+        "Postres", "Profesiones", "Equipos de fútbol", "Ciudades de España", "Chuches",
+        "Cosas que hay en un baño", "Influencers", "Juegos de mesa", "Partes del cuerpo", "Marcas de móvil",
+        "Bebidas sin alcohol", "Cosas que se hacen en Navidad", "Películas de terror", "Países de América",
+        "Tipos de pasta", "Grupos de música", "Cosas que se dicen de resaca", "Emojis", "Redes sociales",
+        "Personajes de Los Simpson",
+    )
+
+    val bombHot = listOf(
+        "Sitios para una primera cita", "Apps de ligar", "Frases para ligar", "Partes del cuerpo que más te gustan",
+        "Famosos que te parecen atractivos", "Canciones para un momento romántico", "Excusas para no quedar con alguien",
+        "Cosas que se hacen en una cita", "Películas románticas", "Sitios donde dar un beso", "Cosas que te ponen de alguien",
+        "Motivos para dejar a alguien", "Regalos de San Valentín", "Bebidas para una cita", "Cosas que no se dicen en una primera cita",
+        "Emojis que mandas al ligar", "Planes para un finde en pareja", "Señales de que le gustas a alguien",
+        "Prendas de ropa sexys", "Series con escenas subidas de tono", "Cosas que haces antes de una cita",
+        "Lugares para irse de escapada romántica", "Apodos cariñosos", "Cantantes que te parecen sexys", "Red flags en una cita",
+    )
+
+    // La Ruleta
+
+    val rouletteNormal = listOf(
+        Roulette.Segment(title = "Bebes 1", detail = "Un sorbo para ti.", spinnerSips = 1, everyoneSips = 0, weight = 3),
+        Roulette.Segment(title = "Bebes 2", detail = "Dos sorbos para ti.", spinnerSips = 2, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Izquierda", detail = "Le toca a quien tienes a tu izquierda.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Derecha", detail = "Le toca a quien tienes a tu derecha.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Todos", detail = "¡Salud! Bebe toda la mesa.", spinnerSips = 0, everyoneSips = 1, weight = 2),
+        Roulette.Segment(title = "Reparte 3", detail = "Reparte 3 entre quien quieras.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Te libras", detail = "Esta vez no te toca nada.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Compañero", detail = "Elige a alguien: beberá contigo hasta tu próximo turno.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+        Roulette.Segment(title = "Norma", detail = "Inventa una norma para la ronda. Quien la rompa, bebe.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+        Roulette.Segment(title = "Último", detail = "El último en tocarse la nariz, bebe 2.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+    )
+
+    val rouletteHot = listOf(
+        Roulette.Segment(title = "Bebes 2", detail = "Dos sorbos para ti.", spinnerSips = 2, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Beso", detail = "Da un beso en la mejilla a quien elijas o bebe 3.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Confiesa", detail = "Cuenta tu último ligue o bebe 3.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Piropo", detail = "Dile un piropo a la persona de tu derecha.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Todos", detail = "Brindis por el amor: bebe toda la mesa.", spinnerSips = 0, everyoneSips = 1, weight = 2),
+        Roulette.Segment(title = "Pregunta", detail = "El grupo te hace una pregunta íntima. Contesta o bebe 3.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Te libras", detail = "Esta vez no te toca nada.", spinnerSips = 0, everyoneSips = 0, weight = 2),
+        Roulette.Segment(title = "Baile", detail = "Baile sensual de 10 segundos o bebe 3.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+        Roulette.Segment(title = "Crush", detail = "Di quién de la mesa sería tu cita ideal o bebe 3.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+        Roulette.Segment(title = "Mirada", detail = "Aguanta la mirada a quien elijas 15 s. Quien se ría, bebe 2.", spinnerSips = 0, everyoneSips = 0, weight = 1),
+    )
+
+    val waterBreaks = listOf(
+        "Ronda de agua 💧 Todos, un buen trago de agua antes de seguir.",
+        "Pausa hidratante 💧 Agua para toda la mesa. La noche es larga.",
+        "Momento agua 💧 Quien termine su vaso primero elige el siguiente juego.",
+    )
+}

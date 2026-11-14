@@ -8,6 +8,7 @@ compila y prueba todas las apps en paralelo en cada push.
 |---|---|---|
 | **Relato** | Estudio para crear historias de vídeo vertical: guion por bloques, coach de gancho, partes con *cliffhanger* y teleprompter con cámara. | [`Relato/`](Relato/README.md) |
 | **Ronda** | Juegos para la previa: 8 juegos en el apartado Normal y 7 en el apartado Hot, con marcador, modo sin alcohol y cartas propias. | [`Ronda/`](Ronda/README.md) |
+| **Ronda (Android)** | La misma app para Android (Kotlin · Jetpack Compose), con el mismo contenido y los mismos juegos. | [`RondaAndroid/`](RondaAndroid/README.md) |
 
 ## Abrir una app
 1. Abre `<App>/<App>.xcodeproj` con Xcode 26 o posterior.

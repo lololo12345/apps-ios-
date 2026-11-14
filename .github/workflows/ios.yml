@@ -3,7 +3,9 @@ name: iOS CI
 on:
   push:
     branches: [ "main", "claude/**" ]
+    paths-ignore: [ "RondaAndroid/**", ".github/workflows/android.yml" ]
   pull_request:
+    paths-ignore: [ "RondaAndroid/**", ".github/workflows/android.yml" ]
   workflow_dispatch:
 
 concurrency:
