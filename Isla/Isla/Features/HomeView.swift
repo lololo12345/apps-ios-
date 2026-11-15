@@ -83,6 +83,8 @@ struct HomeView: View {
             }
         }
         .sheet(isPresented: $showFavorites) { FavoritesSheet() }
+        // Back on the home screen after starting a tool: show everything again.
+        .onChange(of: model.sessions.count) { search = "" }
     }
 
     private func section<Content: View>(_ title: String, trailing: String? = nil, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content) -> some View {

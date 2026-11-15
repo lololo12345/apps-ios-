@@ -42,9 +42,6 @@ final class IslaUITests: XCTestCase {
         let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         search.tap()
-        if let current = search.value as? String, !current.isEmpty, current != search.placeholderValue {
-            search.buttons.firstMatch.tap()
-        }
         search.typeText(query)
         let tile = element("tool.\(kind)", app)
         XCTAssertTrue(tile.waitForExistence(timeout: 3), "Missing tool \(kind)")
