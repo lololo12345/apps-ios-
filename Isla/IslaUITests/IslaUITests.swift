@@ -36,15 +36,18 @@ final class IslaUITests: XCTestCase {
         item.tap()
     }
 
+    /// Opens a tool through the search bar (the floating bar can cover tiles at the bottom of the list).
     @MainActor
-    private func open(_ kind: String, _ app: XCUIApplication) {
-        let tile = element("tool.\(kind)", app)
-        var attempts = 0
-        while !tile.isHittable && attempts < 6 {
-            app.swipeUp()
-            attempts += 1
+    private func open(_ kind: String, search query: String, _ app: XCUIApplication) {
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
+        if let current = search.value as? String, !current.isEmpty, current != search.placeholderValue {
+            search.buttons.firstMatch.tap()
         }
-        XCTAssertTrue(tile.exists, "Missing tool \(kind)")
+        search.typeText(query)
+        let tile = element("tool.\(kind)", app)
+        XCTAssertTrue(tile.waitForExistence(timeout: 3), "Missing tool \(kind)")
         tile.tap()
         XCTAssertTrue(element("setup.start", app).waitForExistence(timeout: 5))
     }
@@ -61,7 +64,7 @@ final class IslaUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Isla"].waitForExistence(timeout: 5))
         snapshot("00-home", app)
 
-        open("timer", app)
+        open("timer", search: "Temporizadores", app)
         let title = element("setup.title", app)
         title.tap()
         title.typeText("Pasta")
@@ -92,7 +95,7 @@ final class IslaUITests: XCTestCase {
     @MainActor
     func testScoreboardAndShoppingList() {
         let app = launch()
-        open("score", app)
+        open("score", search: "Marcador", app)
         let toggle = app.switches.firstMatch
         toggle.switches.firstMatch.tap()
         tap("setup.start", app)
@@ -102,7 +105,7 @@ final class IslaUITests: XCTestCase {
         tap("action.score.b", app)
         XCTAssertEqual(element("session.value.score", app).label, "30 – 15")
 
-        open("shopping", app)
+        open("shopping", search: "compra", app)
         let lines = element("setup.lines", app)
         lines.tap()
         lines.typeText("Leche\nPan\nTomates")
@@ -117,7 +120,7 @@ final class IslaUITests: XCTestCase {
     @MainActor
     func testFlashcardsAndPomodoro() {
         let app = launch()
-        open("flashcards", app)
+        open("flashcards", search: "Tarjetas", app)
         let lines = element("setup.lines", app)
         lines.tap()
         lines.typeText("Capital de Italia = Roma\nApple = Manzana")
@@ -139,17 +142,11 @@ final class IslaUITests: XCTestCase {
     func testCatalogAndSearch() {
         let app = launch()
         let search = app.searchFields.firstMatch
-        app.swipeDown()
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         search.tap()
         search.typeText("parada")
         XCTAssertTrue(element("tool.busStop", app).waitForExistence(timeout: 3))
         XCTAssertFalse(element("tool.timer", app).exists)
         snapshot("07-search", app)
-        app.buttons["Cancelar"].firstMatch.tap()
-        app.swipeUp()
-        app.swipeUp()
-        sleep(1)
-        snapshot("08-catalog", app)
     }
 }
