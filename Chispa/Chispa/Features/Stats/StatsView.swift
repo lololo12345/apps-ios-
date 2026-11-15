@@ -168,7 +168,8 @@ struct CalendarCard: View {
                 ForEach(["L", "M", "X", "J", "V", "S", "D"], id: \.self) { letter in
                     Text(letter).font(.caption2.weight(.bold)).foregroundStyle(Palette.muted)
                 }
-                ForEach(0..<lead, id: \.self) { _ in Color.clear.frame(height: 34) }
+                // Negative ids so the leading blanks never collide with the day cells (0, 1, 2…).
+                ForEach((0..<lead).map { -1 - $0 }, id: \.self) { _ in Color.clear.frame(height: 34) }
                 ForEach(0..<daysInMonth, id: \.self) { offset in
                     let number = firstNumber + offset
                     let points = DayProgress.points(on: number, summaries)
