@@ -1,6 +1,10 @@
 import SwiftUI
 import UIKit
 
+enum ActionRowLabel {
+    static func text(_ id: String) -> String { id == "undo" ? "Deshacer" : (id == "stop" ? "Quitar" : id) }
+}
+
 /// In-app mirror of what the island shows, with the same buttons.
 struct SessionCard: View {
     let session: ToolSession
@@ -45,13 +49,19 @@ struct SessionCard: View {
                         withAnimation(.snappy) { model.perform(button.id, on: session.id) }
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     } label: {
-                        Label(button.title, systemImage: button.symbol)
-                            .font(.subheadline.weight(.semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 4)
+                        Group {
+                            if button.title.isEmpty {
+                                Image(systemName: button.symbol).frame(width: 28)
+                            } else {
+                                Label(button.title, systemImage: button.symbol).frame(maxWidth: .infinity)
+                            }
+                        }
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .padding(.vertical, 4)
                     }
+                    .accessibilityLabel(button.title.isEmpty ? ActionRowLabel.text(button.id) : button.title)
                     .buttonStyle(.glass)
                     .tint(button.prominent ? tint : nil)
                     .accessibilityIdentifier("action.\(session.kind.rawValue).\(button.id)")

@@ -42,7 +42,7 @@ struct CountdownTests {
     @Test func finishedTimerOffersRestart() {
         var s = session(.timer, .countdown(CountdownState(total: 60, now: t0)), title: "Pasta")
         let done = s.display(now: t0.addingTimeInterval(61))
-        #expect(done.finished && done.headline == "¡Pasta listo!")
+        #expect(done.finished && done.headline == "Se acabó el tiempo" && done.detail == "Pasta")
         #expect(done.buttons.map(\.id) == ["restart", "stop"])
         _ = s.handle("restart", now: t0.addingTimeInterval(70))
         #expect(!s.display(now: t0.addingTimeInterval(80)).finished)
@@ -83,6 +83,19 @@ struct OtherToolsTests {
         }
         #expect(phases == [.shortBreak, .work, .shortBreak, .work, .shortBreak, .work, .longBreak, .work])
         #expect(p.completed == 4)
+        // Ended while the app was closed: the island offers the next phase.
+        let ended = session(.pomodoro, .pomodoro(PomodoroState(phaseEnd: t0)))
+        #expect(ended.display(now: t0.addingTimeInterval(5)).headline == "¡Descanso!")
+        #expect(ended.display(now: t0.addingTimeInterval(5)).buttons.map(\.id) == ["skip"])
+    }
+
+    @Test func shortTeamNamesAndRelevance() {
+        #expect(ToolSession.short("Los Galácticos") == "Los")
+        #expect(ToolSession.short("Supercalifragilístico") == "Supercal.")
+        let soon = session(.timer, .countdown(CountdownState(total: 60, now: t0)))
+        let later = session(.timer, .countdown(CountdownState(total: 3600, now: t0)))
+        #expect(soon.relevance(now: t0) > later.relevance(now: t0))
+        #expect(session(.postIt, .note("x")).relevance(now: t0) < later.relevance(now: t0))
     }
 
     @Test func stopwatchLaps() {
@@ -128,6 +141,7 @@ struct StepsTests {
         var s = session(.shopping, .steps(StepsState(items: ["Leche", "Pan", "Huevos"].map { StepItem(text: $0) })))
         _ = s.handle("skip")
         #expect(s.display().headline == "Pan")
+        #expect(s.display().value == "1/3")
         _ = s.handle("next"); _ = s.handle("next")
         #expect(s.display().headline == "Leche")
         _ = s.handle("next")

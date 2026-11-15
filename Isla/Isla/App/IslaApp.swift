@@ -15,6 +15,7 @@ struct IslaApp: App {
             await MainActor.run { model.perform(action, on: id) }
         }
         model.location = LocationTracker(model: model)
+        UNUserNotificationCenter.current().delegate = NotificationPresenter.shared
     }
 
     var body: some Scene {
@@ -51,6 +52,9 @@ extension AppModel {
                 if before != after || (now >= b.end && now.timeIntervalSince(b.end) < 1.5) { update(session.id, now: now) { _ in } }
             case .steps(let s):
                 if let rest = s.restEnd, rest <= now { perform("skipRest", on: session.id, now: now) }
+            case .countdown(let c) where c.paused == nil && c.end <= now && now.timeIntervalSince(c.end) < 1.5:
+                // Just finished: switch the island to «Se acabó» while the app is open.
+                update(session.id, now: now) { _ in }
             case .countdown(let c) where session.kind == .presentation && c.paused == nil:
                 // Pace text ("deberías ir por la 3") changes at part boundaries.
                 let elapsed = c.total - c.remaining(now)
@@ -90,6 +94,15 @@ struct RootView: View {
         default:
             path = NavigationPath()
         }
+    }
+}
+
+/// Shows alerts (timer finished, your stop…) even while Isla is open.
+final class NotificationPresenter: NSObject, UNUserNotificationCenterDelegate, Sendable {
+    static let shared = NotificationPresenter()
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .sound, .list]
     }
 }
 

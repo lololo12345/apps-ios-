@@ -115,7 +115,8 @@ final class AppModel {
         scheduleAlert(for: session, now: now)
         guard let activity = activities[session.id] else { return }
         let display = session.display(now: now)
-        let content = ActivityContent(state: IslaAttributes.ContentState(display: display), staleDate: session.staleDate(now: now))
+        let content = ActivityContent(state: IslaAttributes.ContentState(display: display), staleDate: session.staleDate(now: now),
+                                      relevanceScore: session.relevance(now: now))
         Self.withActivity(activity.id) { await $0.update(content) }
     }
 
@@ -152,7 +153,8 @@ final class AppModel {
     private func startActivity(for session: ToolSession) {
         guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
         let attributes = IslaAttributes(sessionID: session.id.uuidString, kind: session.kind, title: session.title)
-        let content = ActivityContent(state: IslaAttributes.ContentState(display: session.display()), staleDate: session.staleDate())
+        let content = ActivityContent(state: IslaAttributes.ContentState(display: session.display()), staleDate: session.staleDate(),
+                                      relevanceScore: session.relevance())
         if let activity = try? Activity.request(attributes: attributes, content: content, pushType: nil) {
             activities[session.id] = activity
         }

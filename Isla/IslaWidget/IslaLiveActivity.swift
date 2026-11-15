@@ -32,11 +32,13 @@ struct IslaLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     VStack(alignment: .leading, spacing: 8) {
+                        // One line each: the expanded island has little height and the buttons must stay visible.
                         Text(display.headline)
                             .font(.headline)
-                            .lineLimit(2)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                         if let detail = display.detail {
-                            Text(detail).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                            Text(detail).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                         }
                         if let progress = display.progress {
                             ProgressBar(progress: progress, tint: kind.tint)
@@ -148,17 +150,34 @@ struct ActionRow: View {
             HStack(spacing: 8) {
                 ForEach(buttons.prefix(3)) { button in
                     Button(intent: IslaActionIntent(session: session, action: button.id)) {
-                        Label(button.title, systemImage: button.symbol)
-                            .font(.caption.weight(.semibold))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
-                            .frame(maxWidth: .infinity)
+                        Group {
+                            if button.title.isEmpty {
+                                Image(systemName: button.symbol)
+                            } else {
+                                Label(button.title, systemImage: button.symbol)
+                            }
+                        }
+                        .font(.caption.weight(.semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .frame(maxWidth: button.title.isEmpty ? 36 : .infinity)
                     }
+                    .accessibilityLabel(button.title.isEmpty ? Self.label(for: button.id) : button.title)
                     .buttonStyle(.borderedProminent)
                     .tint(button.prominent ? tint : Color.white.opacity(0.18))
                     .foregroundStyle(button.prominent ? Color.black : Color.white)
                 }
             }
+        }
+    }
+}
+
+extension ActionRow {
+    static func label(for id: String) -> String {
+        switch id {
+        case "undo": "Deshacer"
+        case "stop": "Quitar"
+        default: id
         }
     }
 }

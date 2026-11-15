@@ -72,7 +72,8 @@ extension ToolSession {
         default: break
         }
         if done {
-            display.headline = kind == .pill ? "Hora de la toma" : (kind == .nap ? "¡Arriba!" : "¡\(title) listo!")
+            display.headline = kind == .pill ? "Hora de la toma" : (kind == .nap ? "¡Arriba!" : "Se acabó el tiempo")
+            if kind != .pill && kind != .nap { display.detail = title }
             display.value = "0:00"
             if kind == .timer || kind == .appliance { display.buttons = [IslaButton("restart", "Otra vez", "arrow.clockwise"), IslaButton("stop", "Quitar", "xmark")] }
         }
@@ -83,6 +84,14 @@ extension ToolSession {
         let length = p.length(p.phase)
         let remaining = p.paused ?? max(0, p.phaseEnd.timeIntervalSince(now))
         let start = p.phaseEnd.addingTimeInterval(-length)
+        if remaining <= 0 {
+            // The phase ended while the app was closed: offer the next one instead of a frozen 0:00.
+            let next = p.phase == .work ? "¡Descanso!" : "Vuelta al foco"
+            return IslaDisplay(headline: next, detail: "\(p.completed + (p.phase == .work ? 1 : 0)) pomodoros hoy", value: "0:00",
+                               progress: .value(1),
+                               buttons: [IslaButton("skip", p.phase == .work ? "Descansar" : "Empezar", "play.fill", prominent: true)],
+                               finished: true, symbol: p.phase == .work ? "cup.and.saucer.fill" : "brain.head.profile")
+        }
         let headline = p.phase == .work ? "Foco · ronda \(p.round)" : (p.phase == .longBreak ? "Descanso largo" : "Descanso")
         return IslaDisplay(
             headline: headline,
@@ -152,9 +161,11 @@ extension ToolSession {
                                buttons: [IslaButton("restart", "Empezar de nuevo", "arrow.clockwise"), IslaButton("stop", "Quitar", "xmark")], finished: true)
         }
         let position = "\(s.index + 1) de \(s.items.count)"
+        // Short progress for the compact island ("2/5"), where long text would be cut.
+        let short = "\(s.index + 1)/\(s.items.count)"
         switch kind {
         case .flashcards:
-            return IslaDisplay(headline: item.text, detail: s.revealed ? item.detail : "Tarjeta \(position) · toca para ver la respuesta",
+            return IslaDisplay(headline: item.text, detail: s.revealed ? item.detail : "Tarjeta \(position) · toca para ver la respuesta", value: short,
                                progress: .value(Double(s.index) / Double(s.items.count)),
                                buttons: s.revealed ? [IslaButton("wrong", "No", "xmark"), IslaButton("right", "La sabía", "checkmark", prominent: true)]
                                    : [IslaButton("reveal", "Ver respuesta", "eye.fill", prominent: true)])
@@ -169,7 +180,7 @@ extension ToolSession {
                                progress: .value(Double(s.index * s.sets + s.set - 1) / Double(max(1, s.items.count * s.sets))),
                                buttons: [IslaButton("setDone", "Serie hecha", "checkmark", prominent: true)])
         case .recipe:
-            var display = IslaDisplay(headline: "Paso \(position)", detail: item.text,
+            var display = IslaDisplay(headline: "Paso \(position)", detail: item.text, value: short,
                                       progress: .value(Double(s.index) / Double(s.items.count)),
                                       buttons: [IslaButton("back", "Atrás", "backward.fill"), IslaButton("next", "Siguiente", "forward.fill", prominent: true)])
             if let end = s.stepTimerEnd, end > now {
@@ -179,20 +190,20 @@ extension ToolSession {
             }
             return display
         case .shopping:
-            return IslaDisplay(headline: item.text, detail: "\(position)" + (item.detail.isEmpty ? "" : " · \(item.detail)"),
+            return IslaDisplay(headline: item.text, detail: "\(position)" + (item.detail.isEmpty ? "" : " · \(item.detail)"), value: short,
                                progress: .value(Double(s.index) / Double(s.items.count)),
                                buttons: [IslaButton("skip", "Luego", "arrow.uturn.down"), IslaButton("next", "Cogido", "checkmark", prominent: true)])
         default:
-            return IslaDisplay(headline: item.text, detail: "Tarea \(position)",
+            return IslaDisplay(headline: item.text, detail: "Tarea \(position)", value: short,
                                progress: .value(Double(s.index) / Double(s.items.count)),
                                buttons: [IslaButton("next", "Hecho", "checkmark", prominent: true)])
         }
     }
 
     private func scoreDisplay(_ s: ScoreState) -> IslaDisplay {
-        let buttons = [IslaButton("a", s.names[0], "plus.circle.fill", prominent: true),
-                       IslaButton("b", s.names[1], "plus.circle.fill", prominent: true),
-                       IslaButton("undo", "Deshacer", "arrow.uturn.backward")]
+        let buttons = [IslaButton("a", Self.short(s.names[0]), "plus.circle.fill", prominent: true),
+                       IslaButton("b", Self.short(s.names[1]), "plus.circle.fill", prominent: true),
+                       IslaButton("undo", "", "arrow.uturn.backward")]
         if s.racket {
             if let winner = s.match.winner {
                 return IslaDisplay(headline: "¡Gana \(s.names[winner])!", detail: s.match.setsText, value: s.match.setsText, buttons: [buttons[2]], finished: true)
@@ -261,6 +272,19 @@ extension ToolSession {
             finished: done,
             symbol: "wind"
         )
+    }
+
+    /// Team names on buttons: first word, at most 9 letters, so two buttons and «deshacer» fit.
+    static func short(_ name: String) -> String {
+        let first = name.split(separator: " ").first.map(String.init) ?? name
+        return first.count > 9 ? String(first.prefix(8)) + "." : first
+    }
+
+    /// Which activity the island should prefer when several are running (higher = more urgent).
+    func relevance(now: Date = .now) -> Double {
+        guard let alert = alertDate(now: now) else { return 10 }
+        let minutes = max(0, alert.date.timeIntervalSince(now) / 60)
+        return 100 + max(0, 1000 - minutes)
     }
 
     // MARK: Actions
@@ -410,7 +434,7 @@ extension ToolSession {
             case .pill: return (c.end, "Hora de tu toma", title)
             case .nap: return (c.end, "¡Arriba!", "Fin de la siesta")
             case .presentation: return (c.end, "Se acabó el tiempo", title)
-            default: return (c.end, "¡\(title) listo!", "Ha terminado el tiempo")
+            default: return (c.end, "Se acabó el tiempo", title)
             }
         case .pomodoro(let p) where p.paused == nil:
             return (p.phaseEnd, p.phase == .work ? "¡Descanso!" : "Vuelta al foco", p.phase == .work ? "Has terminado un pomodoro." : "Empieza la ronda \(p.round + 1).")
