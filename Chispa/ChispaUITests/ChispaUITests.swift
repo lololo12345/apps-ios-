@@ -156,7 +156,8 @@ final class ChispaUITests: XCTestCase {
         tap("confirmAddFriend", app)
         XCTAssertTrue(element("friendCodeError", app).waitForExistence(timeout: 5))
         snapshot("19-add-friend-error", app)
-        app.swipeDown(velocity: .fast)
+        tap("closeAddFriend", app)
+        XCTAssertTrue(element("addFriend", app).waitForExistence(timeout: 5))
 
         tab("Progreso", app)
         XCTAssertTrue(element("statsSummary", app).waitForExistence(timeout: 6))

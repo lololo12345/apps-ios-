@@ -252,6 +252,7 @@ struct AddFriendSheet: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cerrar", systemImage: "xmark") { dismiss() }
+                        .accessibilityIdentifier("closeAddFriend")
                 }
             }
         }
