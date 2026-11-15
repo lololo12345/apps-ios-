@@ -36,6 +36,7 @@ struct StatsView: View {
             tile("Días jugados", "\(stats.daysPlayed)", "calendar", Color(hex: 0x4DA3FF))
             tile("Protectores", "\(streak.shields) de \(Streaks.maxShields)", "shield.fill", Color(hex: 0x7FD3FF))
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("statsSummary")
     }
 
@@ -130,6 +131,7 @@ struct StatsView: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("badges")
     }
 }
@@ -198,6 +200,7 @@ struct CalendarCard: View {
             .foregroundStyle(Palette.muted)
         }
         .card()
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("calendar")
     }
 

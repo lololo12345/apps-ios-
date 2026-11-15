@@ -46,15 +46,7 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .fullScreenCover(item: $playing) { challenge in
-                PlayView(challenge: challenge, mode: .daily) { next in
-                    playing = nil
-                    if let next {
-                        Task { @MainActor in
-                            try? await Task.sleep(for: .milliseconds(450))
-                            playing = next
-                        }
-                    }
-                }
+                DailyPlayFlow(first: challenge) { playing = nil }
             }
         }
     }
@@ -193,5 +185,30 @@ struct DaySummaryCard: View {
         }
         .card(tint: Palette.amber, radius: 28)
         .transition(.scale(scale: 0.9).combined(with: .opacity))
+    }
+}
+
+/// Plays today's challenges one after another inside a single full-screen cover.
+struct DailyPlayFlow: View {
+    let onDone: () -> Void
+    @State private var current: Challenge
+
+    init(first: Challenge, onDone: @escaping () -> Void) {
+        self.onDone = onDone
+        _current = State(initialValue: first)
+    }
+
+    var body: some View {
+        ZStack {
+            PlayView(challenge: current, mode: .daily) { next in
+                if let next {
+                    withAnimation(.smooth(duration: 0.45)) { current = next }
+                } else {
+                    onDone()
+                }
+            }
+            .id(current.id)
+            .transition(.push(from: .trailing))
+        }
     }
 }
