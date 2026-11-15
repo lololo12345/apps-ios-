@@ -1,0 +1,658 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		931369893EC8013160447A14 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93050C140EBA27D32EFC55B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DAB97DBC4991F8C81253C7BE;
+			remoteInfo = Chispa;
+		};
+		406A46EF0008CF9CB3CBC788 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93050C140EBA27D32EFC55B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DAB97DBC4991F8C81253C7BE;
+			remoteInfo = Chispa;
+		};
+		50733BA43477C5022458C88C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 93050C140EBA27D32EFC55B1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4D46041ABA92D0516ED443FA;
+			remoteInfo = ChispaWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXBuildFile section */
+		8C6D3F2F26FB6EEADD6E5D16 /* ChispaWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DD91A9CE4E9788AD634CE3A6 /* ChispaWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		15107755645F665CACCE4D63 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8C6D3F2F26FB6EEADD6E5D16 /* ChispaWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8F1167912524559F466CA2D1 /* Chispa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chispa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C054FE2E267BA225147093D /* ChispaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChispaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD19C4950F6F677FDF672AE4 /* ChispaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChispaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD91A9CE4E9788AD634CE3A6 /* ChispaWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ChispaWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		042CEE3B3E1FE3AF58FD3D24 /* Chispa */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Chispa;
+			sourceTree = "<group>";
+		};
+		0240DD964B30167CABE4FFE7 /* ChispaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ChispaTests;
+			sourceTree = "<group>";
+		};
+		A7BEFBCF572EC6376C659B1B /* ChispaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ChispaUITests;
+			sourceTree = "<group>";
+		};
+		C791867CE2707B73426D7D8B /* ChispaKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ChispaKit;
+			sourceTree = "<group>";
+		};
+		F7292720E0D13254F8DF02E6 /* ChispaWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ChispaWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B97338016AE8CE9D83D8B2F5 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9335C4F735EFC8359DCA6D73 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7AF6079E647BD174013D2B85 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9F9BCBDF8D3B9AE36A9206E1 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		7194261B138A6D057B9AC3AC = {
+			isa = PBXGroup;
+			children = (
+				042CEE3B3E1FE3AF58FD3D24 /* Chispa */,
+				0240DD964B30167CABE4FFE7 /* ChispaTests */,
+				A7BEFBCF572EC6376C659B1B /* ChispaUITests */,
+				C791867CE2707B73426D7D8B /* ChispaKit */,
+				F7292720E0D13254F8DF02E6 /* ChispaWidget */,
+				3A08A5F80E4A3D2218895301 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3A08A5F80E4A3D2218895301 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8F1167912524559F466CA2D1 /* Chispa.app */,
+				8C054FE2E267BA225147093D /* ChispaTests.xctest */,
+				CD19C4950F6F677FDF672AE4 /* ChispaUITests.xctest */,
+				DD91A9CE4E9788AD634CE3A6 /* ChispaWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DAB97DBC4991F8C81253C7BE /* Chispa */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 444206D45AF17ECF4F20C0E0;
+			buildPhases = (
+				FF5FF185EAE548EAA0ACBAEE /* Sources */,
+				B97338016AE8CE9D83D8B2F5 /* Frameworks */,
+				674A195ED53B53A5CBA34A65 /* Resources */,
+				15107755645F665CACCE4D63 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CE005C029DEA608A15EF8EAC /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				042CEE3B3E1FE3AF58FD3D24 /* Chispa */,
+				C791867CE2707B73426D7D8B /* ChispaKit */,
+			);
+			name = Chispa;
+			packageProductDependencies = (
+			);
+			productName = Chispa;
+			productReference = 8F1167912524559F466CA2D1 /* Chispa.app */;
+			productType = "com.apple.product-type.application";
+		};
+		EAEFC8D339979FDBB52305F3 /* ChispaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4E4A272CB1DB0820BAF057D;
+			buildPhases = (
+				6FF9BC2FE02FE7C3B313FEE0 /* Sources */,
+				9335C4F735EFC8359DCA6D73 /* Frameworks */,
+				BE590287977B7A1C746E64E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CE89F98390E5EE2E1B8DB7F7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0240DD964B30167CABE4FFE7 /* ChispaTests */,
+			);
+			name = ChispaTests;
+			packageProductDependencies = (
+			);
+			productName = ChispaTests;
+			productReference = 8C054FE2E267BA225147093D /* ChispaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		9494C92C29A7E078206D2633 /* ChispaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4470FBD0E93F7DBB972D3E6;
+			buildPhases = (
+				9F0E6463F5A17A8508A40B42 /* Sources */,
+				7AF6079E647BD174013D2B85 /* Frameworks */,
+				69DFD935789100DC8386B65A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				05146DAD2FFC24377ADBAFF9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A7BEFBCF572EC6376C659B1B /* ChispaUITests */,
+			);
+			name = ChispaUITests;
+			packageProductDependencies = (
+			);
+			productName = ChispaUITests;
+			productReference = CD19C4950F6F677FDF672AE4 /* ChispaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		4D46041ABA92D0516ED443FA /* ChispaWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9A36C7A2A95B15251E48F64;
+			buildPhases = (
+				AD3FD9534A99A940733BAF23 /* Sources */,
+				9F9BCBDF8D3B9AE36A9206E1 /* Frameworks */,
+				0A1EC77646DDEA5210C221C1 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F7292720E0D13254F8DF02E6 /* ChispaWidget */,
+				C791867CE2707B73426D7D8B /* ChispaKit */,
+			);
+			name = ChispaWidget;
+			packageProductDependencies = (
+			);
+			productName = ChispaWidget;
+			productReference = DD91A9CE4E9788AD634CE3A6 /* ChispaWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		93050C140EBA27D32EFC55B1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					DAB97DBC4991F8C81253C7BE = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					EAEFC8D339979FDBB52305F3 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = DAB97DBC4991F8C81253C7BE;
+					};
+					9494C92C29A7E078206D2633 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = DAB97DBC4991F8C81253C7BE;
+					};
+					4D46041ABA92D0516ED443FA = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = 9713A05D56A6674E2E4BB4F8;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				es,
+				Base,
+			);
+			mainGroup = 7194261B138A6D057B9AC3AC;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 3A08A5F80E4A3D2218895301 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DAB97DBC4991F8C81253C7BE /* Chispa */,
+				EAEFC8D339979FDBB52305F3 /* ChispaTests */,
+				9494C92C29A7E078206D2633 /* ChispaUITests */,
+				4D46041ABA92D0516ED443FA /* ChispaWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		674A195ED53B53A5CBA34A65 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BE590287977B7A1C746E64E6 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69DFD935789100DC8386B65A = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0A1EC77646DDEA5210C221C1 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FF5FF185EAE548EAA0ACBAEE = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6FF9BC2FE02FE7C3B313FEE0 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9F0E6463F5A17A8508A40B42 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AD3FD9534A99A940733BAF23 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CE89F98390E5EE2E1B8DB7F7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DAB97DBC4991F8C81253C7BE /* Chispa */;
+			targetProxy = 931369893EC8013160447A14 /* PBXContainerItemProxy */;
+		};
+		05146DAD2FFC24377ADBAFF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DAB97DBC4991F8C81253C7BE /* Chispa */;
+			targetProxy = 406A46EF0008CF9CB3CBC788 /* PBXContainerItemProxy */;
+		};
+		CE005C029DEA608A15EF8EAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4D46041ABA92D0516ED443FA /* ChispaWidget */;
+			targetProxy = 50733BA43477C5022458C88C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3ACB3B850BB71F5891D5752F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		52D4F4B161C97DA80E7217FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		32DEFB2438BD5E6347A0839F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Chispa-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chispa";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		8BC335CF039D2210EA47567E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Chispa-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chispa";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		3FE9010350F4F8832909A7CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chispa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chispa";
+			};
+			name = Debug;
+		};
+		837DB36136D2E6B3B00286AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Chispa.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Chispa";
+			};
+			name = Release;
+		};
+		4C0FD253203801C393DA1A5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Chispa;
+			};
+			name = Debug;
+		};
+		464CB35F628382A2FA5872C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Chispa;
+			};
+			name = Release;
+		};
+		1FBFCB7BA69E59E712A4BC25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/ChispaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chispa";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B0B8BB104FE05594DFB43C0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/ChispaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Chispa";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.chispa.daily.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9713A05D56A6674E2E4BB4F8 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3ACB3B850BB71F5891D5752F /* Debug */,
+				52D4F4B161C97DA80E7217FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		444206D45AF17ECF4F20C0E0 /* Build configuration list for Chispa */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				32DEFB2438BD5E6347A0839F /* Debug */,
+				8BC335CF039D2210EA47567E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A4E4A272CB1DB0820BAF057D /* Build configuration list for ChispaTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3FE9010350F4F8832909A7CD /* Debug */,
+				837DB36136D2E6B3B00286AB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4470FBD0E93F7DBB972D3E6 /* Build configuration list for ChispaUITests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C0FD253203801C393DA1A5C /* Debug */,
+				464CB35F628382A2FA5872C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B9A36C7A2A95B15251E48F64 /* Build configuration list for ChispaWidget */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FBFCB7BA69E59E712A4BC25 /* Debug */,
+				B0B8BB104FE05594DFB43C0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 93050C140EBA27D32EFC55B1 /* Project object */;
+}
