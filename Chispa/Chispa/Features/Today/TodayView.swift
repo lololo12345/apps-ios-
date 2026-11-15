@@ -62,7 +62,7 @@ struct TodayView: View {
     private var header: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(store.today.formatted().capitalized)
+                Text(store.today.formatted().sentenceCased)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.muted)
                 LevelPill(level: store.today.level)

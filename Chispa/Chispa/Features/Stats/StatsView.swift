@@ -152,7 +152,7 @@ struct CalendarCard: View {
 
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(monthStart.formatted(.dateTime.month(.wide).year().locale(Locale(identifier: "es_ES"))).capitalized)
+                Text(monthStart.formatted(.dateTime.month(.wide).year().locale(Locale(identifier: "es_ES"))).sentenceCased)
                     .font(.headline)
                 Spacer()
                 Button { withAnimation(.smooth) { monthOffset -= 1 } } label: { Image(systemName: "chevron.left") }

@@ -59,7 +59,7 @@ struct PracticeView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("#\(day.number)").font(.headline.weight(.heavy)).sparkText()
-                Text(day.formatted(.dateTime.weekday(.wide).day().month(.wide)).capitalized)
+                Text(day.formatted(.dateTime.weekday(.wide).day().month(.wide)).sentenceCased)
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 Text(day.level.label).font(.caption.weight(.bold)).foregroundStyle(Palette.muted)

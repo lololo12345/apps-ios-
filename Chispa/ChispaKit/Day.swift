@@ -149,3 +149,8 @@ enum Rotation {
         return order[position % poolSize]
     }
 }
+
+extension String {
+    /// "domingo, 15 de noviembre" → "Domingo, 15 de noviembre" (only the first letter).
+    var sentenceCased: String { prefix(1).uppercased() + dropFirst() }
+}
