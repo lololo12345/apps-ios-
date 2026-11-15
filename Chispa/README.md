@@ -23,7 +23,7 @@ El reto diario: cinco retos nuevos cada día, los mismos para todo el mundo, con
 - `ChispaKit/`: días, generadores, contenido, puntuación, rachas y códigos (compartido con el widget).
 - `Chispa/`: la app (SwiftUI, Liquid Glass, SwiftData).
 - `ChispaWidget/`: el widget.
-- Tests: 22 de lógica (contenido, niveles, puntos, rachas, códigos y partida) y 3 recorridos completos por la interfaz con capturas.
+- Tests: 23 de lógica (contenido, niveles, puntos, rachas, códigos y partida) y 3 recorridos completos por la interfaz con capturas.
 
 Todo se guarda solo en el iPhone. El ranking mundial con Game Center está preparado pero desactivado:
 necesita publicar la app con una cuenta de desarrollador de Apple.
