@@ -99,6 +99,7 @@ final class ChispaUITests: XCTestCase {
             let title = element("resultTitle", app)
             XCTAssertTrue(title.waitForExistence(timeout: 8), "No result for \(kind)")
             XCTAssertFalse(title.label.contains("no"), "Wrong answer for \(kind): \(title.label)")
+            Thread.sleep(forTimeInterval: 0.8)
             snapshot(String(format: "%02d-result-%@", 5 + index * 2, kind), app)
             if index < kinds.count - 1 {
                 tap("nextChallenge", app)
