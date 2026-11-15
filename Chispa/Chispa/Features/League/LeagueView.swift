@@ -81,6 +81,7 @@ struct LeagueView: View {
                     .padding(.horizontal, 4)
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("leagueTable")
     }
 

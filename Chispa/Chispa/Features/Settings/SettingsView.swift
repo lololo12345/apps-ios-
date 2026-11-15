@@ -103,13 +103,16 @@ struct OnboardingView: View {
                     feature("trophy.fill", "Liga con tus amigos", "Compartid vuestros códigos y a ver quién gana la semana.")
                 }
                 .card()
-                .opacity(appeared ? 1 : 0)
+                .opacity(appeared && !focused ? 1 : 0)
                 .offset(y: appeared ? 0 : 20)
+                .frame(maxHeight: focused ? 0 : nil)
+                .clipped()
                 Spacer(minLength: 10)
                 TextField("¿Cómo te llamas?", text: $name)
                     .font(.title3.weight(.semibold))
                     .multilineTextAlignment(.center)
                     .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
                     .submitLabel(.go)
                     .focused($focused)
                     .onSubmit(start)
@@ -130,6 +133,7 @@ struct OnboardingView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
+        .animation(.smooth(duration: 0.35), value: focused)
         .onAppear { withAnimation(.spring(duration: 0.8, bounce: 0.4)) { appeared = true } }
     }
 

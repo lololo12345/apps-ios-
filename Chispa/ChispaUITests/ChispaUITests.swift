@@ -79,8 +79,7 @@ final class ChispaUITests: XCTestCase {
         XCTAssertTrue(name.waitForExistence(timeout: 8))
         snapshot("01-onboarding", app)
         name.tap()
-        name.typeText("Lola")
-        tap("onboardingStart", app)
+        name.typeText("Lola\n")
 
         XCTAssertTrue(element("challenge-riddle", app).waitForExistence(timeout: 6))
         snapshot("02-today", app)
