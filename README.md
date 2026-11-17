@@ -20,7 +20,17 @@ compila y prueba todas las apps en paralelo en cada push.
 
 ## Crear una app nueva
 ```bash
-python3 tools/make_xcodeproj.py <Carpeta> <Nombre> <bundle.id> --display "Nombre visible"
+python3 tools/new_ios_app.py <Nombre> <bundle.id> --display "Nombre visible" --summary "Qué es" --kit --widget
 ```
-Genera el proyecto con carpetas sincronizadas (cualquier archivo nuevo se incluye solo), targets de tests
-unitarios y de interfaz y un esquema compartido. Después añade el nombre a la matriz de `ios.yml`.
+Crea la app completa (proyecto con carpetas sincronizadas, diseño base con Liquid Glass, icono provisional,
+ajustes, tests de lógica e interfaz con capturas, README) y la añade a esta tabla. La CI la detecta sola.
+
+## Herramientas
+| Herramienta | Para qué |
+|---|---|
+| `tools/new_ios_app.py` | Crear una app de iPhone nueva lista para trabajar. |
+| `tools/make_xcodeproj.py` | Generar o regenerar solo el proyecto de Xcode (`--shared`, `--widget`). |
+| `tools/make_icon.py` | Icono provisional con degradado y letra. |
+| `tools/check_swift.sh` | Compilar la lógica (`<App>Kit`) en Linux en segundos, sin Mac. |
+| `tools/contact_sheet.py` | Juntar capturas en una sola imagen para revisarlas. |
+| `tools/ci_plan.py` | Decide qué apps compila la CI según lo que haya cambiado. |

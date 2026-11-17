@@ -3,19 +3,35 @@ name: iOS CI
 on:
   push:
     branches: [ "main", "claude/**" ]
-    paths-ignore: [ "RondaAndroid/**", ".github/workflows/android.yml" ]
   pull_request:
-    paths-ignore: [ "RondaAndroid/**", ".github/workflows/android.yml" ]
   workflow_dispatch:
 
-# Queue new pushes instead of cancelling a run that is already testing (several apps share this workflow).
+# Queue new pushes instead of cancelling a run that is already testing.
 concurrency:
   group: ios-${{ github.ref }}
   cancel-in-progress: false
 
-
 jobs:
+  # Only the apps whose folder changed are built (tools/ci_plan.py). Changing tools/ or this workflow
+  # rebuilds everything and also generates and tests "Plantilla" from tools/new_ios_app.py.
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.plan.outputs.apps }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: python3 tools/ci_plan.py >> "$GITHUB_OUTPUT"
+
   build-and-test:
+    needs: plan
+    if: needs.plan.outputs.apps != '[]'
     name: ${{ matrix.app }}
     runs-on: macos-26
     timeout-minutes: 50
@@ -23,7 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         # One folder per app: <App>/<App>.xcodeproj with targets <App>, <App>Tests and <App>UITests.
-        app: [ Relato, Ronda, PlanB, Isla, Chispa ]
+        app: ${{ fromJSON(needs.plan.outputs.apps) }}
     defaults:
       run:
         working-directory: ${{ matrix.app }}
@@ -31,6 +47,13 @@ jobs:
       APP: ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Generate the template app
+        if: matrix.app == 'Plantilla'
+        working-directory: .
+        run: |
+          python3 tools/new_ios_app.py Plantilla app.example.plantilla --display "Plantilla" \
+            --summary "Comprobación automática del generador de apps." --kit --widget --no-register
 
       - name: Select Xcode 26.6
         run: |
@@ -116,9 +139,27 @@ jobs:
         run: |
           for bundle in Unit.xcresult UI.xcresult; do
             [ -d "$bundle" ] || continue
+            xcrun xcresulttool get test-results summary --path "$bundle" --compact > "$bundle.json" || continue
             echo "== $bundle =="
-            xcrun xcresulttool get test-results summary --path "$bundle" --compact | head -c 4000; echo
+            head -c 4000 "$bundle.json"; echo
           done
+          python3 - <<'PY'
+          import json, os
+          lines = [f"### {os.environ['APP']}", "", "| Tests | ✔ | ✘ |", "|---|---|---|"]
+          failures = []
+          for label, path in (("Lógica", "Unit.xcresult.json"), ("Interfaz", "UI.xcresult.json")):
+              if not os.path.exists(path):
+                  lines.append(f"| {label} | — | no se ejecutaron |")
+                  continue
+              data = json.load(open(path))
+              lines.append(f"| {label} | {data.get('passedTests', 0)} | {data.get('failedTests', 0)} |")
+              for failure in data.get("testFailures", [])[:8]:
+                  failures.append(f"- `{failure.get('testName', '?')}`: {failure.get('failureText', '').strip()[:300]}")
+          if failures:
+              lines += ["", "**Fallos**", *failures]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as out:
+              out.write("\n".join(lines) + "\n\n")
+          PY
 
       - name: Export screenshots
         if: always()
@@ -144,7 +185,7 @@ jobs:
 
       - name: Package unsigned IPA
         id: ipa
-        if: steps.build.outcome == 'success'
+        if: steps.build.outcome == 'success' && matrix.app != 'Plantilla'
         run: |
           set -o pipefail
           xcodebuild build \
@@ -157,6 +198,7 @@ jobs:
           rm -rf Payload && mkdir Payload && cp -R "$APP_PATH" Payload/
           zip -qry "$APP.ipa" Payload
           ls -lh "$APP.ipa"
+          echo "IPA: $(du -h "$APP.ipa" | cut -f1)" >> "$GITHUB_STEP_SUMMARY"
           /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP_PATH/Info.plist"
 
       - uses: actions/upload-artifact@v4
