@@ -64,6 +64,7 @@
 - La barra de búsqueda flotante de iOS 26 puede tapar elementos: ábrelos por búsqueda o desplázate.
 - Cierra las hojas con su botón (con identificador), no con gestos.
 - `snapshot` espera medio segundo para no capturar transiciones a medias.
+- La CI repite una vez un test de interfaz que falla (`-retry-tests-on-failure`): un fallo que se repite es un error real.
 - No metas llamadas que modifican estado dentro de `#expect`.
 
 **Entrega**

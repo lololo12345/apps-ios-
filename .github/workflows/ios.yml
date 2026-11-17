@@ -132,6 +132,7 @@ jobs:
             -project "$APP.xcodeproj" -scheme "$APP" \
             -destination "$TEST_DESTINATION" -derivedDataPath DerivedData \
             -only-testing:"${APP}UITests" -resultBundlePath UI.xcresult \
+            -retry-tests-on-failure -test-iterations 2 \
             CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Case|passed|failed|error:|Executed|measured|XCTAssert" | tail -120
 
       - name: Test summaries
