@@ -11,8 +11,8 @@
 - Cuando el usuario pida una app nueva, pregúntale SIEMPRE para qué plataforma la quiere: iPhone, Android o las dos.
   Hazlo antes de presentar la propuesta, y que la propuesta refleje la elección.
 - iPhone: SwiftUI, carpeta `<App>/` creada con `tools/new_ios_app.py` (ver el flujo abajo). Se entrega el `.ipa`.
-- Android: Kotlin + Jetpack Compose, carpeta `<App>Android/` (mismo esquema que `RondaAndroid/`, CI en
-  `android.yml`). Se entrega el `.apk`.
+- Android: Kotlin + Jetpack Compose, carpeta `<App>Android/` creada con `tools/new_android_app.py` (ver el flujo
+  abajo). Se entrega el `.apk`.
 - Si más adelante pide la otra plataforma de una app ya hecha, pórtala con las mismas funciones y contenido.
 
 ## Repositorio
@@ -28,9 +28,21 @@
 3. Push a `main`: la CI solo compila y prueba las apps que han cambiado (`tools/ci_plan.py`). Si cambian `tools/`
    o el workflow, prueba todas y además genera y prueba «Plantilla» para garantizar que el generador funciona.
 4. Revisa SIEMPRE las capturas antes de entregar: `python3 -I tools/contact_sheet.py <carpeta> hoja.jpg`.
-   Busca textos cortados, solapes, pantallas a medio animar y datos vacíos. Si algo se ve mal, se arregla antes de entregar.
+   Avisa solo de capturas casi vacías (a mitad de animación) o repetidas (un toque que no hizo nada); además, míralas:
+   textos cortados, solapes, contraste, datos vacíos. Si algo se ve mal, se arregla antes de entregar.
 5. Entrega el `.ipa` solo de un commit con la CI en verde, y comprueba que el widget va dentro (`Payload/<App>.app/PlugIns`).
 6. Actualiza el README de la app con las mejores capturas (`<App>/docs/screenshots/`).
+
+## Cómo construir una app de Android (flujo)
+1. `python3 tools/new_android_app.py <Nombre> <application.id> --display "…" --summary "…" --accent HEX --background HEX`
+   crea `<Nombre>Android/` completa: Gradle con las mismas versiones que RondaAndroid (`tools/android/`), clave de
+   firma propia, tema oscuro con tarjetas de cristal, navegación inferior, ajustes guardados, tests de lógica y de
+   interfaz con capturas (Robolectric + Roborazzi) y README.
+2. Aquí se puede compilar y probar todo: `cd <Nombre>Android && ./gradlew testDebugUnitTest assembleRelease --offline`
+   (SDK en `/root/android-sdk`). Capturas en `app/build/screenshots`; revísalas con `tools/contact_sheet.py`.
+3. La CI (`android.yml`) solo prueba las apps Android que han cambiado y, si cambia el generador, crea y prueba
+   «PlantillaAndroid».
+4. Si es el port de una app de iPhone: mismas funciones y contenido; la lógica del `<App>Kit` se traduce a `core/`.
 
 ## Lista de calidad (lo aprendido en Relato, Ronda, Plan B, Isla y Chispa)
 **Diseño y fluidez**
@@ -66,6 +78,12 @@
 - `snapshot` espera medio segundo para no capturar transiciones a medias.
 - La CI repite una vez un test de interfaz que falla (`-retry-tests-on-failure`): un fallo que se repite es un error real.
 - No metas llamadas que modifican estado dentro de `#expect`.
+
+**Android (Compose)**
+- El texto fuera de un `Surface` usa `LocalContentColor`: en temas oscuros proporciónalo en blanco (el tema generado
+  ya lo hace) o saldrá negro sobre fondo oscuro.
+- Etiquetas de test con `Modifier.testTag("pantalla.cosa")` y `useUnmergedTree = true` al buscarlas.
+- Avanza el reloj de Compose (`mainClock.advanceTimeBy`) antes de cada captura para que las animaciones terminen.
 
 **Entrega**
 - IPA sin firmar desde la CI (se instala con Sideloadly/AltStore). Un widget no puede leer los datos de la app

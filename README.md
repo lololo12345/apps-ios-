@@ -22,6 +22,8 @@ compila y prueba todas las apps en paralelo en cada push.
 ```bash
 python3 tools/new_ios_app.py <Nombre> <bundle.id> --display "Nombre visible" --summary "Qué es" --kit --widget
 ```
+Para Android: `python3 tools/new_android_app.py <Nombre> <application.id> --display "…" --summary "…"`.
+
 Crea la app completa (proyecto con carpetas sincronizadas, diseño base con Liquid Glass, icono provisional,
 ajustes, tests de lógica e interfaz con capturas, README) y la añade a esta tabla. La CI la detecta sola.
 
@@ -29,8 +31,9 @@ ajustes, tests de lógica e interfaz con capturas, README) y la añade a esta ta
 | Herramienta | Para qué |
 |---|---|
 | `tools/new_ios_app.py` | Crear una app de iPhone nueva lista para trabajar. |
+| `tools/new_android_app.py` | Crear una app de Android nueva (Kotlin + Compose) lista para trabajar. |
 | `tools/make_xcodeproj.py` | Generar o regenerar solo el proyecto de Xcode (`--shared`, `--widget`). |
 | `tools/make_icon.py` | Icono provisional con degradado y letra. |
 | `tools/check_swift.sh` | Compilar la lógica (`<App>Kit`) en Linux en segundos, sin Mac. |
-| `tools/contact_sheet.py` | Juntar capturas en una sola imagen para revisarlas. |
+| `tools/contact_sheet.py` | Juntar capturas en una sola imagen y avisar de capturas vacías o repetidas. |
 | `tools/ci_plan.py` | Decide qué apps compila la CI según lo que haya cambiado. |

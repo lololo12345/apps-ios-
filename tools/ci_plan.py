@@ -19,6 +19,8 @@ import subprocess
 import sys
 
 TEMPLATE = "Plantilla"
+ANDROID_TEMPLATE = "PlantillaAndroid"
+ANDROID_TOOLS = ("tools/new_android_app.py", "tools/android/")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -50,14 +52,16 @@ def counts(path: str) -> bool:
 def plan(event: str, files: list[str] | None) -> dict:
     ios, android = ios_apps(), android_apps()
     if event == "workflow_dispatch" or files is None:
-        return {"apps": ios + [TEMPLATE], "android": android, "scaffold": True}
-    tooling = any(f.startswith("tools/") or f == ".github/workflows/ios.yml" for f in files)
-    android_tooling = any(f == ".github/workflows/android.yml" for f in files)
+        return {"apps": ios + [TEMPLATE], "android": android + [ANDROID_TEMPLATE], "scaffold": True}
+    tooling = any((f.startswith("tools/") and not f.startswith(ANDROID_TOOLS)) or f == ".github/workflows/ios.yml" for f in files)
+    android_tooling = any(f.startswith(ANDROID_TOOLS) or f in ("tools/make_icon.py", "tools/ci_plan.py", ".github/workflows/android.yml")
+                          for f in files)
     touched = {f.split("/")[0] for f in files if "/" in f and counts(f)}
     return {
         # "Plantilla" is generated in CI by tools/new_ios_app.py to prove the template builds and passes its tests.
         "apps": ios + [TEMPLATE] if tooling else [a for a in ios if a in touched],
-        "android": android if android_tooling else [a for a in android if a in touched],
+        # "PlantillaAndroid" is generated in CI by tools/new_android_app.py in the same way.
+        "android": android + [ANDROID_TEMPLATE] if android_tooling else [a for a in android if a in touched],
         "scaffold": tooling,
     }
 
