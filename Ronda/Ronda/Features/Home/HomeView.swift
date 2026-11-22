@@ -9,7 +9,6 @@ struct ActiveGame: Identifiable, Hashable {
 struct HomeView: View {
     @Environment(PartySession.self) private var session
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Namespace private var zoom
     @Namespace private var modeGlass
     @State private var tilesVisible = false
     @State private var activeGame: ActiveGame?
@@ -46,9 +45,7 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
         }
         .fullScreenCover(item: $activeGame) { game in
-            // Native zoom: the tile grows into the game and shrinks back when closing.
             GameRouter(game: game)
-                .navigationTransition(.zoom(sourceID: game.id, in: zoom))
         }
         .onAppear {
             guard !tilesVisible else { return }
@@ -120,8 +117,6 @@ struct HomeView: View {
     }
 
     private func grid(for mode: PartyMode) -> some View {
-        // No GlassEffectContainer here: the tiles are the source of the zoom transition into each game,
-        // and wrapping them in a glass container stops that transition from presenting.
         LazyVGrid(columns: columns, spacing: 12) {
             ForEach(Array(GameKind.games(for: mode).enumerated()), id: \.element) { index, kind in
                 let enabled = session.players.count >= kind.minimumPlayers
@@ -131,7 +126,6 @@ struct HomeView: View {
                     activeGame = game
                 } label: {
                     GameTile(kind: kind, mode: mode, enabled: enabled)
-                        .matchedTransitionSource(id: game.id, in: zoom)
                 }
                 .buttonStyle(PressableStyle())
                 .disabled(!enabled)
