@@ -2,6 +2,8 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
+    /// Shown as a tab (no «Listo» button) or as a sheet.
+    var inTab = false
     @Environment(PartySession.self) private var session
     @Environment(\.dismiss) private var dismiss
     @AppStorage("haptics") private var haptics = true
@@ -17,6 +19,7 @@ struct SettingsView: View {
                     }
                     .disabled(session.ageStatus == .minor)
                     .accessibilityIdentifier("settings.sober")
+                    .listRowBackground(Color.white.opacity(0.07))
                     Picker(selection: $session.waterEvery) {
                         Text("Nunca").tag(0)
                         Text("Cada 5 cartas").tag(5)
@@ -26,6 +29,7 @@ struct SettingsView: View {
                         Label("Rondas de agua", systemImage: "drop.fill")
                     }
                     .disabled(session.soberMode)
+                    .listRowBackground(Color.white.opacity(0.07))
                 } header: {
                     Text("Juego")
                 } footer: {
@@ -41,9 +45,11 @@ struct SettingsView: View {
                         Label("Mis cartas", systemImage: "square.and.pencil")
                     }
                     .accessibilityIdentifier("settings.customCards")
+                    .listRowBackground(Color.white.opacity(0.07))
                     Toggle(isOn: $haptics) {
                         Label("Vibraciones", systemImage: "iphone.radiowaves.left.and.right")
                     }
+                    .listRowBackground(Color.white.opacity(0.07))
                 }
 
                 Section {
@@ -52,9 +58,11 @@ struct SettingsView: View {
                     } label: {
                         Label("Cambiar la confirmación de edad", systemImage: "person.badge.shield.checkmark")
                     }
+                    .listRowBackground(Color.white.opacity(0.07))
                     Label("Bebe con responsabilidad. Si vas a conducir, no bebas. Nadie está obligado a beber ni a hacer ningún reto.", systemImage: "heart.fill")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                        .listRowBackground(Color.white.opacity(0.07))
                 } header: {
                     Text("Responsabilidad")
                 }
@@ -64,8 +72,10 @@ struct SettingsView: View {
             .navigationTitle("Ajustes")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Listo") { dismiss() }
+                if !inTab {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Listo") { dismiss() }
+                    }
                 }
             }
             .confirmationDialog("¿Volver a preguntar la edad?", isPresented: $confirmAgeReset, titleVisibility: .visible) {

@@ -53,6 +53,15 @@ def lighten(hex_text: str, amount: float) -> str:
     return "".join(f"{int(p + (255 - p) * amount):02X}" for p in parts)
 
 
+def rotate_hue(hex_text: str, turn: float) -> str:
+    import colorsys
+    value = int(hex_text.lstrip("#"), 16)
+    r, g, b = ((value >> s) & 0xFF for s in (16, 8, 0))
+    h, l, sat = colorsys.rgb_to_hls(r / 255, g / 255, b / 255)
+    r, g, b = colorsys.hls_to_rgb((h + turn) % 1, l, sat)
+    return f"{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
+
+
 def write(path: str, text: str, overwrite: bool = False) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     if os.path.exists(path) and not overwrite:
@@ -113,10 +122,14 @@ struct RootView: View {{
     @State private var tab: AppTab = .home
 
     var body: some View {{
+        // Native iOS 26 tab bar: Liquid Glass, drag across it to switch tabs, and it shrinks into a capsule
+        // while scrolling (kept full-size under UI tests so every tab stays tappable).
         TabView(selection: $tab) {{
             Tab("Inicio", systemImage: "house.fill", value: AppTab.home) {{ HomeView() }}
             Tab("Ajustes", systemImage: "gearshape.fill", value: AppTab.settings) {{ SettingsView() }}
         }}
+        .tabBarMinimizeBehavior(LaunchOptions.isUITesting ? .never : .onScrollDown)
+        .sensoryFeedback(.selection, trigger: tab) {{ _, _ in model.hapticsOn }}
         .onOpenURL {{ url in
             // {scheme}://settings opens the settings tab; anything else goes home.
             guard url.scheme == "{scheme}" else {{ return }}
@@ -195,6 +208,8 @@ enum Palette {{
     static let backgroundDeep = Color(hex: 0x{background_deep})
     static let good = Color(hex: 0x3DDC97)
     static let bad = Color(hex: 0xFF5A6E)
+    /// Complementary hue (accent rotated on the colour wheel) for the third background glow.
+    static let secondary = Color(hex: 0x{secondary})
     static let brand: [Color] = [accentSoft, accent]
 }}
 
@@ -219,10 +234,13 @@ struct AppBackground: View {{
                 }} else {{
                     Color(uiColor: .systemGroupedBackground)
                 }}
-                RadialGradient(colors: [glow.opacity(scheme == .dark ? 0.30 : 0.18), .clear], center: UnitPoint(x: 0.95, y: 0.0),
-                               startRadius: 0, endRadius: longest * 0.55)
-                RadialGradient(colors: [Palette.accentSoft.opacity(scheme == .dark ? 0.18 : 0.12), .clear], center: UnitPoint(x: 0.0, y: 0.75),
+                // Colour for the glass to refract: Liquid Glass looks best over soft, saturated light.
+                RadialGradient(colors: [glow.opacity(scheme == .dark ? 0.38 : 0.26), .clear], center: UnitPoint(x: 0.95, y: 0.0),
                                startRadius: 0, endRadius: longest * 0.6)
+                RadialGradient(colors: [Palette.accentSoft.opacity(scheme == .dark ? 0.24 : 0.18), .clear], center: UnitPoint(x: 0.0, y: 0.55),
+                               startRadius: 0, endRadius: longest * 0.55)
+                RadialGradient(colors: [Palette.secondary.opacity(scheme == .dark ? 0.22 : 0.14), .clear], center: UnitPoint(x: 0.85, y: 1.0),
+                               startRadius: 0, endRadius: longest * 0.55)
             }}
         }}
         .ignoresSafeArea()
@@ -278,6 +296,43 @@ struct PrimaryButton: View {{
         }}
         .buttonStyle(.glassProminent)
         .tint(Palette.accent)
+    }}
+}}
+
+/// Round glass icon button (toolbars, headers). Group several inside a `GlassEffectContainer` so they blend.
+struct GlassIconButton: View {{
+    let systemImage: String
+    let label: String
+    let action: () -> Void
+
+    var body: some View {{
+        Button(action: action) {{
+            Image(systemName: systemImage).font(.headline).frame(width: 24, height: 24)
+        }}
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .accessibilityLabel(label)
+    }}
+}}
+
+/// One settings row inside a glass card: icon, title and any trailing control.
+struct GlassRow<Trailing: View>: View {{
+    let title: String
+    let systemImage: String
+    @ViewBuilder var trailing: Trailing
+
+    var body: some View {{
+        HStack(spacing: 12) {{
+            Image(systemName: systemImage)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Palette.accent)
+                .frame(width: 30, height: 30)
+                .glassEffect(.regular.tint(Palette.accent.opacity(0.18)), in: .circle)
+            Text(title)
+            Spacer(minLength: 8)
+            trailing
+        }}
+        .padding(.vertical, 4)
     }}
 }}
 
@@ -362,19 +417,38 @@ struct SettingsView: View {{
     var body: some View {{
         @Bindable var model = model
         NavigationStack {{
-            Form {{
-                Section("Preferencias") {{
-                    Toggle("Vibración", isOn: $model.hapticsOn)
-                        .accessibilityIdentifier("hapticsToggle")
+            ScrollView {{
+                GlassEffectContainer(spacing: 16) {{
+                    VStack(alignment: .leading, spacing: 16) {{
+                        VStack(alignment: .leading, spacing: 8) {{
+                            SectionHeader(title: "Preferencias")
+                            GlassRow(title: "Vibración", systemImage: "iphone.radiowaves.left.and.right") {{
+                                Toggle("Vibración", isOn: $model.hapticsOn)
+                                    .labelsHidden()
+                                    .accessibilityIdentifier("hapticsToggle")
+                            }}
+                        }}
+                        .card()
+
+                        Button(role: .destructive) {{
+                            confirmReset = true
+                        }} label: {{
+                            Label("Restablecer ajustes", systemImage: "arrow.counterclockwise")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 4)
+                        }}
+                        .buttonStyle(.glass)
+
+                        Text("{display} · versión \\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"). Todo se guarda solo en este iPhone.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 4)
+                    }}
                 }}
-                Section {{
-                    Button("Restablecer ajustes", role: .destructive) {{ confirmReset = true }}
-                }} footer: {{
-                    Text("{display} · versión \\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"). Todo se guarda solo en este iPhone.")
-                }}
+                .padding(.horizontal, Metrics.gutter)
+                .padding(.bottom, 24)
             }}
-            .scrollContentBackground(.hidden)
-            .background(AppBackground())
+            .screenBackground()
             .navigationTitle("Ajustes")
             .confirmationDialog("¿Restablecer los ajustes?", isPresented: $confirmReset, titleVisibility: .visible) {{
                 Button("Restablecer", role: .destructive) {{ model.reset() }}
@@ -619,6 +693,7 @@ def scaffold(args) -> str:
     fmt = dict(name=name, bundle=args.bundle_id, scheme=scheme, display=display.replace('"', '\\"'),
                summary=summary.replace('"', '\\"'), accent=args.accent.upper(), background=args.background.upper(),
                accent_soft=lighten(args.accent, 0.35), background_deep=darken(args.background, 0.55),
+               secondary=rotate_hue(args.accent, 0.5),
                scheme_line="\n                .preferredColorScheme(.dark)" if args.dark else "")
     src = os.path.join(app_dir, name)
     write(os.path.join(app_dir, "Config", f"{name}-Info.plist"), INFO_PLIST.format(**fmt))

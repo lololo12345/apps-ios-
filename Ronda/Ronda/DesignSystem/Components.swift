@@ -170,6 +170,7 @@ struct PlayerPicker: View {
     }
 
     private var grid: some View {
+        GlassEffectContainer(spacing: 8) {
         LazyVGrid(columns: columns, spacing: 8) {
             ForEach(players) { player in
                 let isOn = selection.contains(player.id)
@@ -189,16 +190,14 @@ struct PlayerPicker: View {
                         .minimumScaleFactor(0.7)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .foregroundStyle(isOn ? Color.black : Color.white)
-                        .background {
-                            Capsule().fill(isOn ? AnyShapeStyle(accent) : AnyShapeStyle(Neon.surfaceRaised))
-                        }
-                        .overlay { Capsule().strokeBorder(isOn ? .clear : Neon.hairline) }
+                        .foregroundStyle(.white)
+                        .glassEffect(isOn ? .regular.tint(accent.opacity(0.75)) : .regular, in: .capsule)
                 }
                 .buttonStyle(PressableStyle())
                 .accessibilityAddTraits(isOn ? .isSelected : [])
                 .accessibilityIdentifier("pick.\(player.name)")
             }
+        }
         }
         .animation(.snappy(duration: 0.2), value: selection)
     }

@@ -56,10 +56,23 @@ struct NightBackground: View {
                     endRadius: max(size.width, size.height) * 0.62
                 )
                 RadialGradient(
-                    colors: [(colors.last ?? Neon.cyan).opacity(0.32), .clear],
+                    colors: [(colors.last ?? Neon.cyan).opacity(0.34), .clear],
                     center: UnitPoint(x: 0.95, y: 0.95),
                     startRadius: 0,
                     endRadius: max(size.width, size.height) * 0.58
+                )
+                // Extra glows so the glass always has colour to bend.
+                RadialGradient(
+                    colors: [(colors.last ?? Neon.cyan).opacity(0.22), .clear],
+                    center: UnitPoint(x: 1.0, y: 0.3),
+                    startRadius: 0,
+                    endRadius: max(size.width, size.height) * 0.42
+                )
+                RadialGradient(
+                    colors: [(colors.first ?? Neon.violet).opacity(0.2), .clear],
+                    center: UnitPoint(x: 0.0, y: 0.7),
+                    startRadius: 0,
+                    endRadius: max(size.width, size.height) * 0.45
                 )
             }
         }
@@ -69,24 +82,25 @@ struct NightBackground: View {
     }
 }
 
-/// Card surface with a neon gradient rim.
+/// Liquid Glass card tinted with the game's colours, with a thin neon rim and a coloured glow underneath.
 struct NeonCard: ViewModifier {
     var colors: [Color]
     var radius: CGFloat = Metrics.radius
     var padding: CGFloat = 20
 
     func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         content
             .padding(padding)
-            .background {
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .fill(Neon.surface.opacity(0.92))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: radius, style: .continuous)
-                            .strokeBorder(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1.5)
-                    }
-                    .shadow(color: (colors.first ?? .clear).opacity(0.3), radius: 18, y: 8)
+            .glassEffect(.regular.tint((colors.first ?? Neon.violet).opacity(0.16)), in: shape)
+            .overlay {
+                shape.strokeBorder(
+                    LinearGradient(colors: colors.map { $0.opacity(0.6) } + [Color.white.opacity(0.12)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1
+                )
             }
+            .shadow(color: (colors.first ?? .clear).opacity(0.28), radius: 18, y: 8)
     }
 }
 

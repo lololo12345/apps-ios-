@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ScoreboardView: View {
+    /// Shown as a tab (no «Cerrar» button) or as a sheet.
+    var inTab = false
     @Environment(PartySession.self) private var session
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -40,8 +42,10 @@ struct ScoreboardView: View {
             .navigationTitle("Marcador")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cerrar") { dismiss() }
+                if !inTab {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cerrar") { dismiss() }
+                    }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Reiniciar", role: .destructive) { confirmReset = true }

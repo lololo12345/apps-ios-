@@ -54,7 +54,14 @@
 - Margen lateral de 16 pt; nada de scroll horizontal accidental; prueba los textos largos (Dynamic Type).
 - Al enfocar un campo de texto, el botón principal no puede quedar bajo el teclado: se envía con `onSubmit`
   o se recoge el contenido de encima.
-- No uses `.interactive()` en el cristal de una etiqueta de `Menu`: se queda los toques.
+- No uses `.interactive()` en el cristal de una etiqueta de `Menu` ni de un botón: se queda los toques.
+- Barra de pestañas: la nativa de iOS 26 (`TabView` con `Tab`) es Liquid Glass y se puede arrastrar entre pestañas;
+  añade `.tabBarMinimizeBehavior(.onScrollDown)` (`.never` con `-uiTesting`) y `sensoryFeedback(.selection)`.
+  Nunca una barra hecha a mano en iPhone. En Android, `GlassTabBar` (plantilla): cápsula flotante con lente arrastrable.
+- Todo muy cristal: tarjetas con `glassEffect` tintado del color de la pantalla y borde fino, grupos dentro de
+  `GlassEffectContainer`, selección que «fluye» con `glassEffectID`, y fondos con varios brillos de color
+  (el cristal necesita color detrás para lucirse).
+- Solo se tocan las apps ya entregadas si el usuario lo pide expresamente.
 
 **SwiftUI que da problemas**
 - En un `ForEach`, los ids no pueden repetirse dentro del mismo contenedor (p. ej. huecos de calendario

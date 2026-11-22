@@ -42,11 +42,35 @@ struct RootView: View {
                 }
                 .transition(.opacity)
             } else {
-                HomeView()
+                RondaTabs()
                     .transition(.opacity)
             }
         }
         .animation(.smooth(duration: 0.4), value: session.ageStatus)
         .animation(.smooth(duration: 0.4), value: session.setupDone && session.players.count >= 2)
+    }
+}
+
+enum RondaTab: Hashable {
+    case games, players, scoreboard, settings
+}
+
+/// Liquid Glass tab bar: drag across it to switch; it shrinks into a capsule while scrolling the games.
+struct RondaTabs: View {
+    @State private var tab: RondaTab = .games
+
+    var body: some View {
+        TabView(selection: $tab) {
+            Tab("Juegos", systemImage: "gamecontroller.fill", value: RondaTab.games) { HomeView() }
+            Tab("Jugadores", systemImage: "person.2.fill", value: RondaTab.players) {
+                NavigationStack {
+                    PlayersView()
+                }
+            }
+            Tab("Marcador", systemImage: "trophy.fill", value: RondaTab.scoreboard) { ScoreboardView(inTab: true) }
+            Tab("Ajustes", systemImage: "gearshape.fill", value: RondaTab.settings) { SettingsView(inTab: true) }
+        }
+        .tabBarMinimizeBehavior(LaunchOptions.isUITesting ? .never : .onScrollDown)
+        .sensoryFeedback(.selection, trigger: tab)
     }
 }

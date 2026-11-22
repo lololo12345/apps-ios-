@@ -358,8 +358,30 @@ THEME = """package {package}.ui.theme
 import android.app.Activity
 import android.view.HapticFeedbackConstants
 import android.view.View
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -410,6 +432,8 @@ object Brand {{
 
     val gutter = 16.dp
     val radius = 24.dp
+    /** Space to leave at the end of scrolling screens so the floating tab bar never covers content. */
+    val tabBarClearance = 112.dp
 }}
 
 /** Respects the system "remove animations" setting (set from MainActivity). */
@@ -491,6 +515,94 @@ fun Screen(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Un
     Box(modifier.fillMaxSize().brandBackground(), content = content)
 }}
 
+data class TabItem(val label: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val tag: String)
+
+/**
+ * Floating glass tab bar, like iOS 26: tap a tab, or press and drag the glass lens across the bar;
+ * it follows the finger, grows a little while held and springs into the tab where it is released.
+ */
+@Composable
+fun GlassTabBar(items: List<TabItem>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {{
+    val density = LocalDensity.current
+    var width by remember {{ mutableIntStateOf(0) }}
+    var dragX by remember {{ mutableStateOf<Float?>(null) }}
+    val slot = if (items.isEmpty() || width == 0) 1f else width.toFloat() / items.size
+    fun indexAt(x: Float) = (x / slot).toInt().coerceIn(0, items.lastIndex)
+    val hovered = dragX?.let {{ indexAt(it) }} ?: selected
+    val reduceMotion = LocalReduceMotion.current
+    val lensX by animateFloatAsState(
+        targetValue = dragX?.let {{ (it - slot / 2).coerceIn(0f, width - slot) }} ?: (selected * slot),
+        animationSpec = if (dragX != null || reduceMotion) snap() else spring(dampingRatio = 0.7f, stiffness = 380f),
+        label = "lens",
+    )
+    val lensScale by animateFloatAsState(if (dragX != null) 1.1f else 1f, spring(dampingRatio = 0.6f, stiffness = 500f), label = "lensScale")
+    val shape = RoundedCornerShape(50)
+    Box(
+        modifier
+            .navigationBarsPadding()
+            .padding(horizontal = 28.dp, vertical = 10.dp)
+            .fillMaxWidth()
+            .height(66.dp)
+            .shadow(24.dp, shape, ambientColor = Color.Black, spotColor = Color.Black)
+            .clip(shape)
+            .background(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.17f), Color.White.copy(alpha = 0.06f))))
+            .background(Brand.backgroundDeep.copy(alpha = 0.55f))
+            .border(1.dp, Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.38f), Color.White.copy(alpha = 0.06f))), shape)
+            .onSizeChanged {{ width = it.width }}
+            .pointerInput(items.size) {{
+                detectHorizontalDragGestures(
+                    onDragStart = {{ dragX = it.x }},
+                    onHorizontalDrag = {{ change, delta ->
+                        change.consume()
+                        val before = indexAt(dragX ?: 0f)
+                        dragX = ((dragX ?: 0f) + delta).coerceIn(0f, width.toFloat())
+                        if (indexAt(dragX ?: 0f) != before) Haptics.tap()
+                    }},
+                    onDragEnd = {{
+                        val index = indexAt(dragX ?: 0f)
+                        dragX = null
+                        if (index != selected) onSelect(index)
+                    }},
+                    onDragCancel = {{ dragX = null }},
+                )
+            }}
+            .testTag("tabbar"),
+    ) {{
+        // The lens: a brighter pane of glass under the current tab.
+        Box(
+            Modifier
+                .offset {{ IntOffset(lensX.roundToInt(), 0) }}
+                .width(with(density) {{ slot.toDp() }})
+                .fillMaxHeight()
+                .padding(5.dp)
+                .graphicsLayer {{ scaleX = lensScale; scaleY = lensScale }}
+                .background(Brand.accent.copy(alpha = 0.26f), shape)
+                .background(Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.30f), Color.White.copy(alpha = 0.06f))), shape)
+                .border(1.dp, Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.55f), Color.White.copy(alpha = 0.08f))), shape),
+        )
+        Row(Modifier.fillMaxSize()) {{
+            items.forEachIndexed {{ index, item ->
+                val active = index == hovered
+                val tint by animateColorAsState(if (active) Color.White else Brand.secondaryText, label = "tabTint")
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .clickable(remember {{ MutableInteractionSource() }}, indication = null) {{
+                            if (index != selected) {{ Haptics.tap(); onSelect(index) }}
+                        }}
+                        .testTag(item.tag),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {{
+                    Icon(item.icon, contentDescription = null, tint = tint)
+                    Text(item.label, color = tint, fontSize = 11.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
+                }}
+            }}
+        }}
+    }}
+}}
+
 /** Light haptic ticks, switchable from Settings. */
 object Haptics {{
     private var view: View? = null
@@ -514,72 +626,43 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import {package}.data.AppState
-import {package}.ui.theme.Brand
 import {package}.ui.theme.BrandTheme
-import {package}.ui.theme.Haptics
+import {package}.ui.theme.GlassTabBar
 import {package}.ui.theme.LocalReduceMotion
+import {package}.ui.theme.TabItem
 import {package}.ui.theme.brandBackground
 
-enum class Tab(val label: String) {{ HOME("Inicio"), SETTINGS("Ajustes") }}
+private val tabs = listOf(
+    TabItem("Inicio", Icons.Rounded.Home, "tab.home"),
+    TabItem("Ajustes", Icons.Rounded.Settings, "tab.settings"),
+)
 
 @Composable
 fun {name}App(state: AppState, reduceMotion: Boolean = false) {{
-    var tab by rememberSaveable {{ mutableStateOf(Tab.HOME) }}
+    var tab by rememberSaveable {{ mutableIntStateOf(0) }}
     BrandTheme {{
         CompositionLocalProvider(LocalReduceMotion provides reduceMotion) {{
-            Scaffold(
-                modifier = Modifier.fillMaxSize().brandBackground(),
-                containerColor = Color.Transparent,
-                contentColor = Color.White,
-                bottomBar = {{
-                    NavigationBar(containerColor = Brand.backgroundDeep.copy(alpha = 0.92f)) {{
-                        Tab.entries.forEach {{ item ->
-                            NavigationBarItem(
-                                selected = tab == item,
-                                onClick = {{ Haptics.tap(); tab = item }},
-                                icon = {{ Icon(if (item == Tab.HOME) Icons.Rounded.Home else Icons.Rounded.Settings, contentDescription = null) }},
-                                label = {{ Text(item.label) }},
-                                modifier = Modifier.testTag("tab.${{item.name.lowercase()}}"),
-                                colors = NavigationBarItemDefaults.colors(
-                                    selectedIconColor = Brand.backgroundDeep,
-                                    selectedTextColor = Brand.accent,
-                                    indicatorColor = Brand.accent,
-                                    unselectedIconColor = Brand.secondaryText,
-                                    unselectedTextColor = Brand.secondaryText,
-                                ),
-                            )
-                        }}
-                    }}
-                }},
-            ) {{ padding ->
-                Box(Modifier.padding(padding)) {{
-                    AnimatedContent(targetState = tab, transitionSpec = {{ fadeIn() togetherWith fadeOut() }}, label = "tab") {{ current ->
-                        when (current) {{
-                            Tab.HOME -> HomeScreen(state)
-                            Tab.SETTINGS -> SettingsScreen(state)
-                        }}
+            // Content runs under the floating glass bar, like on iOS 26.
+            Box(Modifier.fillMaxSize().brandBackground()) {{
+                AnimatedContent(targetState = tab, transitionSpec = {{ fadeIn() togetherWith fadeOut() }}, label = "tab") {{ current ->
+                    when (current) {{
+                        0 -> HomeScreen(state)
+                        else -> SettingsScreen(state)
                     }}
                 }}
+                GlassTabBar(tabs, selected = tab, onSelect = {{ tab = it }}, modifier = Modifier.align(Alignment.BottomCenter))
             }}
         }}
     }}
@@ -654,6 +737,7 @@ fun HomeScreen(state: AppState) {{
             Spacer(Modifier.height(12.dp))
             PrimaryButton("Pulsar", Modifier.testTag("home.tap")) {{ state.tap() }}
         }}
+        Spacer(Modifier.height(Brand.tabBarClearance))
     }}
 }}
 """
@@ -663,8 +747,10 @@ SETTINGS = """package {package}.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -716,6 +802,7 @@ fun SettingsScreen(state: AppState) {{
             Text("Restablecer ajustes", color = Brand.bad, fontWeight = FontWeight.SemiBold, fontSize = 17.sp)
         }}
         Text("{display} · versión 1.0. Todo se guarda solo en este móvil.", color = Brand.secondaryText, fontSize = 13.sp)
+        Spacer(Modifier.height(Brand.tabBarClearance))
     }}
     if (confirmReset) {{
         AlertDialog(
@@ -766,7 +853,9 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import {package}.data.AppState
 import {package}.data.InMemoryStore
@@ -803,6 +892,24 @@ class UiFlowTest {{
         rule.onNodeWithTag("home.count", useUnmergedTree = true).assertTextEquals("1")
         tap("tab.settings")
         shot("02-settings")
+    }}
+
+    @Test fun dragTheGlassLensAcrossTheTabBar() {{
+        rule.setContent {{ {name}App(AppState(InMemoryStore())) }}
+        rule.waitForIdle()
+        // Press on the first tab and slide to the last one: the lens follows and selects it on release.
+        rule.onNodeWithTag("tabbar").performTouchInput {{
+            down(centerLeft + Offset(width * 0.2f, 0f))
+            moveTo(center, delayMillis = 80)
+        }}
+        rule.mainClock.advanceTimeBy(300)
+        shot("03-dragging-lens")
+        rule.onNodeWithTag("tabbar").performTouchInput {{
+            moveTo(centerRight - Offset(width * 0.15f, 0f), delayMillis = 80)
+            up()
+        }}
+        rule.mainClock.advanceTimeBy(800)
+        rule.onNodeWithTag("settings.haptics", useUnmergedTree = true).assertExists()
     }}
 }}
 """
