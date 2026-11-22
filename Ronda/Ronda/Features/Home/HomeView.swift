@@ -120,7 +120,8 @@ struct HomeView: View {
     }
 
     private func grid(for mode: PartyMode) -> some View {
-        GlassEffectContainer(spacing: 12) {
+        // No GlassEffectContainer here: the tiles are the source of the zoom transition into each game,
+        // and wrapping them in a glass container stops that transition from presenting.
         LazyVGrid(columns: columns, spacing: 12) {
             ForEach(Array(GameKind.games(for: mode).enumerated()), id: \.element) { index, kind in
                 let enabled = session.players.count >= kind.minimumPlayers
@@ -140,7 +141,6 @@ struct HomeView: View {
                 .offset(y: tilesVisible || reduceMotion ? 0 : 18)
                 .animation(reduceMotion ? nil : .spring(duration: 0.5, bounce: 0.2).delay(Double(index) * 0.035), value: tilesVisible)
             }
-        }
         }
         // Normal ⇄ Hot swaps the whole grid with a cross-fade instead of recolouring tiles in place.
         .id(mode)
