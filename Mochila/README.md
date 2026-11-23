@@ -7,6 +7,7 @@ Listas para hacer la maleta sin olvidar nada: según el tipo de viaje, los días
 | ![](docs/screenshots/07-trips-seeded.jpg) | ![](docs/screenshots/02-new-trip.jpg) | ![](docs/screenshots/05-packing.jpg) | ![](docs/screenshots/10-weather.jpg) | ![](docs/screenshots/06-return.jpg) | ![](docs/screenshots/08-ready.jpg) | ![](docs/screenshots/11-templates.jpg) |
 
 ## Qué incluye
+- **Tu próximo viaje en grande**: cuenta atrás, el tiempo del destino, anillo de progreso y lo que aún te falta.
 - **8 tipos de viaje**: playa, montaña, ciudad, escapada, trabajo, camping, nieve y festival.
 - **El tiempo del destino**: escribes a dónde vas y la app consulta el tiempo para tus fechas (Open-Meteo, gratis y sin
   cuenta): previsión real si el viaje es en los próximos 16 días y, si es más adelante, el tiempo de esas fechas el año
