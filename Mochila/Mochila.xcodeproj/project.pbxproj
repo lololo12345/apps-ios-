@@ -1,0 +1,658 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		9AF0221ECBFF05650D3E4084 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77FB319BDEBAE34BBB932A29 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E75D015CB0C032E34975720E;
+			remoteInfo = Mochila;
+		};
+		E61B8C8D42B38F733FC46BC5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77FB319BDEBAE34BBB932A29 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E75D015CB0C032E34975720E;
+			remoteInfo = Mochila;
+		};
+		DAF37F3E694960FDA48D4A1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77FB319BDEBAE34BBB932A29 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F5B775C97178FD4B6F24F592;
+			remoteInfo = MochilaWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXBuildFile section */
+		0E87B1FED8C430458FB27C19 /* MochilaWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 688D8E3D6BDC72A8B787C880 /* MochilaWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		83CCC28096B960534322E599 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0E87B1FED8C430458FB27C19 /* MochilaWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9D042A07613B60B91368BC73 /* Mochila.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mochila.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2989A8BE78CF704074C3A36 /* MochilaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MochilaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B15D31C0A91585D8BDAAF75 /* MochilaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MochilaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		688D8E3D6BDC72A8B787C880 /* MochilaWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MochilaWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		1298517CB66ABB670DF0FBFD /* Mochila */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Mochila;
+			sourceTree = "<group>";
+		};
+		01AA56022A5B8592E7FFFC91 /* MochilaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MochilaTests;
+			sourceTree = "<group>";
+		};
+		B68F4C4849BAC538FCC689BE /* MochilaUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MochilaUITests;
+			sourceTree = "<group>";
+		};
+		45319E26CEC6E3A8277A9E2B /* MochilaKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MochilaKit;
+			sourceTree = "<group>";
+		};
+		1EFD2A3DC8BD56F7E9B68D48 /* MochilaWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MochilaWidget;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		368E3A17A20BECC6716E9D47 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1370430871DF4D5DFBA4EB02 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E32D2DA8AED74F511B799421 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EB57E9249389912ED77952B5 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07C4DA6B5AF8330097656338 = {
+			isa = PBXGroup;
+			children = (
+				1298517CB66ABB670DF0FBFD /* Mochila */,
+				01AA56022A5B8592E7FFFC91 /* MochilaTests */,
+				B68F4C4849BAC538FCC689BE /* MochilaUITests */,
+				45319E26CEC6E3A8277A9E2B /* MochilaKit */,
+				1EFD2A3DC8BD56F7E9B68D48 /* MochilaWidget */,
+				7EE790B01FEE0CC0E216D159 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7EE790B01FEE0CC0E216D159 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9D042A07613B60B91368BC73 /* Mochila.app */,
+				A2989A8BE78CF704074C3A36 /* MochilaTests.xctest */,
+				5B15D31C0A91585D8BDAAF75 /* MochilaUITests.xctest */,
+				688D8E3D6BDC72A8B787C880 /* MochilaWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E75D015CB0C032E34975720E /* Mochila */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE7D19A94108A02377FF2DE3;
+			buildPhases = (
+				5EF0EF3E69A88830372FCBF3 /* Sources */,
+				368E3A17A20BECC6716E9D47 /* Frameworks */,
+				D7AAA4A3A533DE80981A63EE /* Resources */,
+				83CCC28096B960534322E599 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				702E09B772DC798D03876FB8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1298517CB66ABB670DF0FBFD /* Mochila */,
+				45319E26CEC6E3A8277A9E2B /* MochilaKit */,
+			);
+			name = Mochila;
+			packageProductDependencies = (
+			);
+			productName = Mochila;
+			productReference = 9D042A07613B60B91368BC73 /* Mochila.app */;
+			productType = "com.apple.product-type.application";
+		};
+		578F69BB92D5C5211C0F9747 /* MochilaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78FCD18DBFD6103E516BEFFF;
+			buildPhases = (
+				1E748C434242ABD3AA9089E8 /* Sources */,
+				1370430871DF4D5DFBA4EB02 /* Frameworks */,
+				B45313BE0EB3406CAFB59942 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2E6F32A3F3AA8A7B6EAC2D6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				01AA56022A5B8592E7FFFC91 /* MochilaTests */,
+			);
+			name = MochilaTests;
+			packageProductDependencies = (
+			);
+			productName = MochilaTests;
+			productReference = A2989A8BE78CF704074C3A36 /* MochilaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5BE805ECEDB38A9F51CA6AD3 /* MochilaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC7B92293FF259C81A06A401;
+			buildPhases = (
+				CAD0CA2FEBDE1BDCA23A5471 /* Sources */,
+				E32D2DA8AED74F511B799421 /* Frameworks */,
+				D1CC928AF4AEFEF89C9C2750 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				57C3CAB2971D3CD13423AABE /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B68F4C4849BAC538FCC689BE /* MochilaUITests */,
+			);
+			name = MochilaUITests;
+			packageProductDependencies = (
+			);
+			productName = MochilaUITests;
+			productReference = 5B15D31C0A91585D8BDAAF75 /* MochilaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		F5B775C97178FD4B6F24F592 /* MochilaWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D54CDBAA08692DEB0B3155F8;
+			buildPhases = (
+				2D58F5D15973499D6959E182 /* Sources */,
+				EB57E9249389912ED77952B5 /* Frameworks */,
+				CC6ACED2213EB3AE116F098E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				1EFD2A3DC8BD56F7E9B68D48 /* MochilaWidget */,
+				45319E26CEC6E3A8277A9E2B /* MochilaKit */,
+			);
+			name = MochilaWidget;
+			packageProductDependencies = (
+			);
+			productName = MochilaWidget;
+			productReference = 688D8E3D6BDC72A8B787C880 /* MochilaWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		77FB319BDEBAE34BBB932A29 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					E75D015CB0C032E34975720E = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					578F69BB92D5C5211C0F9747 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = E75D015CB0C032E34975720E;
+					};
+					5BE805ECEDB38A9F51CA6AD3 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = E75D015CB0C032E34975720E;
+					};
+					F5B775C97178FD4B6F24F592 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = 04E6EF522C3123DE6FCFC125;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				es,
+				Base,
+			);
+			mainGroup = 07C4DA6B5AF8330097656338;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 7EE790B01FEE0CC0E216D159 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E75D015CB0C032E34975720E /* Mochila */,
+				578F69BB92D5C5211C0F9747 /* MochilaTests */,
+				5BE805ECEDB38A9F51CA6AD3 /* MochilaUITests */,
+				F5B775C97178FD4B6F24F592 /* MochilaWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D7AAA4A3A533DE80981A63EE = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B45313BE0EB3406CAFB59942 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D1CC928AF4AEFEF89C9C2750 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC6ACED2213EB3AE116F098E = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5EF0EF3E69A88830372FCBF3 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1E748C434242ABD3AA9089E8 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CAD0CA2FEBDE1BDCA23A5471 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D58F5D15973499D6959E182 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B2E6F32A3F3AA8A7B6EAC2D6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E75D015CB0C032E34975720E /* Mochila */;
+			targetProxy = 9AF0221ECBFF05650D3E4084 /* PBXContainerItemProxy */;
+		};
+		57C3CAB2971D3CD13423AABE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E75D015CB0C032E34975720E /* Mochila */;
+			targetProxy = E61B8C8D42B38F733FC46BC5 /* PBXContainerItemProxy */;
+		};
+		702E09B772DC798D03876FB8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F5B775C97178FD4B6F24F592 /* MochilaWidget */;
+			targetProxy = DAF37F3E694960FDA48D4A1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3E6E5A698739696FE39E2799 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		83C3B71BB7DE278715029CCC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3C5C6ADEF02CD3FCD01430AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Mochila-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mochila";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B92EEC820FA3CDD3D03FFEDB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Mochila-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mochila";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		53D8A60F70D8E4A53B90F901 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mochila.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mochila";
+			};
+			name = Debug;
+		};
+		30F035CB7FD87BB11E2C9B62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mochila.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Mochila";
+			};
+			name = Release;
+		};
+		9F08CBF7FF5BD82C898B0559 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Mochila;
+			};
+			name = Debug;
+		};
+		70439DE0808C4E3F37FCCC6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Mochila;
+			};
+			name = Release;
+		};
+		E5063662E865941241AED044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/MochilaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mochila";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F2F96C37A33F655FAEF3C06D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/MochilaWidget-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Mochila";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.mochila.travel.widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04E6EF522C3123DE6FCFC125 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3E6E5A698739696FE39E2799 /* Debug */,
+				83C3B71BB7DE278715029CCC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DE7D19A94108A02377FF2DE3 /* Build configuration list for Mochila */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C5C6ADEF02CD3FCD01430AA /* Debug */,
+				B92EEC820FA3CDD3D03FFEDB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78FCD18DBFD6103E516BEFFF /* Build configuration list for MochilaTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53D8A60F70D8E4A53B90F901 /* Debug */,
+				30F035CB7FD87BB11E2C9B62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC7B92293FF259C81A06A401 /* Build configuration list for MochilaUITests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F08CBF7FF5BD82C898B0559 /* Debug */,
+				70439DE0808C4E3F37FCCC6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D54CDBAA08692DEB0B3155F8 /* Build configuration list for MochilaWidget */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5063662E865941241AED044 /* Debug */,
+				F2F96C37A33F655FAEF3C06D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 77FB319BDEBAE34BBB932A29 /* Project object */;
+}
