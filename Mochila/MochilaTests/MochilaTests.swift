@@ -74,6 +74,22 @@ struct GeneratorTests {
         #expect(!PackProgress(done: 0, total: 0).isComplete)
     }
 
+    @Test func heroCountdownAndPending() {
+        let calendar = Calendar(identifier: .gregorian)
+        let now = calendar.date(from: DateComponents(year: 2026, month: 7, day: 10, hour: 22))!
+        func start(_ offset: Int) -> Date { calendar.date(byAdding: .day, value: offset, to: now)! }
+        let soon = TripCountdown.hero(start: start(7), days: 3, now: now, calendar: calendar)
+        #expect(soon.value == "7" && soon.caption == "días para salir")
+        #expect(TripCountdown.hero(start: start(1), days: 3, now: now, calendar: calendar).value == "1")
+        #expect(TripCountdown.hero(start: start(0), days: 3, now: now, calendar: calendar).value == "¡Hoy!")
+        let during = TripCountdown.hero(start: start(-1), days: 3, now: now, calendar: calendar)
+        #expect(during.value == "2" && during.caption == "día de 3 del viaje")
+        #expect(TripCountdown.hero(start: start(-9), days: 3, now: now, calendar: calendar).value == "✓")
+        #expect(PackingShare.pendingText([]) == nil)
+        #expect(PackingShare.pendingText(["DNI"]) == "Te falta: DNI")
+        #expect(PackingShare.pendingText(["DNI", "Cargador", "Gafas", "Bañador"]) == "Te falta: DNI, Cargador y 2 más")
+    }
+
     @Test func shareTextListsEverything() {
         let entries = [(PackEntry("DNI o pasaporte", .documents), true), (PackEntry("Camisetas", .clothes, quantity: 3), false)]
         let text = PackingShare.text(title: "Roma", subtitle: "Ciudad · 3 días", entries: entries)
@@ -133,6 +149,10 @@ struct WeatherTests {
         #expect(!summary(12, 20, rain: 10).rainLikely)
         let applied = summary(-3, 6, rain: 70).apply(to: TripOptions(days: 4))
         #expect(applied.climate == .cold && applied.rain && applied.freezing && applied.days == 4)
+        #expect(summary(-3, 6, rain: 70).symbol == "cloud.sleet.fill")
+        #expect(summary(22, 33).symbol == Climate.hot.symbol)
+        #expect(summary(-20, 50).rangeOnScale == 0...1)
+        #expect(summary(15, 15).rangeOnScale == 0.5...0.5)
         let list = PackingGenerator.items(for: .city, options: applied)
         #expect(list.contains { $0.name == "Ropa térmica" } && list.contains { $0.name == "Bufanda" })
     }

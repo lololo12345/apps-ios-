@@ -44,13 +44,32 @@ final class Trip {
     var things: [PackItem] { sortedItems.filter { !$0.isTask } }
     var tasks: [PackItem] { sortedItems.filter(\.isTask) }
 
-    /// Packing progress for the current direction (going or coming back).
+    /// Packing progress for the current direction (going or coming back). One pass, no sorting:
+    /// it is read by every card and header on each redraw.
     var progress: PackProgress {
-        let list = things
-        return PackProgress(done: list.filter { returnMode ? $0.packedBack : $0.packed }.count, total: list.count)
+        var done = 0, total = 0
+        for item in items where !item.isTask {
+            total += 1
+            if returnMode ? item.packedBack : item.packed { done += 1 }
+        }
+        return PackProgress(done: done, total: total)
     }
 
-    var tasksProgress: PackProgress { PackProgress(done: tasks.filter(\.packed).count, total: tasks.count) }
+    var tasksProgress: PackProgress {
+        var done = 0, total = 0
+        for item in items where item.isTask {
+            total += 1
+            if item.packed { done += 1 }
+        }
+        return PackProgress(done: done, total: total)
+    }
+
+    func isDone(_ item: PackItem) -> Bool { returnMode ? item.packedBack : item.packed }
+
+    /// "Te falta: DNI o pasaporte, Cargador y 3 más", in list order (documents first).
+    var pendingText: String? { PackingShare.pendingText(things.filter { !isDone($0) }.map(\.name)) }
+
+    var hero: (value: String, caption: String) { TripCountdown.hero(start: startDate, days: days) }
     var isOver: Bool { TripCountdown.isOver(start: startDate, days: days) }
     var countdown: String { TripCountdown.text(start: startDate, days: days) }
 
@@ -93,7 +112,7 @@ final class PackItem {
     }
 
     var category: PackCategory { PackCategory(rawValue: categoryRaw) ?? .extras }
-    var isTask: Bool { category == .beforeLeaving }
+    var isTask: Bool { categoryRaw == PackCategory.beforeLeaving.rawValue }
     var entry: PackEntry { PackEntry(name, category, quantity: quantity, note: note) }
     var label: String { entry.label }
 }

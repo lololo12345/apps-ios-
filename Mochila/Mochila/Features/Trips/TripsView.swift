@@ -18,8 +18,12 @@ struct TripsView: View {
                     if trips.isEmpty {
                         emptyState
                     } else {
-                        if !upcoming.isEmpty {
-                            section("Próximos viajes", trips: upcoming)
+                        if let next = upcoming.first {
+                            tripLink(next) { HeroTripCard(trip: next) }
+                                .padding(.top, 4)
+                        }
+                        if upcoming.count > 1 {
+                            section("Después", trips: Array(upcoming.dropFirst()))
                         }
                         if !finished.isEmpty {
                             section("Ya viajaste", trips: finished)
@@ -64,29 +68,43 @@ struct TripsView: View {
                 .font(.title3.weight(.bold))
                 .padding(.top, 4)
             ForEach(trips) { trip in
-                NavigationLink(value: trip.id) {
-                    TripCard(trip: trip)
-                }
-                .buttonStyle(PressableStyle())
-                .accessibilityIdentifier("trip.\(trip.name)")
-                .contextMenu {
-                    Button("Duplicar", systemImage: "plus.square.on.square") {
-                        withAnimation(.smooth) { _ = TripFactory.duplicate(trip, in: context) }
-                    }
-                    Button("Borrar", systemImage: "trash", role: .destructive) { confirmDelete = trip }
-                }
-                .transition(.scale(scale: 0.96).combined(with: .opacity))
+                tripLink(trip) { TripCard(trip: trip) }
             }
         }
     }
 
+    /// A trip card that opens its list, with duplicate and delete on a long press.
+    private func tripLink<Label: View>(_ trip: Trip, @ViewBuilder label: () -> Label) -> some View {
+        NavigationLink(value: trip.id, label: label)
+            .buttonStyle(PressableStyle())
+            .accessibilityIdentifier("trip.\(trip.name)")
+            .contextMenu {
+                Button("Duplicar", systemImage: "plus.square.on.square") {
+                    withAnimation(.smooth) { _ = TripFactory.duplicate(trip, in: context) }
+                }
+                Button("Borrar", systemImage: "trash", role: .destructive) { confirmDelete = trip }
+            }
+            .transition(.scale(scale: 0.96).combined(with: .opacity))
+    }
+
     private var emptyState: some View {
         VStack(spacing: 18) {
-            Image(systemName: "suitcase.rolling.fill")
-                .font(.system(size: 64, weight: .semibold))
-                .foregroundStyle(LinearGradient(colors: Palette.brand, startPoint: .top, endPoint: .bottom))
-                .padding(.top, 40)
-                .symbolEffect(.breathe)
+            ZStack {
+                Circle()
+                    .fill(RadialGradient(colors: [Palette.accent.opacity(0.35), .clear], center: .center, startRadius: 0, endRadius: 90))
+                    .frame(width: 180, height: 180)
+                Image(systemName: "suitcase.rolling.fill")
+                    .font(.system(size: 64, weight: .semibold))
+                    .foregroundStyle(LinearGradient(colors: Palette.brand, startPoint: .top, endPoint: .bottom))
+                    .frame(width: 120, height: 120)
+                    .glassEffect(.regular.tint(Palette.accent.opacity(0.2)), in: .circle)
+                    .symbolEffect(.breathe)
+                ForEach(Array([TripType.beach, .mountain, .city, .snow].enumerated()), id: \.offset) { index, type in
+                    TypeBadge(type: type, size: 34)
+                        .offset(x: [-82, 84, -70, 76][index], y: [-50, -36, 56, 60][index])
+                }
+            }
+            .padding(.top, 24)
             Text("¿A dónde te vas?")
                 .font(.system(.title, design: .rounded, weight: .heavy))
             Text("Dime el tipo de viaje y los días, y te preparo la lista para no olvidar nada.")

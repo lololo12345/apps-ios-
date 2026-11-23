@@ -217,10 +217,26 @@ struct PackProgress: Equatable, Sendable {
 
 /// "Faltan 3 días", "Sales mañana", "Día 2 de 5"…
 enum TripCountdown {
+    /// Calendar days from today to the first day (negative once the trip has started).
+    static func daysUntil(start: Date, now: Date = .now, calendar: Calendar = .current) -> Int {
+        calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: start)).day ?? 0
+    }
+
+    /// Big number and caption for the hero card: ("7", "días para salir"), ("¡Hoy!", "sales hoy")…
+    static func hero(start: Date, days: Int, now: Date = .now, calendar: Calendar = .current) -> (value: String, caption: String) {
+        let diff = daysUntil(start: start, now: now, calendar: calendar)
+        switch diff {
+        case 2...: return ("\(diff)", "días para salir")
+        case 1: return ("1", "día: sales mañana")
+        case 0: return ("¡Hoy!", "sales hoy")
+        default:
+            let day = -diff + 1
+            return day <= days ? ("\(day)", "día de \(days) del viaje") : ("✓", "viaje terminado")
+        }
+    }
+
     static func text(start: Date, days: Int, now: Date = .now, calendar: Calendar = .current) -> String {
-        let today = calendar.startOfDay(for: now)
-        let first = calendar.startOfDay(for: start)
-        let diff = calendar.dateComponents([.day], from: today, to: first).day ?? 0
+        let diff = daysUntil(start: start, now: now, calendar: calendar)
         switch diff {
         case 1...: return diff == 1 ? "Sales mañana" : "Faltan \(diff) días"
         case 0: return "Hoy sales"
@@ -239,6 +255,14 @@ enum TripCountdown {
 
 /// Plain-text list to send by WhatsApp or keep in Notes.
 enum PackingShare {
+    /// "Te falta: DNI o pasaporte, Cargador y 3 más" (the first pending names, then a count).
+    static func pendingText(_ names: [String], limit: Int = 2) -> String? {
+        guard !names.isEmpty else { return nil }
+        let shown = names.prefix(limit).joined(separator: ", ")
+        let rest = names.count - min(limit, names.count)
+        return "Te falta: \(shown)" + (rest > 0 ? " y \(rest) más" : "")
+    }
+
     static func text(title: String, subtitle: String, entries: [(entry: PackEntry, done: Bool)]) -> String {
         var lines = ["🎒 \(title)", subtitle, ""]
         let grouped = Dictionary(grouping: entries, by: \.entry.category)

@@ -4,7 +4,7 @@ extension TripType {
     var tint: Color { Color(hex: tintHex) }
 }
 
-/// Round tinted glass badge with the trip type's symbol.
+/// Round glossy badge with the trip type's symbol.
 struct TypeBadge: View {
     let type: TripType
     var size: CGFloat = 46
@@ -13,13 +13,20 @@ struct TypeBadge: View {
         Image(systemName: type.symbol)
             .font(.system(size: size * 0.42, weight: .semibold))
             .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.15), radius: 1, y: 1)
             .frame(width: size, height: size)
-            .background(
-                LinearGradient(colors: [type.tint, type.tint.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                in: .circle
-            )
-            .overlay(Circle().strokeBorder(.white.opacity(0.25), lineWidth: 1))
-            .shadow(color: type.tint.opacity(0.35), radius: 8, y: 4)
+            .background {
+                ZStack {
+                    Circle().fill(LinearGradient(colors: [type.tint, type.tint.mix(with: .black, by: 0.18)],
+                                                 startPoint: .topLeading, endPoint: .bottomTrailing))
+                    // Glossy highlight at the top.
+                    Circle()
+                        .fill(LinearGradient(colors: [.white.opacity(0.45), .clear], startPoint: .top, endPoint: .center))
+                        .padding(size * 0.06)
+                }
+            }
+            .overlay(Circle().strokeBorder(.white.opacity(0.35), lineWidth: 1))
+            .shadow(color: type.tint.opacity(0.45), radius: size * 0.2, y: size * 0.1)
             .accessibilityHidden(true)
     }
 }
@@ -175,14 +182,9 @@ struct WeatherPanel: View {
     var refreshing = false
     var onRefresh: (() -> Void)?
 
-    private var symbol: String {
-        if weather.rainLikely { return weather.climate == .cold ? "cloud.sleet.fill" : "cloud.rain.fill" }
-        return weather.climate.symbol
-    }
-
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: symbol)
+            Image(systemName: weather.symbol)
                 .font(.system(size: 26, weight: .semibold))
                 .symbolRenderingMode(.multicolor)
                 .frame(width: 44, height: 44)
@@ -194,6 +196,8 @@ struct WeatherPanel: View {
                 Text(weather.text)
                     .font(.system(.headline, design: .rounded, weight: .bold))
                     .monospacedDigit()
+                TemperatureBar(weather: weather)
+                    .padding(.vertical, 3)
                 Text(weather.advice)
                     .font(.subheadline)
                 Text(note.map { "\(weather.sourceText). \($0)" } ?? weather.sourceText)
@@ -217,5 +221,135 @@ struct WeatherPanel: View {
         }
         .card(tint: weather.climate.tint)
         .accessibilityElement(children: .contain)
+    }
+}
+
+/// Temperature range on a cold-to-hot scale, like the Weather app: −10 °C on the left, 40 °C on the right.
+struct TemperatureBar: View {
+    let weather: WeatherSummary
+    private static let scale: [Color] = [Color(hex: 0x6FA8FF), Color(hex: 0x7FD6C8), Color(hex: 0xB9E07A),
+                                         Color(hex: 0xFFC857), Color(hex: 0xFF7A59)]
+
+    var body: some View {
+        GeometryReader { proxy in
+            let range = weather.rangeOnScale
+            let width = proxy.size.width
+            let start = width * range.lowerBound
+            let length = max(width * (range.upperBound - range.lowerBound), 8)
+            ZStack(alignment: .leading) {
+                Capsule().fill(.primary.opacity(0.08))
+                Capsule()
+                    .fill(LinearGradient(colors: Self.scale, startPoint: .leading, endPoint: .trailing))
+                    // The whole scale is drawn and masked, so each trip shows its own part of the colours.
+                    .mask(alignment: .leading) {
+                        Capsule().frame(width: length).offset(x: min(start, width - length))
+                    }
+            }
+        }
+        .frame(height: 6)
+        .accessibilityHidden(true)
+    }
+}
+
+/// Small ring for a category header: fills up and turns into a check when the group is packed.
+struct MiniRing: View {
+    let progress: PackProgress
+    let tint: Color
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(tint.opacity(0.2), lineWidth: 3)
+            Circle()
+                .trim(from: 0, to: progress.fraction)
+                .stroke(tint, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            if progress.isComplete {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 9, weight: .black))
+                    .foregroundStyle(tint)
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .frame(width: 20, height: 20)
+        .animation(.smooth(duration: 0.4), value: progress)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The next trip, big: countdown, destination weather and how much is packed.
+struct HeroTripCard: View {
+    let trip: Trip
+
+    var body: some View {
+        let progress = trip.progress
+        let hero = trip.hero
+        let tint = trip.type.tint
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                TypeBadge(type: trip.type, size: 50)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Tu próximo viaje")
+                        .font(.caption.weight(.heavy))
+                        .foregroundStyle(tint)
+                        .textCase(.uppercase)
+                    Text(trip.name)
+                        .font(.system(.title2, design: .rounded, weight: .heavy))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text("\(trip.type.title) · \(trip.shortDateText)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                if let weather = trip.weather {
+                    VStack(spacing: 2) {
+                        Image(systemName: weather.symbol)
+                            .font(.title2)
+                            .symbolRenderingMode(.multicolor)
+                        Text("\(Int(weather.maxTemp.rounded()))°")
+                            .font(.system(.headline, design: .rounded, weight: .bold))
+                            .monospacedDigit()
+                            .foregroundStyle(.primary)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .glassEffect(.regular.tint(weather.climate.tint.opacity(0.3)), in: .rect(cornerRadius: 16))
+                }
+            }
+            HStack(alignment: .bottom, spacing: 14) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(hero.value)
+                        .font(.system(size: 56, weight: .heavy, design: .rounded))
+                        .foregroundStyle(LinearGradient(colors: [tint, tint.mix(with: .black, by: 0.25)], startPoint: .top, endPoint: .bottom))
+                        .contentTransition(.numericText())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                    Text(hero.caption)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 8)
+                ProgressRing(progress: progress, tint: tint, size: 74, lineWidth: 8)
+            }
+            if let pending = trip.pendingText {
+                Label(pending, systemImage: "checklist")
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .glassEffect(.regular.tint(tint.opacity(0.12)), in: .rect(cornerRadius: 14))
+            } else {
+                Label("¡Mochila lista!", systemImage: "checkmark.seal.fill")
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(tint)
+            }
+        }
+        .padding(4)
+        .card(tint: tint, radius: 30)
+        .contentShape(.rect)
+        .accessibilityElement(children: .combine)
     }
 }

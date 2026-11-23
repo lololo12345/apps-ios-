@@ -60,6 +60,19 @@ struct WeatherSummary: Codable, Sendable, Equatable {
         }
     }
 
+    /// SF Symbol for the weather (rain wins over temperature).
+    var symbol: String {
+        if rainLikely { return climate == .cold ? "cloud.sleet.fill" : "cloud.rain.fill" }
+        return climate.symbol
+    }
+
+    /// Where the trip's temperatures sit on a −10…40 °C scale (0…1), for the range bar.
+    var rangeOnScale: ClosedRange<Double> {
+        func position(_ value: Double) -> Double { min(max((value + 10) / 50, 0), 1) }
+        let low = position(minTemp), high = position(maxTemp)
+        return min(low, high)...max(low, high)
+    }
+
     /// Short advice for the header ("Hará frío: lleva abrigo").
     var advice: String {
         switch (climate, rainLikely) {

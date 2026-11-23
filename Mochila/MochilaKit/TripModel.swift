@@ -157,7 +157,9 @@ enum PackCategory: String, CaseIterable, Codable, Sendable, Identifiable {
     }
 
     /// Position in the list (the order of `allCases`).
-    var order: Int { Self.allCases.firstIndex(of: self) ?? 0 }
+    var order: Int { Self.positions[self] ?? 0 }
+    /// Looked up on every comparison when sorting a list, so it is computed once.
+    private static let positions = Dictionary(uniqueKeysWithValues: allCases.enumerated().map { ($1, $0) })
 }
 
 /// One line of the packing list.

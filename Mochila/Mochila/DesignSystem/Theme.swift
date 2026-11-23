@@ -16,6 +16,7 @@ enum Palette {
     static let bad = Color(hex: 0xFF5A6E)
     /// Warm sunset glow (third background light), the travel counterpart of the sea-green accent.
     static let secondary = Color(hex: 0xFFB547)
+    static let sky = Color(hex: 0x6FA8FF)
     static let brand: [Color] = [accentSoft, accent]
 }
 
@@ -32,26 +33,31 @@ struct AppBackground: View {
     @Environment(\.colorScheme) private var scheme
 
     var body: some View {
+        let dark = scheme == .dark
         GeometryReader { proxy in
             let longest = max(proxy.size.width, proxy.size.height)
             ZStack {
-                if scheme == .dark {
+                if dark {
                     LinearGradient(colors: [Palette.background, Palette.backgroundDeep], startPoint: .top, endPoint: .bottom)
                 } else {
-                    Color(uiColor: .systemGroupedBackground)
+                    // Soft sky instead of plain grey: the glass picks up the colour.
+                    LinearGradient(colors: [Color(hex: 0xEAF6F4), Color(hex: 0xF4F1EA)], startPoint: .top, endPoint: .bottom)
                 }
                 // Colour for the glass to refract: Liquid Glass looks best over soft, saturated light.
-                RadialGradient(colors: [glow.opacity(scheme == .dark ? 0.38 : 0.26), .clear], center: UnitPoint(x: 0.95, y: 0.0),
-                               startRadius: 0, endRadius: longest * 0.6)
-                RadialGradient(colors: [Palette.accentSoft.opacity(scheme == .dark ? 0.24 : 0.18), .clear], center: UnitPoint(x: 0.0, y: 0.55),
-                               startRadius: 0, endRadius: longest * 0.55)
-                RadialGradient(colors: [Palette.secondary.opacity(scheme == .dark ? 0.22 : 0.14), .clear], center: UnitPoint(x: 0.85, y: 1.0),
-                               startRadius: 0, endRadius: longest * 0.55)
+                glowSpot(glow, dark ? 0.42 : 0.34, at: UnitPoint(x: 0.95, y: 0.0), radius: longest * 0.62)
+                glowSpot(Palette.accentSoft, dark ? 0.26 : 0.24, at: UnitPoint(x: 0.0, y: 0.45), radius: longest * 0.55)
+                glowSpot(Palette.secondary, dark ? 0.24 : 0.22, at: UnitPoint(x: 0.9, y: 1.0), radius: longest * 0.55)
+                glowSpot(Palette.sky, dark ? 0.18 : 0.16, at: UnitPoint(x: 0.1, y: 1.0), radius: longest * 0.45)
             }
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+
+    private func glowSpot(_ color: Color, _ opacity: Double, at center: UnitPoint, radius: CGFloat) -> some View {
+        RadialGradient(colors: [color.opacity(opacity), color.opacity(opacity * 0.35), .clear], center: center,
+                       startRadius: 0, endRadius: radius)
     }
 }
 
@@ -62,6 +68,13 @@ extension View {
         return padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassEffect(glass, in: .rect(cornerRadius: radius))
+            .overlay {
+                // Thin light rim: the glass edge reads clearly on pale backgrounds too.
+                RoundedRectangle(cornerRadius: radius)
+                    .strokeBorder(LinearGradient(colors: [.white.opacity(0.55), .white.opacity(0.08)],
+                                                 startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 0.8)
+                    .allowsHitTesting(false)
+            }
     }
 
     func brandGradientText() -> some View {

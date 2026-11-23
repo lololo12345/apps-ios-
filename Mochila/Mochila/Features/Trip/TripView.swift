@@ -117,28 +117,42 @@ struct TripView: View {
 
     private var header: some View {
         let progress = trip.progress
-        return HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 10) {
-                    TypeBadge(type: trip.type, size: 40)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(trip.type.title).font(.caption.weight(.heavy)).foregroundStyle(tint)
-                        Text(trip.dateText).font(.caption).foregroundStyle(.secondary)
-                    }
+        let hero = trip.hero
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(spacing: 12) {
+                TypeBadge(type: trip.type, size: 44)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(trip.type.title).font(.caption.weight(.heavy)).foregroundStyle(tint).textCase(.uppercase)
+                    Text(trip.dateText).font(.caption).foregroundStyle(.secondary)
                 }
-                Text(trip.countdown)
-                    .font(.system(.title3, design: .rounded, weight: .bold))
-                Text(statusText(progress))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .contentTransition(.numericText())
-                    .accessibilityIdentifier("tripStatus")
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 8)
-            ProgressRing(progress: progress, tint: tint, size: 84, lineWidth: 9)
-                .accessibilityIdentifier("tripProgress")
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text(hero.value)
+                            .font(.system(size: 44, weight: .heavy, design: .rounded))
+                            .foregroundStyle(LinearGradient(colors: [tint, tint.mix(with: .black, by: 0.25)], startPoint: .top, endPoint: .bottom))
+                            .lineLimit(1)
+                        Text(hero.caption)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                    Text(statusText(progress))
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .contentTransition(.numericText())
+                        .accessibilityIdentifier("tripStatus")
+                }
+                Spacer(minLength: 8)
+                ProgressRing(progress: progress, tint: tint, size: 88, lineWidth: 10)
+                    .accessibilityIdentifier("tripProgress")
+            }
+            ProgressBar(progress: progress, tint: tint)
         }
-        .card(tint: tint)
+        .padding(2)
+        .card(tint: tint, radius: 30)
         .padding(.top, 4)
     }
 
@@ -264,19 +278,26 @@ struct TripView: View {
         }
     }
 
-    private func isDone(_ item: PackItem) -> Bool { trip.returnMode ? item.packedBack : item.packed }
+    private func isDone(_ item: PackItem) -> Bool { trip.isDone(item) }
 
     private func categoryCard(_ category: PackCategory, items: [PackItem], all: [PackItem]) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Label(category.title, systemImage: category.symbol)
-                    .font(.headline)
+            let done = all.filter(isDone).count
+            HStack(spacing: 10) {
+                Image(systemName: category.symbol)
+                    .font(.subheadline.weight(.bold))
                     .foregroundStyle(tint)
+                    .frame(width: 30, height: 30)
+                    .glassEffect(.regular.tint(tint.opacity(0.22)), in: .circle)
+                Text(category.title)
+                    .font(.system(.headline, design: .rounded, weight: .bold))
                 Spacer()
-                Text("\(all.filter(isDone).count)/\(all.count)")
+                Text("\(done)/\(all.count)")
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
+                    .contentTransition(.numericText())
+                MiniRing(progress: PackProgress(done: done, total: all.count), tint: tint)
             }
             .padding(.bottom, 4)
             ForEach(items) { item in
@@ -391,8 +412,10 @@ struct ItemRow: View {
             HStack(spacing: 12) {
                 Image(systemName: done ? (isTask ? "checkmark.square.fill" : "checkmark.circle.fill") : (isTask ? "square" : "circle"))
                     .font(.title2)
-                    .foregroundStyle(done ? tint : Color.secondary)
+                    .foregroundStyle(done ? AnyShapeStyle(tint.gradient) : AnyShapeStyle(Color.secondary.opacity(0.7)))
                     .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.bounce, value: done)
+                    .shadow(color: done ? tint.opacity(0.4) : .clear, radius: 4, y: 2)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.name)
                         .font(.body)
