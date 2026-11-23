@@ -88,8 +88,27 @@ struct TripOptions: Codable, Sendable, Equatable {
     var pet = false
     /// There is a washing machine at the destination: clothes are capped at four days' worth.
     var laundry = false
+    /// It can freeze at the destination (minimum ≤ 2 °C): thermal layers and a scarf.
+    var freezing = false
 
     static let maxDays = 60
+}
+
+extension TripOptions {
+    /// Lenient decoding: options saved by an older version (without newer keys) still load.
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.init()
+        days = try values.decodeIfPresent(Int.self, forKey: .days) ?? days
+        climate = try values.decodeIfPresent(Climate.self, forKey: .climate) ?? climate
+        rain = try values.decodeIfPresent(Bool.self, forKey: .rain) ?? rain
+        flying = try values.decodeIfPresent(Bool.self, forKey: .flying) ?? flying
+        carryOnOnly = try values.decodeIfPresent(Bool.self, forKey: .carryOnOnly) ?? carryOnOnly
+        kids = try values.decodeIfPresent(Bool.self, forKey: .kids) ?? kids
+        pet = try values.decodeIfPresent(Bool.self, forKey: .pet) ?? pet
+        laundry = try values.decodeIfPresent(Bool.self, forKey: .laundry) ?? laundry
+        freezing = try values.decodeIfPresent(Bool.self, forKey: .freezing) ?? freezing
+    }
 }
 
 enum PackCategory: String, CaseIterable, Codable, Sendable, Identifiable {

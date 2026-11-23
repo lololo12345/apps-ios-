@@ -22,6 +22,8 @@ final class MochilaUITests: UITestCase {
 
         tap("startFirstTrip", app)
         enter("Cádiz", into: "tripName", app, submit: true)
+        // The weather at the destination adjusts the list (stubbed under UI tests: Cádiz is hot).
+        waitFor("weatherCard", app, timeout: 8)
         tap("type.beach", app)
         toggleSwitch("option.flying", app)
         snapshot("02-new-trip", app)
@@ -32,6 +34,7 @@ final class MochilaUITests: UITestCase {
         card.tap()
 
         waitFor("tripProgress", app)
+        waitFor("tripWeather", app)
         snapshot("04-list", app)
         for name in ["DNI o pasaporte", "Tarjetas y algo de efectivo", "Llaves de casa", "Tarjeta de embarque"] {
             tap("item.\(name)", app)
@@ -65,16 +68,23 @@ final class MochilaUITests: UITestCase {
         waitFor("item.Gafas de bucear", app)
         snapshot("09-added", app)
 
+        // Toledo had no weather yet: look it up (stub: cold and rainy) and accept the suggestions.
+        tap("refreshWeather", app)
+        waitFor("addSuggestions", app, timeout: 8)
+        snapshot("10-weather", app)
+        tap("addSuggestions", app)
+        XCTAssertTrue(waitToDisappear(element("addSuggestions", app)))
+
         tab("Plantillas", app)
         waitFor("template.type.mountain", app)
-        snapshot("10-templates", app)
+        snapshot("11-templates", app)
         tap("template.type.mountain", app)
         waitFor("createTrip", app)
-        snapshot("11-from-template", app)
+        snapshot("12-from-template", app)
         tap("cancelNewTrip", app)
 
         tab("Ajustes", app)
         waitFor("remindersToggle", app)
-        snapshot("12-settings", app)
+        snapshot("13-settings", app)
     }
 }

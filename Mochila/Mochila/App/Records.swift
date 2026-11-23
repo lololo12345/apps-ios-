@@ -13,6 +13,8 @@ final class Trip {
     var createdAt: Date
     /// Checking things on the way back home ("que no se quede nada").
     var returnMode: Bool
+    /// Weather at the destination (Open-Meteo), when it could be looked up.
+    var weatherData: Data?
     @Relationship(deleteRule: .cascade, inverse: \PackItem.trip) var items: [PackItem] = []
 
     init(name: String, type: TripType, startDate: Date, options: TripOptions, createdAt: Date = .now) {
@@ -27,7 +29,16 @@ final class Trip {
     }
 
     var type: TripType { TripType(rawValue: typeRaw) ?? .city }
-    var options: TripOptions { (try? JSONDecoder().decode(TripOptions.self, from: optionsData)) ?? TripOptions() }
+
+    var options: TripOptions {
+        get { (try? JSONDecoder().decode(TripOptions.self, from: optionsData)) ?? TripOptions() }
+        set { optionsData = (try? JSONEncoder().encode(newValue)) ?? optionsData }
+    }
+
+    var weather: WeatherSummary? {
+        get { weatherData.flatMap { try? JSONDecoder().decode(WeatherSummary.self, from: $0) } }
+        set { weatherData = newValue.flatMap { try? JSONEncoder().encode($0) } }
+    }
 
     var sortedItems: [PackItem] { items.sorted { ($0.category.order, $0.order) < ($1.category.order, $1.order) } }
     var things: [PackItem] { sortedItems.filter { !$0.isTask } }
@@ -110,10 +121,11 @@ final class SavedTemplate {
 enum TripFactory {
     @discardableResult
     static func makeTrip(name: String, type: TripType, start: Date, options: TripOptions,
-                         entries: [PackEntry]? = nil, in context: ModelContext) -> Trip {
+                         entries: [PackEntry]? = nil, weather: WeatherSummary? = nil, in context: ModelContext) -> Trip {
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trip = Trip(name: trimmed.isEmpty ? "Viaje de \(type.title.lowercased())" : String(trimmed.prefix(40)),
                         type: type, startDate: start, options: options)
+        trip.weather = weather
         context.insert(trip)
         for (index, entry) in (entries ?? PackingGenerator.items(for: type, options: options)).enumerated() {
             let item = PackItem(entry: entry, order: index)
@@ -135,6 +147,27 @@ enum TripFactory {
         try? context.save()
     }
 
+    /// New weather for a trip. Returns what the new weather would add to the list that is not there yet.
+    static func updateWeather(_ trip: Trip, with summary: WeatherSummary) -> [PackEntry] {
+        let newOptions = summary.apply(to: trip.options)
+        trip.weather = summary
+        trip.options = newOptions
+        let existing = Set(trip.items.map { $0.name.lowercased() })
+        return PackingGenerator.items(for: trip.type, options: newOptions)
+            .filter { !$0.isTask && !existing.contains($0.name.lowercased()) }
+    }
+
+    static func addEntries(_ entries: [PackEntry], to trip: Trip, in context: ModelContext) {
+        var order = (trip.items.map(\.order).max() ?? 0) + 1
+        for entry in entries {
+            let item = PackItem(entry: entry, order: order)
+            item.trip = trip
+            context.insert(item)
+            order += 1
+        }
+        try? context.save()
+    }
+
     static func addItem(_ entry: PackEntry, to trip: Trip, in context: ModelContext) {
         let item = PackItem(entry: entry, order: (trip.items.map(\.order).max() ?? 0) + 1, custom: true)
         item.trip = trip
@@ -147,7 +180,10 @@ enum TripFactory {
         let calendar = Calendar.current
         var beach = TripOptions()
         beach.days = 6; beach.climate = .hot; beach.flying = true
-        let cadiz = makeTrip(name: "Cádiz", type: .beach, start: calendar.date(byAdding: .day, value: 4, to: now) ?? now, options: beach, in: context)
+        let sunny = WeatherSummary(place: Place(name: "Cádiz", country: "España", latitude: 36.53, longitude: -6.29),
+                                   minTemp: 19, maxTemp: 28, rainChance: 5, rainMillimetres: 0, source: .forecast, fetchedAt: now)
+        let cadiz = makeTrip(name: "Cádiz", type: .beach, start: calendar.date(byAdding: .day, value: 4, to: now) ?? now, options: beach,
+                             weather: sunny, in: context)
         for item in cadiz.things.prefix(14) { item.packed = true }
         for item in cadiz.tasks.prefix(2) { item.packed = true }
 

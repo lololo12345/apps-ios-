@@ -156,3 +156,66 @@ struct GlassChip: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
+
+extension Climate {
+    var tint: Color {
+        switch self {
+        case .cold: Color(hex: 0x7FC4FF)
+        case .mild: Color(hex: 0x9BD67B)
+        case .hot: Color(hex: 0xFFB547)
+        }
+    }
+}
+
+/// Weather at the destination: place, temperatures, rain and advice.
+struct WeatherPanel: View {
+    let weather: WeatherSummary
+    var tint: Color = Palette.accent
+    var note: String?
+    var refreshing = false
+    var onRefresh: (() -> Void)?
+
+    private var symbol: String {
+        if weather.rainLikely { return weather.climate == .cold ? "cloud.sleet.fill" : "cloud.rain.fill" }
+        return weather.climate.symbol
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 26, weight: .semibold))
+                .symbolRenderingMode(.multicolor)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular.tint(weather.climate.tint.opacity(0.3)), in: .circle)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(weather.place.title)
+                    .font(.caption.weight(.heavy))
+                    .foregroundStyle(weather.climate.tint)
+                Text(weather.text)
+                    .font(.system(.headline, design: .rounded, weight: .bold))
+                    .monospacedDigit()
+                Text(weather.advice)
+                    .font(.subheadline)
+                Text(note.map { "\(weather.sourceText). \($0)" } ?? weather.sourceText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            if let onRefresh {
+                Button(action: onRefresh) {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.subheadline.weight(.bold))
+                        .rotationEffect(.degrees(refreshing ? 360 : 0))
+                        .animation(refreshing ? .linear(duration: 0.8).repeatForever(autoreverses: false) : .default, value: refreshing)
+                }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .disabled(refreshing)
+                .accessibilityLabel("Actualizar el tiempo")
+                .accessibilityIdentifier("refreshWeather")
+            }
+        }
+        .card(tint: weather.climate.tint)
+        .accessibilityElement(children: .contain)
+    }
+}

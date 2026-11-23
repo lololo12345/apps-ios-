@@ -51,6 +51,13 @@ enum PackingGenerator {
             add("Gafas de sol", .clothes)
             add("Gorra o sombrero", .clothes)
         }
+        if options.freezing {
+            add("Ropa térmica", .clothes, quantity: min(max(1, Int((Double(days) / 2).rounded(.up))), 4))
+            add("Bufanda", .clothes)
+            if options.climate != .cold {
+                add("Abrigo", .clothes)
+            }
+        }
         if options.rain || type == .festival {
             add("Chubasquero", .clothes)
         }

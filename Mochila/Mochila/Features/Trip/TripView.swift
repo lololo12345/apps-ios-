@@ -14,6 +14,9 @@ struct TripView: View {
     @State private var celebrate = false
     @State private var confirmDelete = false
     @State private var checks = 0
+    @State private var refreshing = false
+    @State private var weatherMessage: String?
+    @State private var suggestions: [PackEntry] = []
 
     private var tint: Color { trip.type.tint }
 
@@ -21,6 +24,7 @@ struct TripView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 header
+                weatherSection
                 modePicker
                 filterRow
                 let sections = visibleSections
@@ -41,6 +45,7 @@ struct TripView: View {
             .padding(.bottom, 32)
             .animation(.smooth(duration: 0.35), value: model.hidePacked)
             .animation(.smooth(duration: 0.35), value: trip.returnMode)
+            .animation(.smooth(duration: 0.35), value: suggestions)
         }
         .screenBackground(glow: tint)
         .navigationTitle(trip.name)
@@ -135,6 +140,75 @@ struct TripView: View {
         }
         .card(tint: tint)
         .padding(.top, 4)
+    }
+
+    // MARK: Weather
+
+    @ViewBuilder
+    private var weatherSection: some View {
+        if let weather = trip.weather {
+            WeatherPanel(weather: weather, tint: tint, refreshing: refreshing) { Task { await refreshWeather() } }
+                .accessibilityIdentifier("tripWeather")
+        } else if !trip.isOver {
+            Button {
+                Task { await refreshWeather() }
+            } label: {
+                Label(refreshing ? "Mirando el tiempo…" : "¿Qué tiempo hará en \(trip.name)?", systemImage: "cloud.sun.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+            }
+            .buttonStyle(.glass)
+            .disabled(refreshing)
+            .accessibilityIdentifier("refreshWeather")
+        }
+        if let weatherMessage {
+            Label(weatherMessage, systemImage: "info.circle.fill")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+                .transition(.opacity)
+        }
+        if !suggestions.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Con este tiempo te sugiero añadir", systemImage: "sparkles")
+                    .font(.headline)
+                    .foregroundStyle(Palette.secondary)
+                Text(suggestions.map(\.label).joined(separator: ", "))
+                    .font(.subheadline)
+                HStack {
+                    Button("Ahora no") { withAnimation(.smooth) { suggestions = [] } }
+                        .buttonStyle(.glass)
+                    Button("Añadir \(suggestions.count)") {
+                        TripFactory.addEntries(suggestions, to: trip, in: context)
+                        withAnimation(.smooth) { suggestions = [] }
+                    }
+                    .buttonStyle(.glassProminent)
+                    .tint(Palette.secondary)
+                    .accessibilityIdentifier("addSuggestions")
+                }
+            }
+            .card(tint: Palette.secondary)
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+    }
+
+    private func refreshWeather() async {
+        refreshing = true
+        defer { refreshing = false }
+        do {
+            let summary = try await WeatherService.lookup(trip.weather?.place.name ?? trip.name, start: trip.startDate, days: trip.days)
+            let missing = TripFactory.updateWeather(trip, with: summary)
+            try? context.save()
+            withAnimation(.smooth) {
+                suggestions = missing
+                weatherMessage = missing.isEmpty ? "Tu lista ya está preparada para este tiempo." : nil
+            }
+        } catch WeatherService.Failure.notFound {
+            withAnimation(.smooth) { weatherMessage = "No encuentro «\(trip.name)» en el mapa: el tiempo no se puede consultar." }
+        } catch {
+            withAnimation(.smooth) { weatherMessage = "No he podido consultar el tiempo. Inténtalo con conexión." }
+        }
     }
 
     private func statusText(_ progress: PackProgress) -> String {

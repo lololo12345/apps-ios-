@@ -18,7 +18,18 @@ struct NewTripView: View {
     @State private var options = TripOptions()
     @State private var chosenTemplate: SavedTemplate?
     @State private var appeared = false
+    @State private var weather: WeatherSummary?
+    @State private var weatherState: WeatherState = .idle
     @FocusState private var nameFocused: Bool
+
+    enum WeatherState: Equatable {
+        case idle, loading, notFound, unavailable
+    }
+
+    /// Changes in destination, date or length trigger a new lookup.
+    private var lookupKey: String {
+        "\(name.trimmingCharacters(in: .whitespaces).lowercased())|\(Calendar.current.startOfDay(for: start).timeIntervalSince1970)|\(options.days)"
+    }
 
     private let typeColumns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 4)
 
@@ -27,6 +38,7 @@ struct NewTripView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     nameCard
+                    weatherCard
                     typeGrid
                     datesCard
                     climateCard
@@ -55,6 +67,9 @@ struct NewTripView: View {
             }
             .animation(.smooth(duration: 0.3), value: type)
             .animation(.smooth(duration: 0.3), value: options)
+            .animation(.smooth(duration: 0.3), value: weatherState)
+            .animation(.smooth(duration: 0.3), value: weather)
+            .task(id: lookupKey) { await lookUpWeather() }
         }
         .onAppear {
             guard !appeared else { return }
@@ -86,6 +101,39 @@ struct NewTripView: View {
                 .accessibilityIdentifier("tripName")
         }
         .padding(.top, 8)
+    }
+
+    @ViewBuilder
+    private var weatherCard: some View {
+        let destination = name.trimmingCharacters(in: .whitespaces)
+        switch weatherState {
+        case .idle where weather == nil:
+            if destination.isEmpty {
+                Label("Escribe el destino y miro qué tiempo hará para ajustar la lista.", systemImage: "cloud.sun")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 4)
+            }
+        case .loading:
+            HStack(spacing: 10) {
+                ProgressView()
+                Text("Mirando el tiempo en \(destination)…").font(.subheadline)
+            }
+            .card()
+        case .notFound:
+            Label("No encuentro «\(destination)». Elige tú el tiempo más abajo.", systemImage: "mappin.slash")
+                .font(.subheadline)
+                .card(tint: Palette.secondary)
+        case .unavailable:
+            Label("No he podido consultar el tiempo (¿sin conexión?). Elige tú el tiempo más abajo.", systemImage: "wifi.slash")
+                .font(.subheadline)
+                .card(tint: Palette.secondary)
+        default:
+            if let weather {
+                WeatherPanel(weather: weather, tint: type.tint, note: "Ya he ajustado la lista a este tiempo.")
+                    .accessibilityIdentifier("weatherCard")
+            }
+        }
     }
 
     private var typeGrid: some View {
@@ -246,7 +294,39 @@ struct NewTripView: View {
 
     private func choose(_ item: TripType) {
         type = item
-        options.climate = item.suggestedClimate
+        if let weather {
+            options = weather.apply(to: options)
+        } else {
+            options.climate = item.suggestedClimate
+        }
+    }
+
+    private func lookUpWeather() async {
+        let destination = name.trimmingCharacters(in: .whitespaces)
+        guard destination.count >= 2 else {
+            weather = nil
+            weatherState = .idle
+            return
+        }
+        // Wait until the user stops typing.
+        try? await Task.sleep(for: .milliseconds(LaunchOptions.isUITesting ? 100 : 700))
+        guard !Task.isCancelled else { return }
+        weatherState = .loading
+        do {
+            let summary = try await WeatherService.lookup(destination, start: start, days: options.days)
+            guard !Task.isCancelled else { return }
+            weather = summary
+            options = summary.apply(to: options)
+            weatherState = .idle
+        } catch WeatherService.Failure.notFound {
+            guard !Task.isCancelled else { return }
+            weather = nil
+            weatherState = .notFound
+        } catch {
+            guard !Task.isCancelled else { return }
+            weather = nil
+            weatherState = .unavailable
+        }
     }
 
     private func apply(_ saved: SavedTemplate) {
@@ -259,7 +339,8 @@ struct NewTripView: View {
     }
 
     private func create() {
-        TripFactory.makeTrip(name: name, type: type, start: start, options: options, entries: chosenTemplate?.entries, in: context)
+        TripFactory.makeTrip(name: name, type: type, start: start, options: options, entries: chosenTemplate?.entries,
+                             weather: weather, in: context)
         model.pendingNewTrip = nil
         dismiss()
     }
