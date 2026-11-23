@@ -35,7 +35,7 @@ final class RondaUITests: XCTestCase {
     @MainActor
     private func close(_ app: XCUIApplication) {
         app.buttons["game.close"].tap()
-        XCTAssertTrue(app.tabBars.buttons["Juegos"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
     }
 
     @MainActor
@@ -107,7 +107,7 @@ final class RondaUITests: XCTestCase {
         close(app)
 
         // Scoreboard reflects the sips given during the session.
-        app.tabBars.buttons["Marcador"].tap()
+        app.buttons["home.scoreboard"].tap()
         XCTAssertTrue(app.navigationBars["Marcador"].waitForExistence(timeout: 5))
         snapshot("11-scoreboard", app)
     }
@@ -136,18 +136,18 @@ final class RondaUITests: XCTestCase {
     @MainActor
     func testSettingsAndSoberMode() {
         let app = launch()
-        XCTAssertTrue(app.tabBars.buttons["Ajustes"].waitForExistence(timeout: 8))
-        app.tabBars.buttons["Ajustes"].tap()
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 8))
+        app.buttons["home.settings"].tap()
         XCTAssertTrue(app.switches["settings.sober"].waitForExistence(timeout: 5))
         snapshot("30-settings", app)
         app.switches["settings.sober"].switches.firstMatch.tap()
-        app.tabBars.buttons["Juegos"].tap()
+        app.buttons["Listo"].tap()
 
         open("game.normal.truthOrDrink", in: app)
         snapshot("31-truth-sober", app)
         close(app)
 
-        app.tabBars.buttons["Jugadores"].tap()
+        app.buttons["home.players"].tap()
         XCTAssertTrue(app.textFields["players.field"].waitForExistence(timeout: 5))
         snapshot("32-players", app)
     }

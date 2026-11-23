@@ -9,9 +9,12 @@ struct ActiveGame: Identifiable, Hashable {
 struct HomeView: View {
     @Environment(PartySession.self) private var session
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Namespace private var modeGlass
+    @Namespace private var zoom
     @State private var tilesVisible = false
     @State private var activeGame: ActiveGame?
+    @State private var showPlayers = false
+    @State private var showScoreboard = false
+    @State private var showSettings = false
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
@@ -45,11 +48,29 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
         }
         .fullScreenCover(item: $activeGame) { game in
+            // Native zoom: the tile grows into the game and shrinks back when closing.
             GameRouter(game: game)
+                .navigationTransition(.zoom(sourceID: game.id, in: zoom))
         }
         .onAppear {
             guard !tilesVisible else { return }
             withAnimation(reduceMotion ? nil : .smooth(duration: 0.5)) { tilesVisible = true }
+        }
+        .sheet(isPresented: $showPlayers) {
+            NavigationStack {
+                PlayersView()
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Listo") { showPlayers = false }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $showScoreboard) {
+            ScoreboardView()
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .sensoryFeedback(.selection, trigger: mode)
     }
@@ -70,12 +91,28 @@ struct HomeView: View {
                     .animation(.snappy, value: total)
             }
             Spacer()
+            GlassEffectContainer(spacing: 8) {
+                HStack(spacing: 8) {
+                    headerButton("person.2.fill", label: "Jugadores", id: "home.players") { showPlayers = true }
+                    headerButton("trophy.fill", label: "Marcador", id: "home.scoreboard") { showScoreboard = true }
+                    headerButton("gearshape.fill", label: "Ajustes", id: "home.settings") { showSettings = true }
+                }
+            }
         }
         .padding(.top, 8)
     }
 
+    private func headerButton(_ symbol: String, label: String, id: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol).font(.headline).frame(width: 24, height: 24)
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(id)
+    }
+
     private var modePicker: some View {
-        GlassEffectContainer(spacing: 6) {
         HStack(spacing: 6) {
             ForEach(PartyMode.allCases) { item in
                 let selected = session.mode == item
@@ -87,12 +124,14 @@ struct HomeView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .foregroundStyle(selected ? Color.white : Color.secondary)
-                        .contentShape(.capsule)
-                        // The selected pane of glass carries the same id in both options, so switching makes it
-                        // flow like liquid from one side to the other.
-                        .glassEffect(selected ? .regular.tint((item == .hot ? Neon.crimson : Neon.violet).opacity(0.7)) : .identity,
-                                     in: .capsule)
-                        .glassEffectID(selected ? "mode" : "mode.\(item.rawValue)", in: modeGlass)
+                        .background {
+                            if selected {
+                                Capsule().fill(LinearGradient(
+                                    colors: item == .hot ? [Neon.crimson, Neon.magenta] : [Neon.violet, Neon.cyan],
+                                    startPoint: .leading, endPoint: .trailing
+                                ))
+                            }
+                        }
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selected ? .isSelected : [])
@@ -100,9 +139,7 @@ struct HomeView: View {
             }
         }
         .padding(5)
-        .background(Capsule().fill(Color.white.opacity(0.06)))
-        .overlay(Capsule().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
-        }
+        .glassEffect(.regular, in: .capsule)
     }
 
     private var intensityPicker: some View {
@@ -126,6 +163,7 @@ struct HomeView: View {
                     activeGame = game
                 } label: {
                     GameTile(kind: kind, mode: mode, enabled: enabled)
+                        .matchedTransitionSource(id: game.id, in: zoom)
                 }
                 .buttonStyle(PressableStyle())
                 .disabled(!enabled)
