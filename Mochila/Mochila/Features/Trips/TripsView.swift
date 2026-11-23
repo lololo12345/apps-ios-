@@ -121,7 +121,7 @@ struct TripsView: View {
     private var tipCard: some View {
         Label {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Consejo del día").font(.caption.weight(.heavy)).foregroundStyle(Palette.secondary)
+                Text("Consejo del día").font(.caption.weight(.heavy)).foregroundStyle(Palette.secondary.ink)
                 Text(TravelTips.tip()).font(.subheadline)
             }
         } icon: {

@@ -192,7 +192,7 @@ struct WeatherPanel: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(weather.place.title)
                     .font(.caption.weight(.heavy))
-                    .foregroundStyle(weather.climate.tint)
+                    .foregroundStyle(weather.climate.tint.ink)
                 Text(weather.text)
                     .font(.system(.headline, design: .rounded, weight: .bold))
                     .monospacedDigit()
@@ -290,7 +290,7 @@ struct HeroTripCard: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Tu próximo viaje")
                         .font(.caption.weight(.heavy))
-                        .foregroundStyle(tint)
+                        .foregroundStyle(tint.ink)
                         .textCase(.uppercase)
                     Text(trip.name)
                         .font(.system(.title2, design: .rounded, weight: .heavy))
@@ -321,7 +321,7 @@ struct HeroTripCard: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(hero.value)
                         .font(.system(size: 56, weight: .heavy, design: .rounded))
-                        .foregroundStyle(LinearGradient(colors: [tint, tint.mix(with: .black, by: 0.25)], startPoint: .top, endPoint: .bottom))
+                        .foregroundStyle(tint.ink)
                         .contentTransition(.numericText())
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
@@ -344,7 +344,7 @@ struct HeroTripCard: View {
             } else {
                 Label("¡Mochila lista!", systemImage: "checkmark.seal.fill")
                     .font(.footnote.weight(.bold))
-                    .foregroundStyle(tint)
+                    .foregroundStyle(tint.ink)
             }
         }
         .padding(4)

@@ -61,6 +61,20 @@ struct AppBackground: View {
     }
 }
 
+/// Deeper shade of a tint for text on a card of the same colour (lighter in dark mode), so labels
+/// such as «TU PRÓXIMO VIAJE» on a cream card stay readable.
+struct InkStyle: ShapeStyle {
+    let tint: Color
+
+    func resolve(in environment: EnvironmentValues) -> Color {
+        environment.colorScheme == .dark ? tint.mix(with: .white, by: 0.25) : tint.mix(with: .black, by: 0.42)
+    }
+}
+
+extension Color {
+    var ink: InkStyle { InkStyle(tint: self) }
+}
+
 extension View {
     /// Rounded Liquid Glass surface used for every card. Pass a tint to colour it.
     func card(tint: Color? = nil, radius: CGFloat = Metrics.radius) -> some View {

@@ -122,7 +122,7 @@ struct TripView: View {
             HStack(spacing: 12) {
                 TypeBadge(type: trip.type, size: 44)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(trip.type.title).font(.caption.weight(.heavy)).foregroundStyle(tint).textCase(.uppercase)
+                    Text(trip.type.title).font(.caption.weight(.heavy)).foregroundStyle(tint.ink).textCase(.uppercase)
                     Text(trip.dateText).font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
@@ -132,7 +132,7 @@ struct TripView: View {
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                         Text(hero.value)
                             .font(.system(size: 44, weight: .heavy, design: .rounded))
-                            .foregroundStyle(LinearGradient(colors: [tint, tint.mix(with: .black, by: 0.25)], startPoint: .top, endPoint: .bottom))
+                            .foregroundStyle(tint.ink)
                             .lineLimit(1)
                         Text(hero.caption)
                             .font(.subheadline.weight(.semibold))
@@ -187,7 +187,7 @@ struct TripView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Label("Con este tiempo te sugiero añadir", systemImage: "sparkles")
                     .font(.headline)
-                    .foregroundStyle(Palette.secondary)
+                    .foregroundStyle(Palette.secondary.ink)
                 Text(suggestions.map(\.label).joined(separator: ", "))
                     .font(.subheadline)
                 HStack {
@@ -322,7 +322,7 @@ struct TripView: View {
             HStack {
                 Label(PackCategory.beforeLeaving.title, systemImage: PackCategory.beforeLeaving.symbol)
                     .font(.headline)
-                    .foregroundStyle(Palette.secondary)
+                    .foregroundStyle(Palette.secondary.ink)
                 Spacer()
                 Text(progress.text)
                     .font(.caption.weight(.semibold))
