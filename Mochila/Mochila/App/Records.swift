@@ -58,6 +58,12 @@ final class Trip {
         let format = Date.FormatStyle.dateTime.day().month(.wide).locale(Locale(identifier: "es_ES"))
         return "\(startDate.formatted(format)) · \(days) \(days == 1 ? "día" : "días")"
     }
+
+    /// "30 nov · 3 días" for the compact trip cards.
+    var shortDateText: String {
+        let format = Date.FormatStyle.dateTime.day().month(.abbreviated).locale(Locale(identifier: "es_ES"))
+        return "\(startDate.formatted(format).replacingOccurrences(of: ".", with: "")) · \(days) \(days == 1 ? "día" : "días")"
+    }
 }
 
 @Model

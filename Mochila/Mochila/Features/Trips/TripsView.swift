@@ -126,7 +126,7 @@ struct TripCard: View {
                         .font(.system(.headline, design: .rounded, weight: .bold))
                         .foregroundStyle(.primary)
                         .lineLimit(1)
-                    Text("\(trip.type.title) · \(trip.dateText)")
+                    Text("\(trip.type.title) · \(trip.shortDateText)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
