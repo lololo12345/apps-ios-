@@ -85,6 +85,9 @@ struct SettingsView: View {
             }
         }
         .presentationBackground(Neon.canvas)
+        // A sheet already on screen does not pick up the app's new colour scheme by itself: switching
+        // Apariencia here must repaint the sheet too, not only the screen behind it.
+        .preferredColorScheme(session.appearance.colorScheme)
     }
 }
 

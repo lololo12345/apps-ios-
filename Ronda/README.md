@@ -17,6 +17,11 @@ Sin internet, sin cuentas y sin anuncios.
   <img src="docs/screenshots/duelo.jpg" width="190" alt="Duelo cara a cara">
   <img src="docs/screenshots/marcador.jpg" width="190" alt="Marcador con podio">
 </p>
+<p align="center">
+  <img src="docs/screenshots/home-claro.jpg" width="190" alt="Inicio en modo claro">
+  <img src="docs/screenshots/verdad-claro.jpg" width="190" alt="Verdad o trago en modo claro, sin alcohol">
+</p>
+<p align="center"><sub>Modo oscuro por defecto; modo claro o automático en Ajustes → Apariencia.</sub></p>
 <p align="center"><sub>Capturas reales del simulador (iPhone 17 Pro, iOS 26.5), generadas por los tests de interfaz.</sub></p>
 
 ## Dos apartados
