@@ -29,7 +29,7 @@
    TODOS los archivos Swift de la app (pantallas, tests, widget) y compila el Kit: úsalo antes de cada push.
    Para probar contenido y generadores a fondo: `tools/check_swift.sh --run <App> script.swift`.
 3. Push a `main`: la CI solo compila y prueba las apps que han cambiado (`tools/ci_plan.py`). Si cambian `tools/`
-   o el workflow, prueba todas y además genera y prueba «Plantilla» para garantizar que el generador funciona.
+   (generador, plantillas), genera y prueba solo «Plantilla»; si cambia `ios.yml`, prueba todas las apps.
 4. Revisa SIEMPRE las capturas antes de entregar: `python3 -I tools/contact_sheet.py <carpeta> hoja.jpg`.
    Avisa solo de capturas casi vacías (a mitad de animación) o repetidas (un toque que no hizo nada); además, míralas:
    textos cortados, solapes, contraste, datos vacíos. Si algo se ve mal, se arregla antes de entregar.
