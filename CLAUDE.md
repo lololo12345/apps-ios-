@@ -21,9 +21,12 @@
 
 ## Cómo construir una app de iPhone (flujo)
 1. `python3 tools/new_ios_app.py <Nombre> <bundle.id> --display "…" --summary "…" --accent HEX --background HEX [--kit] [--widget] [--dark]`
-   crea la app completa, compilable y con tests (diseño base, icono provisional, ajustes, utilidades de UI tests,
-   README) y la añade al índice. La CI la detecta sola: no hay que tocar `ios.yml`.
-2. La lógica va en `<App>Kit/` (solo Foundation) y se comprueba aquí en segundos con `tools/check_swift.sh <App>`.
+   crea la app completa, compilable y con tests (diseño base, icono provisional, ajustes con selector de
+   apariencia Automático/Claro/Oscuro, utilidades de UI tests, README) y la añade al índice. La CI la detecta sola.
+   `--dark` solo elige el modo con el que empieza; el usuario siempre puede cambiarlo en Ajustes → Apariencia.
+   Las plantillas son archivos Swift reales en `tools/templates/ios/` (marcadores `__clave__`): mejóralas ahí.
+2. La lógica va en `<App>Kit/` (solo Foundation). `tools/check_swift.sh <App>` comprueba en segundos la sintaxis de
+   TODOS los archivos Swift de la app (pantallas, tests, widget) y compila el Kit: úsalo antes de cada push.
    Para probar contenido y generadores a fondo: `tools/check_swift.sh --run <App> script.swift`.
 3. Push a `main`: la CI solo compila y prueba las apps que han cambiado (`tools/ci_plan.py`). Si cambian `tools/`
    o el workflow, prueba todas y además genera y prueba «Plantilla» para garantizar que el generador funciona.
@@ -44,7 +47,7 @@
    «PlantillaAndroid».
 4. Si es el port de una app de iPhone: mismas funciones y contenido; la lógica del `<App>Kit` se traduce a `core/`.
 
-## Lista de calidad (lo aprendido en Relato, Ronda, Plan B, Isla y Chispa)
+## Lista de calidad (lo aprendido en Relato, Ronda, Plan B, Isla, Chispa y Mochila)
 **Diseño y fluidez**
 - iOS 26 con Liquid Glass (`glassEffect`, `.buttonStyle(.glass/.glassProminent)`), 120 Hz activado en el Info.plist.
 - Fondos con gradientes radiales, nunca `blur` a pantalla completa (mantiene los 120 Hz).
@@ -61,6 +64,13 @@
 - Todo muy cristal: tarjetas con `glassEffect` tintado del color de la pantalla y borde fino, grupos dentro de
   `GlassEffectContainer`, selección que «fluye» con `glassEffectID`, y fondos con varios brillos de color
   (el cristal necesita color detrás para lucirse).
+- Componentes de la plantilla (úsalos en vez de reinventarlos): `heroCard` (tarjeta grande arriba con cuenta atrás,
+  número gigante o progreso), `IconBadge` (icono con brillo), `ProgressRing`, `StatTile`, `GlassChip`, `EmptyState`,
+  `appearAnimation(order:)` (entrada en cascada) y `Greeting`.
+- Contraste: texto de color sobre una tarjeta del mismo color va con `.foregroundStyle(tint.ink)` (más oscuro en
+  claro, más claro en oscuro), nunca con el tinte tal cual. Revisa las capturas en claro y en oscuro.
+- Modo claro: fondo con un lavado suave de los colores de la app (`Palette.lightTop/lightBottom`), nunca gris plano.
+- Apariencia: toda app nueva trae Automático/Claro/Oscuro en Ajustes; los tests sacan capturas de los dos modos.
 - Solo se tocan las apps ya entregadas si el usuario lo pide expresamente.
 
 **SwiftUI que da problemas**
@@ -84,6 +94,7 @@
 - Cierra las hojas con su botón (con identificador), no con gestos.
 - `snapshot` espera medio segundo para no capturar transiciones a medias.
 - La CI repite una vez un test de interfaz que falla (`-retry-tests-on-failure`): un fallo que se repite es un error real.
+- Si un trabajo de la CI sale «cancelled» sin pasos, GitHub no encontró un Mac: relánzalo, no es un fallo del código.
 - No metas llamadas que modifican estado dentro de `#expect`.
 
 **Android (Compose)**

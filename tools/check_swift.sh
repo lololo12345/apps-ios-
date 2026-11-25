@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Type-checks the plain-Swift logic of one or more apps on Linux in seconds (no Mac needed).
+# Checks one or more apps on Linux in seconds (no Mac needed):
+#   1. syntax of EVERY Swift file of the app (SwiftUI screens, tests, widget…): unbalanced braces, typos in
+#      keywords, broken string interpolation… are caught here instead of after a 15-minute CI run;
+#   2. full type-check of the plain-Swift logic in <App>Kit.
 #
-#   tools/check_swift.sh Chispa            # checks Chispa/ChispaKit
+#   tools/check_swift.sh Chispa            # checks Chispa/ (syntax) and Chispa/ChispaKit (types)
 #   tools/check_swift.sh Chispa Isla       # several apps
 #   tools/check_swift.sh --all             # every <App>/<App>Kit in the repo
 #   tools/check_swift.sh --run Chispa extra.swift   # also compile and run a scratch script against the Kit
@@ -28,7 +31,7 @@ run_script=""
 apps=()
 while [ $# -gt 0 ]; do
   case "$1" in
-    --all) for d in "$ROOT"/*/; do n=$(basename "$d"); [ -d "$d/${n}Kit" ] && apps+=("$n"); done ;;
+    --all) for d in "$ROOT"/*/; do n=$(basename "$d"); [ -d "$d/$n.xcodeproj" ] && apps+=("$n"); done ;;
     --run) run_script="yes" ;;
     *.swift) script="$1" ;;
     *) apps+=("$1") ;;
@@ -39,8 +42,17 @@ done
 
 status=0
 for app in "${apps[@]}"; do
+  [ -d "$ROOT/$app" ] || { echo "✘ $app: no existe $ROOT/$app" >&2; status=1; continue; }
+  mapfile -t every < <(find "$ROOT/$app" -name '*.swift' -not -path '*/.build/*' | sort)
+  if [ ${#every[@]} -gt 0 ]; then
+    if "$SWIFTC" -parse -swift-version 6 "${every[@]}" 2>&1; then
+      echo "✔ $app: sintaxis correcta en ${#every[@]} archivos Swift"
+    else
+      echo "✘ $app: errores de sintaxis arriba" >&2; status=1; continue
+    fi
+  fi
   kit="$ROOT/$app/${app}Kit"
-  [ -d "$kit" ] || { echo "✘ $app: no existe $kit" >&2; status=1; continue; }
+  [ -d "$kit" ] || continue
   # Files that import Apple-only frameworks cannot be compiled on Linux: skip them and say so.
   apple='^import (SwiftUI|UIKit|WidgetKit|ActivityKit|AppIntents|SwiftData|MapKit|CoreLocation|EventKit|GameKit|Charts|AVFoundation|UserNotifications|CoreData)$'
   mapfile -t files < <(find "$kit" -name '*.swift' | sort | while read -r f; do grep -Eq "$apple" "$f" || echo "$f"; done)

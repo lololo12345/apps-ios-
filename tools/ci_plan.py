@@ -8,7 +8,9 @@ Prints GitHub Actions outputs:
 
 Rules:
   - workflow_dispatch, a new branch or an unknown base → everything.
-  - Changes to tools/ or to a workflow → every app of that platform, plus the scaffold check.
+  - A change to the platform's workflow → every app of that platform, plus the scaffold check.
+  - A change to the generators or other tools → only the scaffold check ("Plantilla"): apps already made do not
+    use the generator to build, so rebuilding all of them on a Mac would only burn time.
   - Otherwise only the apps whose folder changed; README.md and docs/ changes alone do not count.
 
 Environment: EVENT (github.event_name), BASE (commit to diff against).
@@ -53,15 +55,19 @@ def plan(event: str, files: list[str] | None) -> dict:
     ios, android = ios_apps(), android_apps()
     if event == "workflow_dispatch" or files is None:
         return {"apps": ios + [TEMPLATE], "android": android + [ANDROID_TEMPLATE], "scaffold": True}
-    tooling = any((f.startswith("tools/") and not f.startswith(ANDROID_TOOLS)) or f == ".github/workflows/ios.yml" for f in files)
-    android_tooling = any(f.startswith(ANDROID_TOOLS) or f in ("tools/make_icon.py", "tools/ci_plan.py", ".github/workflows/android.yml")
-                          for f in files)
+    workflow = ".github/workflows/ios.yml" in files
+    tooling = workflow or any(f.startswith("tools/") and not f.startswith(ANDROID_TOOLS) for f in files)
+    android_workflow = ".github/workflows/android.yml" in files
+    android_tooling = android_workflow or any(f.startswith(ANDROID_TOOLS) or f in ("tools/make_icon.py", "tools/ci_plan.py")
+                                              for f in files)
     touched = {f.split("/")[0] for f in files if "/" in f and counts(f)}
+    ios_apps_to_test = ios if workflow else [a for a in ios if a in touched]
+    android_apps_to_test = android if android_workflow else [a for a in android if a in touched]
     return {
         # "Plantilla" is generated in CI by tools/new_ios_app.py to prove the template builds and passes its tests.
-        "apps": ios + [TEMPLATE] if tooling else [a for a in ios if a in touched],
+        "apps": ios_apps_to_test + ([TEMPLATE] if tooling else []),
         # "PlantillaAndroid" is generated in CI by tools/new_android_app.py in the same way.
-        "android": android + [ANDROID_TEMPLATE] if android_tooling else [a for a in android if a in touched],
+        "android": android_apps_to_test + ([ANDROID_TEMPLATE] if android_tooling else []),
         "scaffold": tooling,
     }
 
