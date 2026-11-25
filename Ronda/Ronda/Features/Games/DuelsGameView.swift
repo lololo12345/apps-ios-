@@ -33,7 +33,7 @@ struct DuelsGameView: View {
                                     .frame(width: 36)
                                     .gradientText(colors)
                                 VStack(alignment: .leading, spacing: 3) {
-                                    Text(item.title).font(.headline).foregroundStyle(.white)
+                                    Text(item.title).font(.headline).foregroundStyle(.primary)
                                     Text(item.instructions).font(.caption).foregroundStyle(.secondary).multilineTextAlignment(.leading)
                                 }
                                 Spacer()
@@ -157,6 +157,8 @@ struct DuelArena: View {
             }
         }
         .statusBarHidden()
+        // The duel arena is always dark: two players face each other over full-screen colour flashes.
+        .environment(\.colorScheme, .dark)
         .onAppear(perform: begin)
         .onDisappear { task?.cancel() }
     }

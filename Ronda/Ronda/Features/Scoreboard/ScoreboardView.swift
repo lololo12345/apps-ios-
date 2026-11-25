@@ -55,7 +55,7 @@ struct ScoreboardView: View {
                 }
             }
         }
-        .presentationBackground(Neon.ink)
+        .presentationBackground(Neon.canvas)
         .onAppear {
             guard !grown else { return }
             withAnimation(reduceMotion ? nil : .spring(duration: 0.7, bounce: 0.25).delay(0.15)) { grown = true }

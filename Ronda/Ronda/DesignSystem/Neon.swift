@@ -1,9 +1,9 @@
 import SwiftUI
 import UIKit
 
-/// Ronda's identity: neon on near-black, like a club at night. The app is dark-only on purpose
-/// (UIUserInterfaceStyle = Dark): it is played in dim rooms at night, and a bright screen in the
-/// middle of the table would ruin the atmosphere.
+/// Ronda's identity: neon on near-black, like a club at night. It starts dark (it is played in dim rooms,
+/// and a bright screen in the middle of the table ruins the atmosphere), but Ajustes → Apariencia offers
+/// light mode too: the same neon over a soft lilac dawn.
 enum Neon {
     static let cyan = Color(hex: 0x2EE6FF)
     static let violet = Color(hex: 0x8B5CFF)
@@ -14,12 +14,35 @@ enum Neon {
     static let crimson = Color(hex: 0xFF2E5E)
     static let rose = Color(hex: 0xFF6FA8)
 
+    /// Always near-black: text and strokes on top of bright neon fills (roulette labels, «¡TOCA!»…).
     static let ink = Color(hex: 0x07060D)
-    static let surface = Color(hex: 0x15121F)
-    static let surfaceRaised = Color(hex: 0x1E1A2C)
-    static let hairline = Color.white.opacity(0.09)
+    /// The two canvases, for previews.
+    static let night = Color(hex: 0x07060D)
+    static let dawn = Color(hex: 0xF3EEFF)
+
+    /// Screen background: night in dark mode, a soft lilac dawn in light mode.
+    static let canvas = adaptive(dark: 0x07060D, light: 0xF3EEFF)
+    static let canvasDeep = adaptive(dark: 0x07060D, light: 0xE6F6FF)
+    static let surface = adaptive(dark: 0x15121F, light: 0xFFFFFF, lightOpacity: 0.78)
+    static let surfaceRaised = adaptive(dark: 0x1E1A2C, light: 0xEFE9FF)
+    static let hairline = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? UIColor.white.withAlphaComponent(0.09) : UIColor.black.withAlphaComponent(0.08)
+    })
 
     static func accent(for mode: PartyMode) -> Color { mode == .hot ? crimson : violet }
+
+    private static func adaptive(dark: UInt32, light: UInt32, lightOpacity: CGFloat = 1) -> Color {
+        Color(uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark ? UIColor(hex: dark) : UIColor(hex: light).withAlphaComponent(lightOpacity)
+        })
+    }
+}
+
+private extension UIColor {
+    convenience init(hex: UInt32) {
+        self.init(red: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
+                  blue: CGFloat(hex & 0xFF) / 255, alpha: 1)
+    }
 }
 
 extension Color {
@@ -43,29 +66,29 @@ enum Metrics {
 /// per-frame blur filter, so animations on top of it stay at the display's full refresh rate.
 struct NightBackground: View {
     var colors: [Color]
+    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
+        let dark = scheme == .dark
         GeometryReader { proxy in
             let size = proxy.size
+            let longest = max(size.width, size.height)
             ZStack {
-                Neon.ink
-                RadialGradient(
-                    colors: [(colors.first ?? Neon.violet).opacity(0.42), .clear],
-                    center: UnitPoint(x: 0.1, y: 0.05),
-                    startRadius: 0,
-                    endRadius: max(size.width, size.height) * 0.62
-                )
-                RadialGradient(
-                    colors: [(colors.last ?? Neon.cyan).opacity(0.32), .clear],
-                    center: UnitPoint(x: 0.95, y: 0.95),
-                    startRadius: 0,
-                    endRadius: max(size.width, size.height) * 0.58
-                )
+                LinearGradient(colors: [Neon.canvas, Neon.canvasDeep], startPoint: .top, endPoint: .bottom)
+                glow(colors.first ?? Neon.violet, dark ? 0.42 : 0.30, UnitPoint(x: 0.1, y: 0.05), longest * 0.62)
+                glow(colors.last ?? Neon.cyan, dark ? 0.32 : 0.24, UnitPoint(x: 0.95, y: 0.95), longest * 0.58)
+                // Third, fainter light in between: more colour for the glass to refract.
+                glow(Neon.magenta, dark ? 0.14 : 0.10, UnitPoint(x: 0.95, y: 0.35), longest * 0.45)
             }
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+
+    private func glow(_ color: Color, _ opacity: Double, _ center: UnitPoint, _ radius: CGFloat) -> some View {
+        RadialGradient(colors: [color.opacity(opacity), color.opacity(opacity * 0.35), .clear], center: center,
+                       startRadius: 0, endRadius: radius)
     }
 }
 
@@ -81,6 +104,11 @@ struct NeonCard: ViewModifier {
             .background {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                     .fill(Neon.surface.opacity(0.92))
+                    // Soft sheen from the top: the card reads as glass, not a flat panel.
+                    .overlay {
+                        RoundedRectangle(cornerRadius: radius, style: .continuous)
+                            .fill(LinearGradient(colors: [(colors.first ?? .clear).opacity(0.14), .clear], startPoint: .top, endPoint: .center))
+                    }
                     .overlay {
                         RoundedRectangle(cornerRadius: radius, style: .continuous)
                             .strokeBorder(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1.5)
@@ -95,8 +123,45 @@ extension View {
         modifier(NeonCard(colors: colors, radius: radius, padding: padding))
     }
 
+    /// Neon gradient text. In light mode the colours are deepened so lime or cyan stay readable on a pale card.
     func gradientText(_ colors: [Color]) -> some View {
-        foregroundStyle(LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing))
+        modifier(GradientText(colors: colors))
+    }
+
+    /// Fades and lifts the view in when it first appears; pass increasing `order`s for a cascade.
+    func appearAnimation(order: Int = 0) -> some View {
+        modifier(AppearAnimation(delay: Double(order) * 0.06))
+    }
+}
+
+private struct GradientText: ViewModifier {
+    let colors: [Color]
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        let shown = scheme == .dark ? colors : colors.map { $0.mix(with: .black, by: 0.32) }
+        content.foregroundStyle(LinearGradient(colors: shown, startPoint: .leading, endPoint: .trailing))
+    }
+}
+
+private struct AppearAnimation: ViewModifier {
+    let delay: Double
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var shown = false
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(shown ? 1 : 0)
+            .offset(y: shown || reduceMotion ? 0 : 14)
+            .onAppear {
+                guard !shown else { return }
+                // No cascade under UI tests: screenshots must never catch a card half-way in.
+                if LaunchOptions.isUITesting || reduceMotion {
+                    shown = true
+                } else {
+                    withAnimation(.smooth(duration: 0.45).delay(delay)) { shown = true }
+                }
+            }
     }
 }
 

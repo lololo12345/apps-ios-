@@ -141,7 +141,17 @@ final class RondaUITests: XCTestCase {
         XCTAssertTrue(app.switches["settings.sober"].waitForExistence(timeout: 5))
         snapshot("30-settings", app)
         app.switches["settings.sober"].switches.firstMatch.tap()
+
+        // Switch to light mode: the rest of this run (game, home, players) is in light.
+        XCTAssertTrue(app.buttons["appearance.light"].waitForExistence(timeout: 5))
+        app.buttons["appearance.light"].tap()
+        Thread.sleep(forTimeInterval: 0.5)
+        snapshot("33-settings-light", app)
         app.buttons["Listo"].tap()
+
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 5))
+        Thread.sleep(forTimeInterval: 0.5)
+        snapshot("34-home-light", app)
 
         open("game.normal.truthOrDrink", in: app)
         snapshot("31-truth-sober", app)

@@ -20,6 +20,16 @@ struct SessionTests {
         #expect(session.waterEvery == 10)
     }
 
+    @Test func appearanceStartsDarkAndIsRemembered() {
+        let defaults = makeDefaults()
+        let session = PartySession(defaults: defaults, uiTesting: false)
+        #expect(session.appearance == .dark)
+        session.appearance = .light
+        #expect(PartySession(defaults: defaults, uiTesting: false).appearance == .light)
+        #expect(Appearance.system.colorScheme == nil)
+        #expect(Appearance.allCases.map(\.title) == ["Automático", "Claro", "Oscuro"])
+    }
+
     @Test func minorsAreAlwaysSoberAndCannotUseHot() {
         let session = PartySession(defaults: makeDefaults(), uiTesting: false)
         session.ageStatus = .minor

@@ -122,7 +122,7 @@ struct PromptCardView: View {
                 .font(.system(.title, design: .rounded, weight: .bold))
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.5)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
         }
         // Fixed band of heights: short and long cards keep the same footprint, so nothing jumps.
         .frame(maxWidth: .infinity, minHeight: 220, maxHeight: 340)
@@ -189,7 +189,7 @@ struct PlayerPicker: View {
                         .minimumScaleFactor(0.7)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .foregroundStyle(isOn ? Color.black : Color.white)
+                        .foregroundStyle(isOn ? Color.black : Color.primary)
                         .background {
                             Capsule().fill(isOn ? AnyShapeStyle(accent) : AnyShapeStyle(Neon.surfaceRaised))
                         }
@@ -311,5 +311,63 @@ struct SpanishCardView: View {
         .shadow(color: tint.opacity(0.5), radius: 22, y: 8)
         .accessibilityElement()
         .accessibilityLabel(card.fullName)
+    }
+}
+
+/// Glossy round badge with a symbol over a neon gradient (game tiles, stats).
+/// Plain shapes, not glass: tiles that open a game with the zoom transition must not carry `glassEffect`.
+struct NeonBadge: View {
+    let symbol: String
+    let colors: [Color]
+    var size: CGFloat = 46
+
+    var body: some View {
+        Image(systemName: symbol)
+            .font(.system(size: size * 0.44, weight: .bold))
+            .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.2), radius: 1, y: 1)
+            .frame(width: size, height: size)
+            .background {
+                ZStack {
+                    Circle().fill(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    Circle()
+                        .fill(LinearGradient(colors: [.white.opacity(0.45), .clear], startPoint: .top, endPoint: .center))
+                        .padding(size * 0.06)
+                }
+            }
+            .overlay(Circle().strokeBorder(.white.opacity(0.35), lineWidth: 1))
+            .shadow(color: (colors.first ?? .clear).opacity(0.55), radius: size * 0.25, y: size * 0.08)
+            .accessibilityHidden(true)
+    }
+}
+
+/// Number + label in a small neon tile ("4 · Jugadores"). Numbers roll when they change.
+struct StatTile: View {
+    let value: String
+    let label: String
+    let symbol: String
+    let colors: [Color]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Image(systemName: symbol)
+                .font(.subheadline.weight(.bold))
+                .gradientText(colors)
+            Text(value)
+                .font(.system(.title3, design: .rounded, weight: .heavy))
+                .monospacedDigit()
+                .contentTransition(.numericText())
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .animation(.snappy, value: value)
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .neonCard(colors, radius: 18, padding: 12)
+        .accessibilityElement(children: .combine)
     }
 }

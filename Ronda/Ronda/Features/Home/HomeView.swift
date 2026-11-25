@@ -28,7 +28,8 @@ struct HomeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     header
-                    modePicker
+                    stats.appearAnimation(order: 1)
+                    modePicker.appearAnimation(order: 2)
                     if mode == .normal {
                         intensityPicker
                     }
@@ -83,12 +84,9 @@ struct HomeView: View {
                 Text("Ronda")
                     .font(.system(size: 40, weight: .black, design: .rounded))
                     .gradientText(session.mode == .hot ? [Neon.rose, Neon.crimson] : [Neon.magenta, Neon.cyan])
-                let total = session.ledger.total(for: session.players)
-                Text("\(session.players.count) jugadores · \(session.lexicon.unitTitle.lowercased()): \(total)")
+                Text(session.mode == .hot ? "Modo Hot · solo adultos" : "La fiesta empieza aquí")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .contentTransition(.numericText(value: Double(total)))
-                    .animation(.snappy, value: total)
             }
             Spacer()
             GlassEffectContainer(spacing: 8) {
@@ -100,6 +98,19 @@ struct HomeView: View {
             }
         }
         .padding(.top, 8)
+    }
+
+    /// Players, the tally and whose turn it is, in three small neon tiles.
+    private var stats: some View {
+        let total = session.ledger.total(for: session.players)
+        return HStack(spacing: 10) {
+            StatTile(value: "\(session.players.count)", label: "Jugadores", symbol: "person.2.fill", colors: [Neon.cyan, Neon.violet])
+            StatTile(value: "\(total)", label: session.lexicon.unitTitle, symbol: session.soberMode ? "star.fill" : "drop.fill",
+                     colors: [Neon.magenta, Neon.violet])
+            StatTile(value: session.currentPlayer?.name ?? "—", label: "Le toca", symbol: "sparkles", colors: [Neon.lime, Neon.cyan])
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("home.stats")
     }
 
     private func headerButton(_ symbol: String, label: String, id: String, action: @escaping () -> Void) -> some View {
@@ -199,14 +210,11 @@ struct GameTile: View {
     var body: some View {
         let colors = kind.gradient(for: mode)
         VStack(alignment: .leading, spacing: 10) {
-            Image(systemName: kind.symbol)
-                .font(.system(size: 30, weight: .bold))
-                .foregroundStyle(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: (colors.first ?? .clear).opacity(0.8), radius: 10)
+            NeonBadge(symbol: kind.symbol, colors: colors)
             Spacer(minLength: 0)
             Text(kind.title)
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .multilineTextAlignment(.leading)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)

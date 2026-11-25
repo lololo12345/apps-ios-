@@ -12,6 +12,14 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
+                    AppearancePicker(selection: $session.appearance)
+                } header: {
+                    Text("Apariencia")
+                } footer: {
+                    Text("Oscuro para la noche, claro para una tarde en la terraza, o automático como el iPhone.")
+                }
+
+                Section {
                     Toggle(isOn: $session.soberPreference) {
                         Label("Modo sin alcohol", systemImage: "star.fill")
                     }
@@ -76,7 +84,7 @@ struct SettingsView: View {
                 }
             }
         }
-        .presentationBackground(Neon.ink)
+        .presentationBackground(Neon.canvas)
     }
 }
 

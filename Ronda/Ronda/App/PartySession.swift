@@ -8,6 +8,13 @@ enum AgeStatus: String, Codable, Sendable {
 
 enum LaunchOptions {
     static var isUITesting: Bool { ProcessInfo.processInfo.arguments.contains("-uiTesting") }
+
+    /// `-flag value` pairs passed by the UI tests, e.g. `-appearance light`.
+    static func value(after flag: String) -> String? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: flag), arguments.indices.contains(index + 1) else { return nil }
+        return arguments[index + 1]
+    }
 }
 
 /// State of the night: players, the sip tally, settings and the water-break schedule.
@@ -24,6 +31,7 @@ final class PartySession {
         static let intensity = "intensity"
         static let setup = "setupDone"
         static let turn = "turn"
+        static let appearance = "appearance"
     }
 
     @ObservationIgnored private let defaults: UserDefaults
@@ -34,6 +42,8 @@ final class PartySession {
     var soberPreference: Bool { didSet { defaults.set(soberPreference, forKey: Key.sober) } }
     var waterEvery: Int { didSet { defaults.set(waterEvery, forKey: Key.water); water = WaterBreakSchedule(every: waterEvery) } }
     var intensity: Intensity { didSet { defaults.set(intensity.rawValue, forKey: Key.intensity) } }
+    /// Automático / Claro / Oscuro (Ajustes → Apariencia). Dark by default.
+    var appearance: Appearance { didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) } }
     /// Set when the group finishes the first-run player list.
     var setupDone: Bool { didSet { defaults.set(setupDone, forKey: Key.setup) } }
 
@@ -60,6 +70,7 @@ final class PartySession {
             soberPreference = false
             intensity = .party
             setupDone = !fresh
+            appearance = LaunchOptions.value(after: "-appearance").flatMap(Appearance.init(rawValue:)) ?? .standard
         } else {
             initialPlayers = Self.decode([Player].self, from: defaults, key: Key.players) ?? []
             initialWater = defaults.object(forKey: Key.water) as? Int ?? 10
@@ -68,6 +79,7 @@ final class PartySession {
             soberPreference = defaults.bool(forKey: Key.sober)
             intensity = defaults.string(forKey: Key.intensity).flatMap(Intensity.init(rawValue:)) ?? .party
             setupDone = defaults.bool(forKey: Key.setup)
+            appearance = defaults.string(forKey: Key.appearance).flatMap(Appearance.init(rawValue:)) ?? .standard
         }
         players = initialPlayers
         waterEvery = initialWater

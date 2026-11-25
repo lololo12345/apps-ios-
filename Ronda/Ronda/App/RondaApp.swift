@@ -22,6 +22,8 @@ struct RondaApp: App {
         WindowGroup {
             RootView()
                 .environment(session)
+                // Ajustes → Apariencia: dark by default, light, or follow the iPhone (nil).
+                .preferredColorScheme(session.appearance.colorScheme)
                 .tint(Neon.violet)
         }
         .modelContainer(container)
