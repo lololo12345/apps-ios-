@@ -4,6 +4,13 @@ Aventura y construcción para iPhone, en horizontal. Llevas a un pequeño Brote 
 piedra y setas, las vendes en el mercado, fabricas productos que valen más, mejoras tu equipo y tu base, construyes
 puentes para cruzar el río y defiendes la hoguera de la Niebla cada noche.
 
+| | |
+|---|---|
+| ![Título](docs/screenshots/01-title.jpg) | ![Base](docs/screenshots/04-base.jpg) |
+| ![Mercado](docs/screenshots/05-market.jpg) | ![Equipo](docs/screenshots/07-gear.jpg) |
+| ![Puente](docs/screenshots/15-bridge.jpg) | ![Bosque Viejo](docs/screenshots/16-forest.jpg) |
+| ![Noche](docs/screenshots/17-night.jpg) | ![Jefe](docs/screenshots/18-boss.jpg) |
+
 ## Qué incluye (primera entrega)
 - **Mundo con dos zonas**: el Claro y el Bosque Viejo, separados por un río; más allá, la Cantera en la Niebla
   (próxima entrega). Mapa de 64 × 30 casillas con 140 árboles, arbustos, rocas, setas y árboles dorados.

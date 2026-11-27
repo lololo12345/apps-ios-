@@ -239,7 +239,7 @@ struct QuestCard: View {
                         Text(quest.title)
                             .font(.system(.subheadline, design: .rounded, weight: .bold))
                             .lineLimit(1)
-                            .minimumScaleFactor(0.8)
+                            .minimumScaleFactor(0.65)
                         Meter(fraction: game.state.progress(quest.goal), colors: [Palette.accentSoft, Palette.accent])
                     } else {
                         Text("¡Todas las misiones cumplidas!")
@@ -265,6 +265,8 @@ struct RaidBar: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Asalto · quedan \(raid.enemies)")
                     .font(.caption.weight(.heavy))
+                    .lineLimit(1)
+                    .fixedSize()
                     .contentTransition(.numericText())
                 Meter(fraction: Double(raid.campfire) / Double(max(raid.max, 1)), colors: [Color(hex: 0xFFE27A), Color(hex: 0xFF9A3C)])
             }
@@ -499,7 +501,7 @@ struct TitleScreen: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color(hex: 0x0F2418).opacity(0.75), Color(hex: 0x0F2418).opacity(0.25), Color(hex: 0x0F2418).opacity(0.8)],
+            LinearGradient(colors: [Color(hex: 0x0F2418).opacity(0.8), Color(hex: 0x0F2418).opacity(0.55), Color(hex: 0x0F2418).opacity(0.85)],
                            startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
             if showTips {
@@ -527,7 +529,8 @@ struct TitleScreen: View {
                             .foregroundStyle(.white.opacity(0.85))
                         Text("Recoge, vende, construye puentes y devuelve la luz al valle.")
                             .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.white.opacity(0.8))
+                            .shadow(color: .black.opacity(0.5), radius: 4)
                         PrimaryButton(title: game.state.tutorialDone ? "Continuar" : "Jugar", systemImage: "play.fill") {
                             if game.state.tutorialDone {
                                 game.started = true

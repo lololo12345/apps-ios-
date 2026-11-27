@@ -16,7 +16,9 @@ struct PanelHost: View {
                 }
                 .scrollIndicators(.hidden)
             }
-            .padding(18)
+            .padding(.horizontal, 18)
+            .padding(.top, 18)
+            .padding(.bottom, 6)
             .frame(maxWidth: 720, maxHeight: .infinity)
             .heroCard(tint: tint)
             .padding(.vertical, 14)
