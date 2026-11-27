@@ -563,7 +563,7 @@ final class WorldScene: SKScene {
             player.position = playerPos
             player.yScale = 1
             dustTimer += dt
-            if dustTimer > 0.24 * (1.2 - length * 0.2) {
+            if dustTimer > Double(0.24 * (1.2 - length * 0.2)) {
                 dustTimer = 0
                 footDust()
             }

@@ -1148,7 +1148,7 @@ enum Art {
             for w in houseWindows {
                 let rect = CGRect(x: w.x - 9, y: w.y - 8, width: 18, height: 16)
                 fill(cg, rounded(rect.insetBy(dx: -2.5, dy: -2.5), 2), [Ink.woodLight, Ink.woodDark], outline: 0.8, shade: 0.3)
-                fill(cg, rect, [UIColor(hex: 0xFFE7A8), Ink.window, UIColor(hex: 0xE59A3A)], outline: 0.6, shade: 0)
+                fill(cg, CGPath(rect: rect, transform: nil), [UIColor(hex: 0xFFE7A8), Ink.window, UIColor(hex: 0xE59A3A)], outline: 0.6, shade: 0)
                 line(cg, CGPoint(x: rect.midX, y: rect.minY), CGPoint(x: rect.midX, y: rect.maxY), Ink.woodDark, 1.6)
                 line(cg, CGPoint(x: rect.minX, y: rect.midY), CGPoint(x: rect.maxX, y: rect.midY), Ink.woodDark, 1.6)
             }
