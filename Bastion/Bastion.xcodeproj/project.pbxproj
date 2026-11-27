@@ -1,0 +1,509 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		4781BF2D910F538BCA719FE3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD99AF93BAF82423262F3083 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3940100772956FF7892670FB;
+			remoteInfo = Bastion;
+		};
+		1670CB32C20A5B168779F6DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD99AF93BAF82423262F3083 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3940100772956FF7892670FB;
+			remoteInfo = Bastion;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A53259EF5272575E60C957AA /* Bastion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bastion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6688670751F61CC017452AD8 /* BastionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BastionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3609EC32D971E73EAC5980F /* BastionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BastionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D9DAB921870A27D30DAB41E5 /* Bastion */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Bastion;
+			sourceTree = "<group>";
+		};
+		315656851319B6462821F2BF /* BastionTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BastionTests;
+			sourceTree = "<group>";
+		};
+		35AEEF1B1FABC9AB6AC324F0 /* BastionUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BastionUITests;
+			sourceTree = "<group>";
+		};
+		0E74A452AD18946B722F8F15 /* BastionKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = BastionKit;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F63C2CCD4A408375D598BBCD = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0E137B40C490945C3BBDD6A2 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33B990A6135E8119C32419FA = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0AA8E5BD1AD38392914ECC46 = {
+			isa = PBXGroup;
+			children = (
+				D9DAB921870A27D30DAB41E5 /* Bastion */,
+				315656851319B6462821F2BF /* BastionTests */,
+				35AEEF1B1FABC9AB6AC324F0 /* BastionUITests */,
+				0E74A452AD18946B722F8F15 /* BastionKit */,
+				8B4A3DC97AB31CD6DDA4A645 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8B4A3DC97AB31CD6DDA4A645 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A53259EF5272575E60C957AA /* Bastion.app */,
+				6688670751F61CC017452AD8 /* BastionTests.xctest */,
+				F3609EC32D971E73EAC5980F /* BastionUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3940100772956FF7892670FB /* Bastion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A5E52763CCA433498990E0C;
+			buildPhases = (
+				9D176CB3A11F2A85149E06BF /* Sources */,
+				F63C2CCD4A408375D598BBCD /* Frameworks */,
+				4748756998B488C924150804 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D9DAB921870A27D30DAB41E5 /* Bastion */,
+				0E74A452AD18946B722F8F15 /* BastionKit */,
+			);
+			name = Bastion;
+			packageProductDependencies = (
+			);
+			productName = Bastion;
+			productReference = A53259EF5272575E60C957AA /* Bastion.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C8AE9D344393E67661E45A57 /* BastionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D3A9EA778F14062FD5AE2A8D;
+			buildPhases = (
+				47E04D260425E06315332287 /* Sources */,
+				0E137B40C490945C3BBDD6A2 /* Frameworks */,
+				3BC607B35A19DB7E5CDB98B8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				97A8E74F215507F83B530711 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				315656851319B6462821F2BF /* BastionTests */,
+			);
+			name = BastionTests;
+			packageProductDependencies = (
+			);
+			productName = BastionTests;
+			productReference = 6688670751F61CC017452AD8 /* BastionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		6DB563544B7B7854E2BD6D5C /* BastionUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 21E96031B3A81B3B5D250692;
+			buildPhases = (
+				A22717DA97B8B2897126AD8B /* Sources */,
+				33B990A6135E8119C32419FA /* Frameworks */,
+				36301DBC8746D7EB658F66E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B1DC955D460B41D66EAA90D9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				35AEEF1B1FABC9AB6AC324F0 /* BastionUITests */,
+			);
+			name = BastionUITests;
+			packageProductDependencies = (
+			);
+			productName = BastionUITests;
+			productReference = F3609EC32D971E73EAC5980F /* BastionUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AD99AF93BAF82423262F3083 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					3940100772956FF7892670FB = {
+						CreatedOnToolsVersion = 26.0;
+					};
+					C8AE9D344393E67661E45A57 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 3940100772956FF7892670FB;
+					};
+					6DB563544B7B7854E2BD6D5C = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 3940100772956FF7892670FB;
+					};
+				};
+			};
+			buildConfigurationList = 847EBF5B8284036510226880;
+			developmentRegion = es;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				es,
+				Base,
+			);
+			mainGroup = 0AA8E5BD1AD38392914ECC46;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8B4A3DC97AB31CD6DDA4A645 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3940100772956FF7892670FB /* Bastion */,
+				C8AE9D344393E67661E45A57 /* BastionTests */,
+				6DB563544B7B7854E2BD6D5C /* BastionUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4748756998B488C924150804 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BC607B35A19DB7E5CDB98B8 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36301DBC8746D7EB658F66E6 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9D176CB3A11F2A85149E06BF = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		47E04D260425E06315332287 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A22717DA97B8B2897126AD8B = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		97A8E74F215507F83B530711 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3940100772956FF7892670FB /* Bastion */;
+			targetProxy = 4781BF2D910F538BCA719FE3 /* PBXContainerItemProxy */;
+		};
+		B1DC955D460B41D66EAA90D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3940100772956FF7892670FB /* Bastion */;
+			targetProxy = 1670CB32C20A5B168779F6DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		79609AEFB17B961340E8912F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		CEC7A3F498BE8C0E1C637307 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4C0C3FE3E3472E6104B558F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Bastion-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bastión";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		236BC90DDD7276BE7ACE1DCF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Config/Bastion-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Bastión";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		554F4792D50699BABEDAE3B8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bastion.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Bastion";
+			};
+			name = Debug;
+		};
+		3B6A5DEE172B690B81EA0B35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle.tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bastion.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Bastion";
+			};
+			name = Release;
+		};
+		EF2FE707D41A1B8FFF316F4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Bastion;
+			};
+			name = Debug;
+		};
+		DD633504211E7BF957DA350F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "app.bastion.valle.uitests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Bastion;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		847EBF5B8284036510226880 /* Build configuration list for PBXProject */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79609AEFB17B961340E8912F /* Debug */,
+				CEC7A3F498BE8C0E1C637307 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A5E52763CCA433498990E0C /* Build configuration list for Bastion */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C0C3FE3E3472E6104B558F2 /* Debug */,
+				236BC90DDD7276BE7ACE1DCF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D3A9EA778F14062FD5AE2A8D /* Build configuration list for BastionTests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				554F4792D50699BABEDAE3B8 /* Debug */,
+				3B6A5DEE172B690B81EA0B35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		21E96031B3A81B3B5D250692 /* Build configuration list for BastionUITests */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF2FE707D41A1B8FFF316F4F /* Debug */,
+				DD633504211E7BF957DA350F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AD99AF93BAF82423262F3083 /* Project object */;
+}

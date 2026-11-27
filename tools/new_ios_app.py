@@ -2,7 +2,7 @@
 """Create a complete, polished iPhone app skeleton that builds and passes its tests from minute one.
 
     python3 tools/new_ios_app.py <Name> <bundle.id> --display "Nombre" --summary "Qué es en una línea"
-        [--accent FFB020] [--background 120C2E] [--glyph N] [--widget] [--kit] [--dark] [--root .]
+        [--accent FFB020] [--background 120C2E] [--glyph N] [--widget] [--kit] [--dark] [--landscape] [--root .]
 
 What you get in <Name>/:
   <Name>.xcodeproj          synchronized folders (new files are picked up automatically), shared scheme
@@ -101,7 +101,10 @@ def scaffold(args) -> str:
     display = args.display or name
     summary = args.summary or "Una app nueva."
     shared = f"{name}Kit" if args.kit else None
-    make(app_dir, name, args.bundle_id, display, {}, f"Config/{name}-Info.plist", shared, args.widget)
+    # Games played sideways (--landscape) only rotate between the two landscape orientations.
+    info = {"UISupportedInterfaceOrientations_iPhone": "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"} \
+        if args.landscape else {}
+    make(app_dir, name, args.bundle_id, display, info, f"Config/{name}-Info.plist", shared, args.widget)
 
     fmt = dict(name=name, bundle=args.bundle_id, scheme=scheme, display=display.replace('"', '\\"'),
                summary=summary.replace('"', '\\"'), accent=args.accent.upper(), background=args.background.upper(),
@@ -173,6 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--glyph", help="Letra(s) del icono provisional (por defecto, la inicial)")
     parser.add_argument("--dark", action="store_true",
                         help="Empezar en modo oscuro (el usuario puede cambiarlo en Ajustes → Apariencia)")
+    parser.add_argument("--landscape", action="store_true", help="Solo en horizontal (juegos)")
     parser.add_argument("--kit", action="store_true", help="Carpeta <Name>Kit con lógica compartida")
     parser.add_argument("--widget", action="store_true", help="Extensión de widget")
     parser.add_argument("--root", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
