@@ -20,7 +20,16 @@ class UITestCase: XCTestCase {
     func snapshot(_ name: String, _ app: XCUIApplication, settle: TimeInterval = 0.5) {
         // Let transitions finish so the screenshot never catches a half-drawn screen.
         if settle > 0 { Thread.sleep(forTimeInterval: settle) }
-        var image = app.screenshot().image
+        // The whole screen, not app.screenshot(): for a landscape-only app the app's frame comes out
+        // cropped to a square. The screen capture has every pixel (rotated, fixed just below).
+        var image = XCUIScreen.main.screenshot().image
+        // In landscape the screen pixels are stored sideways (portrait buffer): tag them with the
+        // device orientation so the redraw below turns them upright.
+        let frame = app.frame
+        if image.imageOrientation == .up, image.size.width < image.size.height, frame.width > frame.height, let cg = image.cgImage {
+            let sideways: UIImage.Orientation = XCUIDevice.shared.orientation == .landscapeRight ? .right : .left
+            image = UIImage(cgImage: cg, scale: image.scale, orientation: sideways)
+        }
         // Landscape screenshots carry an orientation flag that export tools mishandle (rotated and cropped):
         // redraw them upright so the saved pixels are exactly what is on screen.
         if image.imageOrientation != .up {
