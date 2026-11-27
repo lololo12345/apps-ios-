@@ -13,6 +13,7 @@ compila y prueba todas las apps en paralelo en cada push.
 | **Chispa** | El reto diario: cinco retos nuevos cada día (acertijo, cultura, cálculo, memoria y lógica), rachas con protectores y liga con amigos. | [`Chispa/`](Chispa/README.md) |
 | **Ronda (Android)** | La misma app para Android (Kotlin · Jetpack Compose), con el mismo contenido y los mismos juegos. | [`RondaAndroid/`](RondaAndroid/README.md) |
 | **Mochila** | Listas para hacer la maleta sin olvidar nada: según el tipo de viaje, los días y tus planes. | [`Mochila/`](Mochila/README.md) |
+| **Bastión** | Aventura y construcción en horizontal: recoge, vende, mejora tu base, construye puentes y libra el valle de la Niebla. | [`Bastion/`](Bastion/README.md) |
 
 ## Abrir una app
 1. Abre `<App>/<App>.xcodeproj` con Xcode 26 o posterior.
