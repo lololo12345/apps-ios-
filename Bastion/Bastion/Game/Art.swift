@@ -376,6 +376,23 @@ enum Art {
     }
 
     /// Every terrain outline in world points, built once.
+    /// A smooth curve through `points` (quadratic segments between midpoints).
+    private static func smoothLine(_ points: [CGPoint]) -> CGPath {
+        let path = CGMutablePath()
+        guard let first = points.first else { return path }
+        path.move(to: first)
+        for i in 1..<points.count {
+            let a = points[i - 1], b = points[i]
+            path.addQuadCurve(to: CGPoint(x: (a.x + b.x) / 2, y: (a.y + b.y) / 2), control: a)
+        }
+        if let last = points.last { path.addLine(to: last) }
+        return path
+    }
+
+    private static func band(_ line: CGPath, _ width: CGFloat) -> CGPath {
+        line.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 10)
+    }
+
     private static func terrainShapes() -> TerrainShapes {
         if let shapesCache { return shapesCache }
         let t = CGFloat(WorldMap.tileSize)
@@ -385,36 +402,34 @@ enum Art {
             return CGFloat(g.unit())
         }
         var dirt: [CGPath] = [], sand: [CGPath] = [], wet: [CGPath] = [], water: [CGPath] = [], deep: [CGPath] = []
+        // Rivers: smooth bands along each river's centre line, running past both map edges.
+        for river in 0..<2 {
+            let points = (-2...(WorldMap.rows + 1)).map { row in
+                let r = min(max(row, 0), WorldMap.rows - 1)
+                return CGPoint(x: CGFloat(WorldMap.riverCenter(river: river, row: r)) * t, y: (CGFloat(row) + 0.5) * t)
+            }
+            let line = smoothLine(points)
+            water.append(band(line, t * 2.26))
+            wet.append(band(line, t * 2.26 + 16))
+            sand.append(band(line, t * 4.1))
+            deep.append(band(line, t * 0.75))
+        }
         for col in 0..<WorldMap.columns {
-            for row in 0..<WorldMap.rows {
-                let p = center(CGFloat(col), CGFloat(row))
-                switch WorldMap.terrain(Tile(col: col, row: row)) {
-                case .base:
-                    dirt.append(circle(p, t * (0.8 + 0.14 * jitter(col, row, 1))))
-                case .bank:
-                    sand.append(circle(p, t * (0.72 + 0.12 * jitter(col, row, 2))))
-                case .water, .bridge:
-                    sand.append(circle(p, t * 0.8))
-                    // Rivers leave the map: extend the water past the top and bottom edges.
-                    let extra: CGFloat = row == 0 || row == WorldMap.rows - 1 ? t * 0.6 : 0
-                    let ry = row == 0 ? p.y - extra : p.y + extra
-                    water.append(circle(CGPoint(x: p.x, y: (p.y + ry) / 2), t * 0.64 + extra / 2))
-                    wet.append(circle(CGPoint(x: p.x, y: (p.y + ry) / 2), t * 0.64 + 8 + extra / 2))
-                    if isWater(Tile(col: col - 1, row: row)) {
-                        deep.append(circle(CGPoint(x: p.x - t * 0.5, y: p.y), t * (0.34 + 0.08 * jitter(col, row, 3))))
-                    }
-                case .grass:
-                    break
-                }
+            for row in 0..<WorldMap.rows where WorldMap.terrain(Tile(col: col, row: row)) == .bank {
+                // A few irregular bulges so the banks are not perfectly even.
+                if jitter(col, row, 2) > 0.55 { sand.append(circle(center(CGFloat(col), CGFloat(row)), t * (0.7 + 0.2 * jitter(col, row, 5)))) }
             }
         }
-        for s in footpathSamples {
-            let j = jitter(Int(s.x * 10), Int(s.y * 10), 4)
-            dirt.append(circle(center(s.x, s.y), t * (0.44 + 0.12 * j)))
+        // The base: one round, slightly wavy clearing around the campfire.
+        let camp = center(CGFloat(WorldMap.campfire.col), CGFloat(WorldMap.campfire.row))
+        dirt.append(blob(camp, radius: t * (WorldMap.baseRadius + 0.75), lumps: 7, wobble: 0.035, seed: 3, squash: 1))
+        // Footpaths: smooth worn trails.
+        for path in footpaths {
+            dirt.append(band(smoothLine(path.map { center($0.x, $0.y) }), t * 1.0))
         }
         // The lair: a trampled clearing.
         let lair = center(CGFloat(WorldMap.bossLair.col), CGFloat(WorldMap.bossLair.row))
-        dirt.append(Art.blob(lair, radius: t * 2.3, lumps: 6, wobble: 0.1, seed: 9))
+        dirt.append(blob(lair, radius: t * 2.3, lumps: 6, wobble: 0.08, seed: 9))
         let shapes = TerrainShapes(dirt: merge(dirt), sand: merge(sand), wet: merge(wet), water: merge(water), deep: merge(deep))
         shapesCache = shapes
         return shapes
@@ -515,7 +530,7 @@ enum Art {
             cg.addPath(shapes.water)
             cg.setStrokeColor(Ink.foam.cgColor)
             cg.setLineWidth(2)
-            cg.setLineDash(phase: 0, lengths: [14, 5, 6, 7, 20, 4])
+            cg.setLineDash(phase: 0, lengths: [26, 7, 12, 9, 40, 6])
             cg.strokePath()
             cg.restoreGState()
         }
