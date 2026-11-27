@@ -54,8 +54,10 @@ struct EconomyTests {
 
     @Test func backpackFillsUpAndUnloadsAtTheBase() {
         var game = GameState()
-        #expect(game.pick(.wood, 15) == 15)
-        #expect(game.pick(.stone, 15) == 5)
+        let result1 = game.pick(.wood, 15)
+        #expect(result1 == 15)
+        let result2 = game.pick(.stone, 15)
+        #expect(result2 == 5)
         #expect(game.isFull)
         game.unload()
         #expect(game.carried == 0)
@@ -67,10 +69,12 @@ struct EconomyTests {
 
     @Test func upgradesNeedCoinsAndMaterials() {
         var game = GameState()
-        #expect(!game.upgrade(.backpack))
+        let result3 = game.upgrade(.backpack)
+        #expect(!result3)
         game.coins = 100
         game.storage[.berries] = 10
-        #expect(game.upgrade(.backpack))
+        let result4 = game.upgrade(.backpack)
+        #expect(result4)
         #expect(game.level(.backpack) == 2 && game.capacity == 35)
         #expect(game.coins == 100 - Gear.backpack.cost(from: 1)!.coins)
     }
@@ -80,11 +84,14 @@ struct EconomyTests {
         let now = Date(timeIntervalSince1970: 1_000_000)
         game.coins = 500
         game.storage = [.wood: 40]
-        #expect(game.build(.sawmill, now: now))
+        let result5 = game.build(.sawmill, now: now)
+        #expect(result5)
         let recipe = Recipe.making(.planks)!
         #expect(game.maxCraftable(recipe) == 12)
-        #expect(game.craft(recipe, count: 5, now: now))
-        #expect(game.collectJobs(now: now.addingTimeInterval(5)).isEmpty)
+        let result6 = game.craft(recipe, count: 5, now: now)
+        #expect(result6)
+        let result7 = game.collectJobs(now: now.addingTimeInterval(5))
+        #expect(result7.isEmpty)
         let done = game.collectJobs(now: now.addingTimeInterval(21))
         #expect(done.count == 1 && game.storage[.planks] == 5 && game.counters.crafted[.planks] == 5)
     }
@@ -94,12 +101,14 @@ struct EconomyTests {
         let now = Date(timeIntervalSince1970: 2_000_000)
         game.coins = 500
         game.storage = [.wood: 20, .berries: 20]
-        #expect(game.build(.garden, now: now))
+        let result8 = game.build(.garden, now: now)
+        #expect(result8)
         game.settleGarden(now: now.addingTimeInterval(3600))
         #expect(game.gardenStock == Stats.gardenPerHour(level: 1))
         game.settleGarden(now: now.addingTimeInterval(3600 * 24))
         #expect(game.gardenStock == Stats.gardenCap(level: 1))
-        #expect(game.harvestGarden(now: now.addingTimeInterval(3600 * 24)) == Stats.gardenCap(level: 1))
+        let result9 = game.harvestGarden(now: now.addingTimeInterval(3600 * 24))
+        #expect(result9 == Stats.gardenCap(level: 1))
     }
 
     @Test func bridgeIsPaidBitByBit() {
@@ -107,16 +116,19 @@ struct EconomyTests {
         let site = WorldMap.bridges[0]
         game.storage = [.wood: 10]
         game.coins = 50
-        #expect(!game.contribute(toBridge: 0))
+        let result10 = game.contribute(toBridge: 0)
+        #expect(!result10)
         #expect(game.bridgeFraction(0) > 0 && game.bridgeFraction(0) < 1)
         game.storage = site.cost.items
         game.coins = site.cost.coins
-        #expect(game.contribute(toBridge: 0))
+        let result11 = game.contribute(toBridge: 0)
+        #expect(result11)
         #expect(game.forestOpen)
         // The second bridge waits for the boss.
         game.coins = 10_000
         game.storage = [.planks: 100, .brick: 100]
-        #expect(!game.contribute(toBridge: 1))
+        let result12 = game.contribute(toBridge: 1)
+        #expect(!result12)
     }
 }
 
@@ -134,9 +146,11 @@ struct AdventureTests {
     @Test func nightsRewardOrStealFromTheStore() {
         var game = GameState()
         game.storage = [.wood: 50]
-        #expect(game.nightEnded(campfireStanding: true) == RaidPlan(night: 1).reward)
+        let result13 = game.nightEnded(campfireStanding: true)
+        #expect(result13 == RaidPlan(night: 1).reward)
         #expect(game.counters.nightsSurvived == 1)
-        #expect(game.nightEnded(campfireStanding: false) == 0)
+        let result14 = game.nightEnded(campfireStanding: false)
+        #expect(result14 == 0)
         #expect(game.storage[.wood] == 40)
         #expect(RaidPlan(night: 1).wolves == 0 && RaidPlan(night: 5).wolves == 3)
     }
@@ -156,13 +170,19 @@ struct AdventureTests {
         var game = GameState()
         let request = today[0]
         game.storage[request.item] = request.amount
-        #expect(game.fulfil(request))
-        #expect(!game.fulfil(request))
+        let result15 = game.fulfil(request)
+        #expect(result15)
+        let result16 = game.fulfil(request)
+        #expect(!result16)
         #expect(game.coins == request.reward)
-        #expect(game.claimDailyReward(day: 10) == DailyReward.coins(streak: 1))
-        #expect(game.claimDailyReward(day: 10) == nil)
-        #expect(game.claimDailyReward(day: 11) == DailyReward.coins(streak: 2))
-        #expect(game.claimDailyReward(day: 13) == DailyReward.coins(streak: 1))
+        let result17 = game.claimDailyReward(day: 10)
+        #expect(result17 == DailyReward.coins(streak: 1))
+        let result18 = game.claimDailyReward(day: 10)
+        #expect(result18 == nil)
+        let result19 = game.claimDailyReward(day: 11)
+        #expect(result19 == DailyReward.coins(streak: 2))
+        let result20 = game.claimDailyReward(day: 13)
+        #expect(result20 == DailyReward.coins(streak: 1))
     }
 
     @Test func dayAndNight() {
