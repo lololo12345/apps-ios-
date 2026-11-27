@@ -49,7 +49,11 @@
 
 ## Lista de calidad (lo aprendido en Relato, Ronda, Plan B, Isla, Chispa y Mochila)
 **Diseño y fluidez**
-- iOS 26 con Liquid Glass (`glassEffect`, `.buttonStyle(.glass/.glassProminent)`), 120 Hz activado en el Info.plist.
+- iOS 26 con Liquid Glass (`glassEffect`, `.buttonStyle(.glass/.glassProminent)`).
+- 120 Hz SIEMPRE, en todas las apps (nuevas y antiguas): `CADisableMinimumFrameDurationOnPhone` en el Info.plist
+  (la plantilla lo trae; `ci_plan.py` y `check_swift.sh` fallan si falta). Juegos con SpriteKit:
+  `SpriteView(…, preferredFramesPerSecond: 120)`. `TimelineView(.animation)` sin `minimumInterval` para lo que se
+  mueve. Android: modo de pantalla con la frecuencia más alta (la plantilla ya lo pide).
 - Fondos con gradientes radiales, nunca `blur` a pantalla completa (mantiene los 120 Hz).
 - Animaciones con `.smooth`/`.snappy`/`.spring`, `contentTransition(.numericText())` en números, `symbolEffect` en iconos
   y `sensoryFeedback` (con opción de desactivarlo en Ajustes).

@@ -43,6 +43,10 @@ done
 status=0
 for app in "${apps[@]}"; do
   [ -d "$ROOT/$app" ] || { echo "✘ $app: no existe $ROOT/$app" >&2; status=1; continue; }
+  plist="$ROOT/$app/Config/$app-Info.plist"
+  if [ -f "$plist" ] && ! tr -d ' \t\n' < "$plist" | grep -q '<key>CADisableMinimumFrameDurationOnPhone</key><true/>'; then
+    echo "✘ $app: falta 120 Hz (CADisableMinimumFrameDurationOnPhone en $plist)" >&2; status=1
+  fi
   mapfile -t every < <(find "$ROOT/$app" -name '*.swift' -not -path '*/.build/*' | sort)
   if [ ${#every[@]} -gt 0 ]; then
     if "$SWIFTC" -parse -swift-version 6 "${every[@]}" 2>&1; then

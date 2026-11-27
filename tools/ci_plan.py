@@ -34,6 +34,19 @@ def android_apps() -> list[str]:
     return sorted(d for d in os.listdir(ROOT) if d.endswith("Android") and os.path.exists(os.path.join(ROOT, d, "gradlew")))
 
 
+def missing_promotion() -> list[str]:
+    """Every iPhone app must run at 120 Hz (ProMotion): its Info.plist needs CADisableMinimumFrameDurationOnPhone = true.
+    Without it iOS caps the app at 60 Hz. Checked on every push, for old and new apps alike."""
+    missing = []
+    for app in ios_apps():
+        plist = os.path.join(ROOT, app, "Config", f"{app}-Info.plist")
+        text = open(plist).read() if os.path.exists(plist) else ""
+        compact = "".join(text.split())
+        if "<key>CADisableMinimumFrameDurationOnPhone</key><true/>" not in compact:
+            missing.append(app)
+    return missing
+
+
 def changed_files(base: str) -> list[str] | None:
     if not base or set(base) == {"0"}:
         return None
@@ -73,6 +86,9 @@ def plan(event: str, files: list[str] | None) -> dict:
 
 
 if __name__ == "__main__":
+    if missing := missing_promotion():
+        print(f"Sin 120 Hz (falta CADisableMinimumFrameDurationOnPhone en el Info.plist): {', '.join(missing)}", file=sys.stderr)
+        sys.exit(1)
     result = plan(os.environ.get("EVENT", ""), changed_files(os.environ.get("BASE", "")))
     lines = [f"apps={json.dumps(result['apps'])}", f"android={json.dumps(result['android'])}",
              f"scaffold={'true' if result['scaffold'] else 'false'}"]
