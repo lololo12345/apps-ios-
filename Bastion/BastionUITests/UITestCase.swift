@@ -1,3 +1,4 @@
+import UIKit
 import XCTest
 
 /// Base class for UI tests: launch with test flags, find by identifier, tap, wait and take screenshots.
@@ -19,7 +20,18 @@ class UITestCase: XCTestCase {
     func snapshot(_ name: String, _ app: XCUIApplication, settle: TimeInterval = 0.5) {
         // Let transitions finish so the screenshot never catches a half-drawn screen.
         if settle > 0 { Thread.sleep(forTimeInterval: settle) }
-        let attachment = XCTAttachment(screenshot: app.screenshot())
+        var image = app.screenshot().image
+        // Landscape screenshots carry an orientation flag that export tools mishandle (rotated and cropped):
+        // redraw them upright so the saved pixels are exactly what is on screen.
+        if image.imageOrientation != .up {
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = image.scale
+            let source = image
+            image = UIGraphicsImageRenderer(size: source.size, format: format).image { _ in
+                source.draw(in: CGRect(origin: .zero, size: source.size))
+            }
+        }
+        let attachment = XCTAttachment(image: image)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)

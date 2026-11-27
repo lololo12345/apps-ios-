@@ -136,7 +136,7 @@ struct HUD: View {
                     if let raid = game.raid { RaidBar(raid: raid) }
                     if let boss = game.boss { BossBar(boss: boss) }
                 }
-                .frame(maxWidth: 300)
+                .frame(maxWidth: 250)
                 Spacer(minLength: 8)
                 TopRight(game: game)
             }
@@ -162,13 +162,16 @@ struct StatusPill: View {
 
     var body: some View {
         let state = game.state
-        HStack(spacing: 14) {
+        HStack(spacing: 12) {
             Label {
-                Text(state.coins.grouped).contentTransition(.numericText()).monospacedDigit()
+                Text(state.coins.grouped).contentTransition(.numericText()).monospacedDigit().lineLimit(1)
             } icon: {
                 Text("🪙")
             }
             .font(.system(.headline, design: .rounded, weight: .heavy))
+            // Never squeezed: in landscape the notch margins leave little room for the top bar.
+            .fixedSize()
+            .layoutPriority(2)
             .accessibilityIdentifier("hud.coins")
 
             VStack(alignment: .leading, spacing: 3) {
@@ -178,7 +181,7 @@ struct StatusPill: View {
                     .contentTransition(.numericText())
                 Meter(fraction: Double(state.carried) / Double(state.capacity), colors: state.isFull ? [Palette.gold, .orange] : [Palette.accentSoft, Palette.accent])
             }
-            .frame(width: 74)
+            .frame(width: 64)
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("hud.backpack")
 
@@ -189,7 +192,7 @@ struct StatusPill: View {
                     .contentTransition(.numericText())
                 Meter(fraction: Double(game.health) / Double(max(state.maxHealth, 1)), colors: [Color(hex: 0xFF8A8A), Palette.bad])
             }
-            .frame(width: 66)
+            .frame(width: 56)
             .accessibilityElement(children: .combine)
         }
         .padding(.horizontal, 14)
@@ -299,8 +302,9 @@ struct TopRight: View {
         HStack(spacing: 8) {
             let minutes = game.secondsToChange / 60, seconds = game.secondsToChange % 60
             Label {
-                Text("\(game.isNight ? "Amanece" : "Noche") en \(minutes):\(String(format: "%02d", seconds))")
+                Text("\(minutes):\(String(format: "%02d", seconds))")
                     .monospacedDigit()
+                    .lineLimit(1)
             } icon: {
                 Image(systemName: game.isNight ? "moon.stars.fill" : "sun.max.fill")
                     .foregroundStyle(game.isNight ? Palette.secondary : Palette.gold)
@@ -310,6 +314,8 @@ struct TopRight: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
             .glassEffect(.regular.tint(Palette.background.opacity(0.25)), in: .capsule)
+            .fixedSize()
+            .accessibilityLabel("\(game.isNight ? "Amanece" : "Anochece") en \(minutes) minutos y \(seconds) segundos")
             .accessibilityIdentifier("hud.clock")
 
             GlassEffectContainer(spacing: 6) {

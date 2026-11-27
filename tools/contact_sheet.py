@@ -12,7 +12,7 @@ consecutive screenshots that are practically identical (a tap that did nothing).
 import argparse
 import os
 
-from PIL import Image, ImageChops, ImageFilter, ImageStat
+from PIL import Image, ImageChops, ImageFilter, ImageOps, ImageStat
 
 parser = argparse.ArgumentParser()
 parser.add_argument("folder")
@@ -32,7 +32,8 @@ if args.names:
 else:
     files = sorted(f for f in os.listdir(args.folder) if f.lower().endswith((".jpg", ".png")))
 
-images = [Image.open(os.path.join(args.folder, f)).convert("RGB") for f in files]
+# exif_transpose: landscape screenshots may carry an orientation flag.
+images = [ImageOps.exif_transpose(Image.open(os.path.join(args.folder, f))).convert("RGB") for f in files]
 
 warnings = []
 previous = None
