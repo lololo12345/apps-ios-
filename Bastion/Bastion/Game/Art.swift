@@ -596,7 +596,7 @@ enum Art {
                     let p = CGPoint(x: base.x + (tip.x - base.x) * f, y: base.y + (tip.y - base.y) * f)
                     let s = (1 - f) * 4 + 1.2
                     let n = CGPoint(x: -(tip.y - base.y) / len, y: (tip.x - base.x) / len)
-                    for side in [CGFloat(-1), 1] {
+                    for side in ([-1, 1] as [CGFloat]) {
                         line(cg, p, CGPoint(x: p.x + n.x * s * side + (tip.x - base.x) / len * 1.5, y: p.y + n.y * s * side + (tip.y - base.y) / len * 1.5), color, 1.6)
                     }
                 }
@@ -675,7 +675,7 @@ enum Art {
                 line(cg, CGPoint(x: x, y: 8), CGPoint(x: x + rng.r(-3, 6), y: 19), Ink.barkDark.withAlphaComponent(0.45), 0.9)
             }
             fill(cg, ellipse(CGRect(x: 56, y: 6, width: 10, height: 15)), [UIColor(hex: 0xE2C08E), UIColor(hex: 0xB98E5C)], outline: 0.8, shade: 0.3)
-            for r in [CGFloat(2), 4] {
+            for r in ([2, 4] as [CGFloat]) {
                 cg.setStrokeColor(UIColor(hex: 0x8A6640, alpha: 0.6).cgColor)
                 cg.setLineWidth(0.6)
                 cg.strokeEllipse(in: CGRect(x: 61 - r * 0.5, y: 13.5 - r, width: r, height: r * 2))
@@ -830,7 +830,7 @@ enum Art {
             side.closeSubpath()
             fill(cg, side, [Ink.barkLight, Ink.bark, Ink.barkDark], vertical: false)
             fill(cg, ellipse(CGRect(x: 12, y: 16, width: 20, height: 9)), [UIColor(hex: 0xE8C796), UIColor(hex: 0xC49A64)], outline: 1, shade: 0.4)
-            for r in [CGFloat(2.5), 5, 7.5] {
+            for r in ([2.5, 5, 7.5] as [CGFloat]) {
                 cg.setStrokeColor(UIColor(hex: 0x9A7246, alpha: 0.55).cgColor)
                 cg.setLineWidth(0.6)
                 cg.strokeEllipse(in: CGRect(x: 22 - r, y: 20.5 - r * 0.45, width: r * 2, height: r * 0.9))
@@ -953,7 +953,7 @@ enum Art {
             cg.strokePath()
             cg.restoreGState()
             // Eyes, looking right.
-            for x in [CGFloat(25), 36] {
+            for x in ([25, 36] as [CGFloat]) {
                 fill(cg, circle(CGPoint(x: x, y: 31 + bob), 4.8), [.white, UIColor(hex: 0xE4EEF2)], outline: 0.7, shade: 0)
                 dot(cg, CGPoint(x: x + 1.4, y: 30.5 + bob), 2.8, UIColor(hex: 0x231A14))
                 dot(cg, CGPoint(x: x + 2.3, y: 32 + bob), 1, .white)
@@ -990,7 +990,7 @@ enum Art {
             cg.clip()
             softDot(cg, CGPoint(x: 27, y: 12), 12, UIColor(hex: 0xEDE8FF, alpha: 0.45))
             cg.restoreGState()
-            for x in [CGFloat(19), 30] {
+            for x in ([19, 30] as [CGFloat]) {
                 dot(cg, CGPoint(x: x, y: 6 + h * 0.5), 3.4, .white)
                 dot(cg, CGPoint(x: x + 0.8, y: 6 + h * 0.48), 1.9, UIColor(hex: 0x231A2E))
             }
@@ -1041,7 +1041,7 @@ enum Art {
             for (x, lift) in [(CGFloat(24), -step * 0.6), (52, step)] {
                 fill(cg, rounded(CGRect(x: x - 3.5, y: 5 + max(0, lift), width: 7, height: 19), 3.5), [fur, back], outline: 0.9, shade: 0.4)
             }
-            for x in [CGFloat(58), 63] {
+            for x in ([58, 63] as [CGFloat]) {
                 let ear = CGMutablePath()
                 ear.move(to: CGPoint(x: x - 3.5, y: 44))
                 ear.addLine(to: CGPoint(x: x, y: 55))
@@ -1142,7 +1142,7 @@ enum Art {
             }
             // Door with frame.
             fill(cg, rounded(CGRect(x: 52, y: 12, width: 22, height: 34), 10), [Ink.woodDark.lighter(0.1), UIColor(hex: 0x3E2614)], outline: 1)
-            for x in [CGFloat(58), 63, 68] { line(cg, CGPoint(x: x, y: 14), CGPoint(x: x, y: 42), UIColor(hex: 0x2A190C, alpha: 0.6), 0.8) }
+            for x in ([58, 63, 68] as [CGFloat]) { line(cg, CGPoint(x: x, y: 14), CGPoint(x: x, y: 42), UIColor(hex: 0x2A190C, alpha: 0.6), 0.8) }
             dot(cg, CGPoint(x: 69, y: 28), 1.5, Ink.gold)
             // Windows: warm glass behind a cross frame.
             for w in houseWindows {
@@ -1186,9 +1186,9 @@ enum Art {
     static func stall() -> SKTexture {
         texture("stall", size: CGSize(width: 104, height: 96)) { cg, _ in
             shadow(cg, center: CGPoint(x: 54, y: 9), width: 96, height: 15, alpha: 0.4)
-            for x in [CGFloat(14), 84] { fill(cg, rounded(CGRect(x: x, y: 8, width: 6, height: 60), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
+            for x in ([14, 84] as [CGFloat]) { fill(cg, rounded(CGRect(x: x, y: 8, width: 6, height: 60), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
             fill(cg, rounded(CGRect(x: 8, y: 9, width: 88, height: 24), 3), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 1)
-            for y in [CGFloat(17), 25] { line(cg, CGPoint(x: 10, y: y), CGPoint(x: 94, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.8) }
+            for y in ([17, 25] as [CGFloat]) { line(cg, CGPoint(x: 10, y: y), CGPoint(x: 94, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.8) }
             // Crates of produce.
             let goods: [(UIColor, UIColor)] = [(UIColor(hex: 0xD9473B), UIColor(hex: 0x8E2418)), (UIColor(hex: 0xF08A2E), UIColor(hex: 0xB0561A)),
                                                (Ink.berryLight, Ink.berry), (Ink.leafLight, Ink.leafDark)]
@@ -1233,9 +1233,9 @@ enum Art {
     static func board() -> SKTexture {
         texture("board", size: CGSize(width: 68, height: 78)) { cg, _ in
             shadow(cg, center: CGPoint(x: 36, y: 7), width: 56, height: 11, alpha: 0.4)
-            for x in [CGFloat(14), 48] { fill(cg, rounded(CGRect(x: x, y: 5, width: 6, height: 44), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
+            for x in ([14, 48] as [CGFloat]) { fill(cg, rounded(CGRect(x: x, y: 5, width: 6, height: 44), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
             fill(cg, rounded(CGRect(x: 6, y: 26, width: 56, height: 38), 3), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 1)
-            for y in [CGFloat(38), 50] { line(cg, CGPoint(x: 8, y: y), CGPoint(x: 60, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.7) }
+            for y in ([38, 50] as [CGFloat]) { line(cg, CGPoint(x: 8, y: y), CGPoint(x: 60, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.7) }
             let roof = CGMutablePath()
             roof.addLines(between: [CGPoint(x: 2, y: 62), CGPoint(x: 34, y: 76), CGPoint(x: 66, y: 62)])
             roof.closeSubpath()
@@ -1243,7 +1243,7 @@ enum Art {
             for (i, p) in [CGPoint(x: 11, y: 33), CGPoint(x: 28, y: 39), CGPoint(x: 45, y: 31)].enumerated() {
                 cg.saveGState()
                 cg.translateBy(x: p.x + 7, y: p.y + 9)
-                cg.rotate(by: [CGFloat(-0.08), 0.06, -0.03][i])
+                cg.rotate(by: ([-0.08, 0.06, -0.03] as [CGFloat])[i])
                 cg.setShadow(offset: CGSize(width: 1, height: -1.5), blur: 2, color: UIColor(white: 0, alpha: 0.35).cgColor)
                 fill(cg, CGPath(rect: CGRect(x: -7, y: -9, width: 14, height: 18), transform: nil), [.white, UIColor(hex: 0xEFE4CC)], outline: 0.5, shade: 0)
                 cg.restoreGState()
@@ -1315,7 +1315,7 @@ enum Art {
                 for col in 0..<6 {
                     let p = CGPoint(x: 18 + CGFloat(col) * 14.5, y: y + 2)
                     if stage == 1 {
-                        for side in [CGFloat(-1), 1] {
+                        for side in ([-1, 1] as [CGFloat]) {
                             let leaf = ellipse(CGRect(x: p.x + side * 2.5 - 2.2, y: p.y, width: 4.4, height: 2.6))
                             fill(cg, leaf, [Ink.leafLight, Ink.leaf], outline: 0.4, shade: 0)
                         }
@@ -1339,14 +1339,14 @@ enum Art {
     static func tower() -> SKTexture {
         texture("tower", size: CGSize(width: 64, height: 118)) { cg, _ in
             shadow(cg, center: CGPoint(x: 34, y: 8), width: 54, height: 14, alpha: 0.42)
-            for x in [CGFloat(12), 46] { fill(cg, rounded(CGRect(x: x, y: 5, width: 6.5, height: 66), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
+            for x in ([12, 46] as [CGFloat]) { fill(cg, rounded(CGRect(x: x, y: 5, width: 6.5, height: 66), 2), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 0.8, vertical: false) }
             cg.setStrokeColor(Ink.woodDark.cgColor)
             cg.setLineWidth(2.6)
             cg.move(to: CGPoint(x: 16, y: 12)); cg.addLine(to: CGPoint(x: 48, y: 54))
             cg.move(to: CGPoint(x: 48, y: 12)); cg.addLine(to: CGPoint(x: 16, y: 54))
             cg.strokePath()
             // Ladder.
-            for x in [CGFloat(27), 37] { line(cg, CGPoint(x: x, y: 5), CGPoint(x: x, y: 66), Ink.woodLight, 1.6) }
+            for x in ([27, 37] as [CGFloat]) { line(cg, CGPoint(x: x, y: 5), CGPoint(x: x, y: 66), Ink.woodLight, 1.6) }
             for y in stride(from: CGFloat(10), to: 64, by: 7) { line(cg, CGPoint(x: 27, y: y), CGPoint(x: 37, y: y), Ink.woodLight, 1.4) }
             fill(cg, rounded(CGRect(x: 5, y: 64, width: 54, height: 18), 2.5), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 1)
             for x in stride(from: CGFloat(9), to: 58, by: 7) { line(cg, CGPoint(x: x, y: 65), CGPoint(x: x, y: 81), Ink.woodDark.withAlphaComponent(0.5), 0.8) }
@@ -1356,7 +1356,7 @@ enum Art {
             cg.setShadow(offset: CGSize(width: 0, height: -3), blur: 5, color: UIColor(white: 0, alpha: 0.4).cgColor)
             fill(cg, roof, [Ink.roofLight, Ink.roof, Ink.roofDark], outline: 1)
             cg.restoreGState()
-            for x in [CGFloat(8), 54] { fill(cg, rounded(CGRect(x: x, y: 80, width: 4, height: 8), 1), [Ink.woodDark], outline: 0.5, shade: 0) }
+            for x in ([8, 54] as [CGFloat]) { fill(cg, rounded(CGRect(x: x, y: 80, width: 4, height: 8), 1), [Ink.woodDark], outline: 0.5, shade: 0) }
             fill(cg, rounded(CGRect(x: towerTorch.x - 1.5, y: 78, width: 3, height: 14), 1), [Ink.barkLight, Ink.barkDark], outline: 0.5)
         }
     }
@@ -1435,7 +1435,7 @@ enum Art {
             shadow(cg, center: CGPoint(x: 27, y: 5), width: 34, height: 9, alpha: 0.4)
             fill(cg, rounded(CGRect(x: 23, y: 3, width: 6, height: 38), 2), [Ink.barkLight, Ink.bark, Ink.barkDark], outline: 0.8, vertical: false)
             fill(cg, rounded(CGRect(x: 6, y: 30, width: 40, height: 25), 3), [Ink.woodLight, Ink.wood, Ink.woodDark], outline: 1)
-            for y in [CGFloat(38), 46] { line(cg, CGPoint(x: 8, y: y), CGPoint(x: 44, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.7) }
+            for y in ([38, 46] as [CGFloat]) { line(cg, CGPoint(x: 8, y: y), CGPoint(x: 44, y: y), Ink.woodDark.withAlphaComponent(0.5), 0.7) }
             // Carved, gilded hammer.
             line(cg, CGPoint(x: 18, y: 36), CGPoint(x: 31, y: 48), UIColor(hex: 0x3A2612), 3.2)
             line(cg, CGPoint(x: 18, y: 36), CGPoint(x: 31, y: 48), Ink.goldLight, 1.6)
@@ -1446,7 +1446,7 @@ enum Art {
     static func arrow() -> SKTexture {
         texture("arrow", size: CGSize(width: 28, height: 8)) { cg, _ in
             line(cg, CGPoint(x: 4, y: 4), CGPoint(x: 21, y: 4), Ink.woodLight, 1.6)
-            for dy in [CGFloat(-2), 2] { line(cg, CGPoint(x: 2, y: 4 + dy), CGPoint(x: 7, y: 4), UIColor(hex: 0xEDE6D6), 1.2) }
+            for dy in ([-2, 2] as [CGFloat]) { line(cg, CGPoint(x: 2, y: 4 + dy), CGPoint(x: 7, y: 4), UIColor(hex: 0xEDE6D6), 1.2) }
             let tip = CGMutablePath()
             tip.addLines(between: [CGPoint(x: 20, y: 1), CGPoint(x: 28, y: 4), CGPoint(x: 20, y: 7)])
             tip.closeSubpath()
@@ -1533,7 +1533,7 @@ enum Art {
         return texture("butterfly-\(frame % 2)-\(v % 4)", size: CGSize(width: 16, height: 12)) { cg, _ in
             let open: CGFloat = frame % 2 == 0 ? 1 : 0.35
             let c = colors[v % 4]
-            for side in [CGFloat(-1), 1] {
+            for side in ([-1, 1] as [CGFloat]) {
                 fill(cg, ellipse(CGRect(x: 8 + side * 4 * open - 3.5 * open, y: 5, width: 7 * open, height: 6)), [c.lighter(0.2), c], outline: 0.4, shade: 0.3)
                 fill(cg, ellipse(CGRect(x: 8 + side * 3 * open - 2.5 * open, y: 1.5, width: 5 * open, height: 4.5)), [c, c.withAlphaComponent(0.8)], outline: 0.4, shade: 0.3)
             }
